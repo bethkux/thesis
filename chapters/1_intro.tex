@@ -49,7 +49,8 @@ For each object in the game, there is a limited number of panel actions that hav
 \caption{The protagonist Guybrush Threepwood is standing on the dock. In the lower part of the image there is a panel with various actions (\textit{panel actions}) such as 'Open', 'Look at', and 'Use' to interact with the environment. The  panel also includes a list of items in player's inventory. Player's mouse cursor is hovering over a table.}
 \label{fig:TSoMI}
 \end{figure}
-The main character's movement is managed through mouse clicking, a common method in 2D point-and-click games from this era. Other notable features of the game include challenging puzzles, cinematic cutscenes, and richly developed dialogue trees.
+
+The main character's movement is managed through mouse clicking, a common method in 2D point-and-click games from this era. Other notable features of the game include puzzles, cutscenes, and dialogue trees. To talk to NPCs, the player must first enter the dialogue mode by selecting the 'Talk to' panel action and afterwards clicking on an them. When done so, some features, such as the inventory, are inaccessible. Instead, the player can choose an option on how to respond to an NPC. By selecting a specific option, the dialogue mode ends, and the player is back in gameplay mode.
 
 \subsection{Beneath a Steel Sky (1994)}
 Developed by the British studio Revolution Software and launched in 1994, Beneath a Steel Sky is a point-and-click adventure game set in a cyberpunk-inspired dystopian future. The players guide Robert Foster as he uncovers hidden secrets of this foreign world.
@@ -59,6 +60,8 @@ The game is primarily controlled by the mouse. If the player hovers the mouse cu
 When clicking with the right mouse button on an object, Foster will either pick it up or use it in some way (or talk to an NPC if that object was one). The game decides what the action will lead to.
 
 The inventory in this game is slightly hidden. The player must move the mouse to the top of the screen to make the inventory panel slide down. Following this, the player can see the icons of all items in the inventory as well as their names when the mouse hovers over an icon. To see a longer description, the player has to click on the item with the left mouse button. If the player decides to use an item on an object, they must grab an icon using the right mouse button and then lead the item to the location of the object. This action is captured in Figure \ref{fig:BaSS}.
+
+\todo{write how to talk to NPCs}
 
 \begin{figure}[H]
 \centering
@@ -82,6 +85,8 @@ In Figure \ref{fig:FranBow}, there is an inventory from game Fran Bow containing
 \end{figure}
 
 The main character's movement is also managed through mouse clicking. The game includes puzzles, cutscenes, and fairly straightforward dialogue trees.
+
+\todo{write how to talk to NPCs}
 
 \subsection{Thimbleweed Park (2017)}
 
@@ -118,12 +123,31 @@ Return to Monkey Island, created by Terrible Toybox in collaboration with Lucasf
 
 \section{Game specifications}
 
-Now, since we looked at some examples of 2D point-and-click adventure games, we can examine the defining features and create an outline for our project. 
+Now, since we looked at some examples of 2D point-and-click adventure games, we can examine their defining features and create an outline of our project. 
 
-
+We will look closely at the following features.
 \begin{itemize}
 \item Inventory
-\item Character control
+\item Character movement
 \item Actions
 \item Dialogue
 \end{itemize}
+
+\subsection{Inventory}
+There is a great variety of types of inventories as seen in the examples. Typically, it is a panel that contains icons or names of items that the player had collected on their journey. The panel might be hidden (like in Beneath the Steel Sky, Fran Bow and Return to Monkey Island) or revealed throughout the whole game (The Secret of Monkey Island and Thimbleweed Park). In all games, the player can use the items in the environment. There is also an option to combine two items to create another or to examine them more closely. Every game deals with it a bit differently... \todo{continue}
+I will try to take all of this into account and create an inventory system that satisfies these needs.
+
+\subsection{Character movement}
+A typical method of movement control is clicking on a part of the environment using a mouse or another input method and waiting for the character to get to the point themselves. From the games I have selected, none of them uses another input method \todo{need to check for sure or maybe choose a game that does?} \textbf{(Maybe i can include it? or don't have to?)}
+
+\subsection{Actions}
+Other actions that the player can do are executed by panel actions (The Secret of Monkey Island, Thimbleweed Park) or by only clicking with mouse and making the game figure out what to do (Return to Monkey Island). Some games combine these two methods like Fran Bow, which does have the action buttons seen in Figure \ref{fig:FranBow} as part of the inventory. However, the game does multiple things instead of one button. In addition, talking to NPCs is done only by clicking the mouse, so no action button is necessary. My plan is to implement these different methods.
+
+\subsection{Dialogue}
+Dialogues are a very important part of a 2D point-and-click game. In some examples, it is more advanced with a lot of options to choose from and in others its structure is more simple (Fran Bow).  
+
+\todo{finish these paragraphs}
+
+Otazky:
+- viac obrazkov?
+- citacie su ok?
