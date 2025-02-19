@@ -18,7 +18,7 @@ Point-and-click adventure games experienced their golden age in the late 1980s a
 In recent years, the point-and-click adventure genre has undergone a renaissance. Modern titles such as \textit{Thimbleweed Park} (2017) and \textit{Return to Monkey Island} (2022) have revived interest by paying homage to the retro roots of the genre while implementing modern design elements. This resurgence has also been fueled by the cinematic storytelling approach pioneered by \textit{Telltale Games}. Their narrative-driven series brought the genre back into the mainstream spotlight. The renewed interest in point-and-click adventure games highlights their timeless appeal and presents an opportunity for new developers to explore the genre. Building on its rich legacy, aspiring game creators can reimagine and modernize these games for today's audience. This cultural revival highlights the need for accessible development tools to support and sustain the creative evolution of this genre.
 
 \section{Common features}
-\todo{Different title? Game specifications}
+\todo{Different title? Game specifications?}
 So far in this chapter, the importance of point-and-click adventure games as a game genre has been highlighted. Now, it is necessary to take a look at concrete examples of 2D point-and-click adventure games and specifically their prominent features and characteristics. By doing this, one can find inspiration to design and create the framework.
 
 We will look closely at the following features.
@@ -29,49 +29,75 @@ We will look closely at the following features.
 \item Dialogue
 \end{itemize}
 
+\subsection{Inventory}
+An inventory is an integral part of every 2D point-and-click adventure game. The typical visual interpretation is a panel that contains icons or names of items that the player had collected on their journey. Regardless of whether the inventory is hidden or visible throughout the game, the player uses the items in the environment. There might also be an option to combine two items to create a new one or examine them more closely. 
+
+Every game handles an inventory a bit differently. In \textit{The Secret of Monkey Island}, the inventory is always visible and is located on the right side of a panel which can be found in the lower part of the screen. The inventory consists of written names of the items, as seen in Figure \ref{fig:I-TSoMI}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\linewidth]{img/TSoMI.png}
+\caption{The list of items in player's inventory highlighted with purple colour is located in the lower right side of the screen.}
+\label{fig:I-TSoMI}
+\end{figure}
+
+The inventory in \textit{Beneath the Steel Sky} is slightly hidden. The player must move the mouse cursor to the top of the screen to make the inventory panel slide down. Following this, the player can see the icons of all items in the inventory as well as their names when the mouse hovers over an icon as seen in Figure \ref{fig:I-BaSS}. To see a longer description, the player has to click on the item with the left mouse button.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.\linewidth]{img/BaSS.png}
+\caption{In the upper part of the image there is a panel with the inventory.}
+\label{fig:I-BaSS}
+\end{figure}
+
+Other games hide the inventory entirely through a pop-up window. In \textit{Fran Bow}, the inventory can be accessed by clicking on an icon of a purse in the lower left corner of the screen. A panel appears with icons of items. In Figure \ref{fig:I-FranBow}, there is an inventory containing various items.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.\linewidth]{img/Fran_Bow.png}
+\caption{The inventory in \textit{Fran Bow} is accessed as a pop-up panel. It contains all items the player has collected.}
+\label{fig:I-FranBow}
+\end{figure}
+
+I will try to take all of this into account and create an inventory system that satisfies these needs.
+\todo{Do I include something like this?}
+ 
 \subsection{Actions}
 The defining feature of every video game is the ability to engage with this medium. In 2D point-and-click adventure games, the player also has the ability to interact with the world. These actions are executed in a variety of ways.
 
 \subsubsection{Panel Actions}
-One of the main ways players can engage with the world is the \textit{action panel}, which is typical of games from that era, as seen in Figure \ref{fig:TSoMI}. These \textit{panel actions} are very contextual--typically, if the player selects a \textit{panel action} from the panel and hovers over an object on the screen, a short sentence will be created in the upper part of the panel (\textit{The Secret of Monkey Island}) or above the mouse cursor (\textit{Thimbleweed Park}). This provides an indication to the player of what the main character is going to do. In Figure \ref{fig:TSoMI}, \textit{the panel action} \texttt{Look at} is selected, and then the mouse cursor is placed over a table. This sequence of actions creates the sentence \texttt{"Look at table."} By following this logic, longer sentences can be obtained if we also take items in the inventory into account.
+One of the main ways players can engage with the world is the \textit{action panel}, which is typical of games from the golden era of 2D point-and-click adventure games, as seen in Figure \ref{fig:A-TSoMI}. These \textit{panel actions} are very contextual--typically, if the player selects a \textit{panel action} from the panel and hovers over an object on the screen, a short sentence will be created in the upper part of the panel (\textit{The Secret of Monkey Island}) or above the mouse cursor (\textit{Thimbleweed Park}). This provides an indication to the player of what the main character is going to do. In Figure \ref{fig:A-TSoMI}, \textit{the panel action} \texttt{Look at} is selected, and then the mouse cursor is placed over a table. This sequence of actions creates the sentence \texttt{"Look at table"}. By following this logic, longer sentences can be obtained if we also take items in the inventory into account.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\linewidth]{img/TSoMI.png}
 \caption{In the lower part of the image there is a panel with various actions (\textit{panel actions}) such as \texttt{Open}, \texttt{Look at}, and \texttt{Use} to interact with the environment. The  panel also includes a list of items in player's inventory. Player's mouse cursor is hovering over a table.}
-\label{fig:TSoMI}
+\label{fig:A-TSoMI}
 \end{figure}
 
-For each object in the game, there is a limited number of \textit{panel actions} that have a meaningful result. Those that do not make sense for the given object result in the straightforward response something along the lines of \texttt{"I cannot [panel action] this."} Then there are some that result in a humorous response, but do not help to progress the story either. And finally, certain panel actions help you obtain a piece of information (the panel action \texttt{Look at}), change the state of an object (the panel actions \texttt{Open}, \texttt{Push}, etc.), let you talk to an NPC (the panel action \texttt{Talk to}), or let you obtain or remove an item from player's inventory (the panel actions \texttt{Pick up} and \texttt{Give}).
+For each object in the game, there is a limited number of \textit{panel actions} that have a meaningful result. Those that do not make sense for the given object result in the straightforward response something along the lines of \texttt{"I cannot [panel action] this."} Then there are some that result in a humorous response, but do not help to progress the story either. And finally, certain panel actions help you obtain a piece of information (\texttt{Look at}), change the state of an object (\texttt{Open}, \texttt{Push}, etc.), let you talk to an NPC (\texttt{Talk to}), or let you obtain or remove an item from the player's inventory (\texttt{Pick up} and \texttt{Give}).
 
 \subsubsection{Mouse}
- (Beneath the Steel Sky, Return to Monkey Island). 
+Some games are primarily controlled by the mouse without the need for a panel of actions. Typically, the player clicks on an object with the mouse, and the game decides what to do based on the context. When hovering the mouse cursor over an object, a short text will pop up describing what that object is.
 
-Some games are primarily controlled by the mouse. Usually, the player clicks on an object with the mouse, and the game figures out what to do based on the context. When hovering the mouse cursor over an object, a short text will pop up describing what that object is.
-
-For example, in Beneath the Steel Sky, when clicking with the right mouse button on an object, the main character Foster will either pick it up or use it in some way (or talk to an NPC if that object was one). The game decides what the action will lead to.
+For example, in \textit{Beneath the Steel Sky} when clicking with the right mouse button on an object, the main character Foster will either pick it up or use it in some way (or talk to an NPC if that object was one). If the player decides to use an item on an object, they must grab an icon using the right mouse button and then lead the item to the location of the object. This action is captured in Figure \ref{fig:BaSS}. Finally, if the player clicks on an empty spot that the main character can reach, Foster will move there. Overall, the game decides what the action will lead to.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1.\linewidth]{img/BaSS.png}
-\caption{The protagonist Robert Foster is standing in front of an elevator. In the upper part of the image there is a panel with his inventory. A mouse cursor is located on an object (a terminal, to be precise) while holding an ID card from the inventory.}
-\label{fig:BaSS}
+\caption{The protagonist Robert Foster is standing in front of an elevator. In the upper part of the image there is a panel with his inventory. A mouse cursor is located on an object (a terminal) while holding an ID card from the inventory.}
+\label{fig:A-BaSS}
 \end{figure}
 
 \subsubsection{Combination}
-Some games combine these two methods like Fran Bow, which does have the action buttons seen in Figure \ref{fig:FranBow} as part of the inventory. However, the game does multiple things instead of one button. In addition, talking to NPCs is done only by clicking the mouse, so no action button is necessary. My plan is to implement these different methods.
-
-\subsection{Inventory}
-Typically, the visual interpretation of an inventory is a panel that contains icons or names of items that the player had collected on their journey. The panel might be hidden (like in \textit{Beneath the Steel Sky}, \textit{Fran Bow} and \textit{Return to Monkey Island}) or visible throughout the whole game (\textit{The Secret of Monkey Island} and \textit{Thimbleweed Park}). In all of these games, the player can use the items in the inventory in the environment. There is also the option to combine two items to create a new one or examine them more closely. 
-
-Every game deals with it a bit differently... \todo{continue}
-I will try to take all of this into account and create an inventory system that satisfies these needs.
-
-There is a great variety of types of inventories as seen in the examples. 
+Some games combine these two methods like \textit{Fran Bow}. Although the game uses panel actions, the number of them is limited. However, they are much more versatile. When an item is selected and \texttt{Examine} is pressed, the main character Fran Bow says something about the item. Next to it, there is a \texttt{Combine} option which allows you to choose two items and create a new one in their place inside the inventory. Finally, the third button with the \texttt{Use} label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (e.g. unlocking a locked box and finding hidden items), or use the item outside of the inventory (e.g. giving an item to an NPC). At the bottom of the screen, a short sentence is created according to what the player will do as seen in Figure \ref{fig:A-FranBow} . 
+In addition to the panel actions, the player can use the mouse. For example, talking to NPCs is done only by clicking the left mouse button, so no action button is necessary. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.\linewidth]{img/Fran_Bow.png}
+\caption{The inventory for Fran Bow is accessed as a pop-up panel. It contains all items the player has collected. Below there are three action buttons for player to use. At the very bottom there is a sentence describing the action the player is going to take.}
+\label{fig:A-FranBow}
+\end{figure}
 
 \subsection{Character movement}
-A typical method of movement control is clicking on a part of the environment using a mouse or another input method and waiting for the character to get to the point themselves. From the games I have selected, none of them uses another input method \todo{need to check for sure or maybe choose a game that does?} \textbf{(Maybe i can include it? or don't have to?)}
-
+A typical method of movement control is clicking on a part of the environment using a mouse or another input method and waiting for the character to find the shortest path to the point and to get there. 
 
 \subsection{Dialogue}
 Dialogues are a very important part of a 2D point-and-click game. In some examples, it is more advanced with a lot of options to choose from and in others its structure is more simple (Fran Bow).  
@@ -85,29 +111,14 @@ Dialogues are a very important part of a 2D point-and-click game. In some exampl
 
 \subsection{The Secret of Monkey Island (1990)}
 Released in 1990 by Lucasfilm Games, The Secret of Monkey Island is a 2D point-and-click graphic adventure game set in the Caribbean. Our main protagonist is Guybrush Threepwood, an aspiring pirate who embarks on his quest to achieve his dream.
-
 The main character's movement is managed through mouse clicking, a common method in 2D point-and-click games from this era. Other notable features of the game include puzzles, cutscenes, and dialogue trees. To talk to NPCs, the player must first enter the dialogue mode by selecting the 'Talk to' panel action and afterwards clicking on an them. When done so, some features, such as the inventory, are inaccessible. Instead, the player can choose an option on how to respond to an NPC. By selecting a specific option, the dialogue mode ends, and the player is back in gameplay mode.
 
 \subsection{Beneath a Steel Sky (1994)}
 Developed by the British studio Revolution Software and launched in 1994, Beneath a Steel Sky is a point-and-click adventure game set in a cyberpunk-inspired dystopian future. The players guide Robert Foster as he uncovers hidden secrets of this foreign world.
 
 
-
-The inventory in this game is slightly hidden. The player must move the mouse to the top of the screen to make the inventory panel slide down. Following this, the player can see the icons of all items in the inventory as well as their names when the mouse hovers over an icon. To see a longer description, the player has to click on the item with the left mouse button. If the player decides to use an item on an object, they must grab an icon using the right mouse button and then lead the item to the location of the object. This action is captured in Figure \ref{fig:BaSS}.
-\todo{write how to talk to NPCs}
-
-
 \subsection{Fran Bow (2015)}
 Created by the Swedish indie studio Killmonday Games, Fran Bow is a 2D point-and-click adventure game with elements of psychological horror. The game is set in 1944 and it tells the story of Fran, a ten-year-old girl suffering from a mental illness after the death of her parents.
-The inventory can be accessed by clicking on an icon of a purse in the lower left corner. A panel appears with everything the main character has with her. In addition to the panel, there are three buttons with different actions the player can take. When an item is selected and "Examine" is pressed, Fran Bow says something about the item. Next to it, there is a 'Combine' option which allows you to choose two items and create a new one in their place inside the inventory. Finally, the third button with the "Use" label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (for example, unlocking a locked box and finding hidden items), or use the item outside of the inventory (for example, giving an item to an NPC).
-In Figure \ref{fig:FranBow}, there is an inventory from game Fran Bow containing various items. The player is combining two items using the "Combine" button. At the bottom of the screen, there is a short sentence that describes exactly what the player is going to do.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=1.\linewidth]{img/Fran_Bow.png}
-\caption{The inventory for Fran Bow is accessed as a pop-up panel. It contains all items the player has collected. Below there are three action buttons for player to use. At the very bottom there is a sentence describing the action the player is going to take.}
-\label{fig:FranBow}
-\end{figure}
 
 The main character's movement is also managed through mouse clicking. The game includes puzzles, cutscenes, and fairly straightforward dialogue trees.
 
