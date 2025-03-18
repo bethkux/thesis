@@ -3,27 +3,7 @@ The rising popularity of video games has transformed them from niche entertainme
 
 One genre that holds a special place in gaming history is point-and-click adventure, which emerged in the early 1980s and continues to influence the industry to this day. Despite its seemingly straightforward gameplay, creating a point-and-click adventure game involves implementing a variety of systems, such as a walking system, inventory mechanics, dialogue trees, and puzzle design. For inexperienced developers, designing these can be significantly difficult.
 
-The goal of this Bachelor thesis is to design and implement a framework tailored to the development of 2D point-and-click adventure games. This framework, called \textit{TaleCraft}, will prioritize functionality, user-friendliness, and accessibility, encouraging beginner to intermediate game developers to create engaging games without requiring advanced programming knowledge. Since the goal is to streamline the development of 2D point-and-click adventure games, \textit{TaleCraft} will include all the essential mechanics of the genre, providing core systems such as movement, dialogue, and inventory management. Additionally, it will allow developers to customize these elements to fit their artistic and narrative vision. By addressing the unique challenges associated with point-and-click adventure game development, this thesis aims to provide a valuable tool for aspiring developers. To demonstrate its functionality and ease of use, a prototype game will be developed using the framework. 
-
-To develop our framework, we will use the Unity game engine. Microsoft Visual Studio will be used to write scripts in the C\# programming language. 
-
-We would also like to emphasize that some features will not be implemented
-in the showcase of our framework. These features will be marked by the following box:
-\todo{not demo game}
-
-\newtcolorbox{notImplemented}{
-center,
-width=1.0\linewidth,
-colframe=black!18!white,
-colback=black!2!white, 
-boxrule=1pt
-}
-
-\begin{notImplemented}
-\quad {\footnotesize \textit{(not implemented)}} \par
-\vspace{3mm}
-A feature that will not be seen in the show case.
-\end{notImplemented}
+The goal of this Bachelor thesis is to design and implement a framework tailored to the development of 2D point-and-click adventure games. This framework, called \textit{TaleCraft}, will prioritize functionality, user-friendliness, and accessibility, encouraging beginner to intermediate game developers to create engaging games without requiring advanced programming knowledge. Since the goal is to streamline the development of 2D point-and-click adventure games, \textit{TaleCraft} will include all the essential mechanics of the genre, providing core systems such as movement, dialogue, and inventory management. Additionally, it will allow developers to customize these elements to fit their artistic and narrative vision. By addressing the unique challenges associated with point-and-click adventure game development, this thesis aims to provide a valuable tool for aspiring developers. To develop our framework, we will use the Unity game engine. Microsoft Visual Studio will be used to write scripts in the C\# programming language. 
 
 \section{Point-and-click adventure games}
 A typical point-and-click adventure game emphasizes exploration, puzzle solving, and narrative engagement often involving mystery and exploration. Players interact with in-game environments through mouse-based controls and a cursor is used to click on objects, locations, or characters within a visual scene to trigger actions or dialogues. 
@@ -39,7 +19,24 @@ In recent years, the point-and-click adventure genre has undergone a renaissance
 
 \section{Common features}
 \label{sec:Common features}
-So far in this chapter, the importance of point-and-click adventure games as a game genre has been highlighted. Now, it is necessary to take a look at concrete examples of 2D point-and-click adventure games and specifically their prominent features and characteristics. By doing this, we can find inspiration to design and create the framework. We will look closely at the following features: Commands, Inventory, Character movement, and Dialogue.
+So far in the previous subsection, the importance of point-and-click adventure games as a game genre has been highlighted. Now, it is necessary to take a look at concrete examples of 2D point-and-click adventure games and specifically their prominent features and characteristics. By doing this, we can find inspiration to design and create the framework. We will look closely at the following features: Commands, Inventory, Character movement, and Dialogue.
+
+Understanding these core features is essential for shaping the framework, but not every mechanic found in point-and-click games can be included within the scope of this project. Games as a medium is very complex with a lot of mechanics and features and point-and-click adventure games are no exception. The framework we are creating should enable smooth and simple creation process, however the scope of such framework that would handle this huge variety of different features is quite large for a bachelor thesis. We need to select a set of these features that would show whether the concept of the framework makes sense. We primarily aim for those that would build a base of our framework and their presence is an integral part of a 2D point-and-click adventure game, even though creating a finished game only using these is not possible. That is why we are going to implement only a limited number of them. Ideally, other features would be added in the future, and so we do not want to approach this project in a way that would restrict its scalability. We would also like to emphasize that some features will not be implemented in the showcase of our framework. These features will be marked by the following box:
+%\todo{To demonstrate its functionality and ease of use, a prototype game will be developed using the framework. }
+
+\newtcolorbox{notImplemented}{
+center,
+width=1.0\linewidth,
+colframe=black!18!white,
+colback=black!2!white, 
+boxrule=1pt
+}
+
+\begin{notImplemented}
+\quad {\footnotesize \textit{(not implemented)}} \par
+\vspace{3mm}
+A feature that will not be seen in the show case.
+\end{notImplemented}
 
 \subsection{Commands}
 \label{sec:Commands}
@@ -80,8 +77,6 @@ For example, in \textit{Beneath a Steel Sky} (see Figure \ref{fig:C-BaSS}), clic
 \label{fig:C-BaSS}
 \end{figure}
 
-As we can see, there are two different ways how a player can interact with the game's world: command panel-based interaction and direct mouse-based commands. A game designer can decide to use either (or both) of them to suit different gameplay styles, and this is what the framework should definitely support.
-
 \subsubsection{Requirements}
 To summarize, the framework should support multiple ways for players to interact with the game's world and these are the requirements:
 
@@ -106,25 +101,16 @@ Every game handles an inventory a bit differently. In \textit{The Secret of Monk
 
 To interact with items in the inventory, the game uses the \textit{command panel} just as the rest of the environment. Although this may sound obvious, this is not always true for other games. 
 
-\textit{Fran Bow} is an example of a more modern take on the genre while still maintaining core elements from the golden era of point-and-click adventures.  A significant difference from the previous example is the fact that the inventory is completely hidden and accessible as an independent UI element in the form of a pop-up window (see Figure \ref{fig:I-FranBow}). In the game, the inventory can be opened by clicking on an icon of a purse in the lower left corner of the screen, which then displays a panel with item icons. What is also notable about \textit{Fran Bow} is the fact that its inventory uses a different command system than the rest of the game. In the game world, the player only clicks on objects, while the inventory is controlled by three buttons (see Figure \ref{fig:C-FranBow} ). 
-\todo{remove one image?}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=.8\linewidth]{img/I-FB.png}
-\caption{Fran Bow: Inventory}
-\label{fig:I-FranBow}
-\end{figure}
-
+\textit{Fran Bow} is an example of a more modern take on the genre while still maintaining core elements from the golden era of point-and-click adventures.  A significant difference from the previous example is the fact that the inventory is completely hidden and accessible as an independent UI element in the form of a pop-up window (see Figure \ref{fig:I-FranBow}). In the game, the inventory can be opened by clicking on an icon of a purse in the lower left corner of the screen, which then displays a panel with item icons. What is also notable about \textit{Fran Bow} is the fact that its inventory uses a different command system than the rest of the game. In the game world, the player only clicks on objects, while the inventory is controlled by three buttons, shown in Figure \ref{fig:I-FranBow}. 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\linewidth]{img/Fran_Bow.png}
-\caption{Fran Bow: Combining two items in the inventory}
-\label{fig:C-FranBow}
+\caption{Fran Bow: Inventory}
+\label{fig:I-FranBow}
 \end{figure}
 
-Although the game uses only three commands, which is a very limited number compared to other games with similar systems, these commands are considerably more versatile. When an item in the inventory is selected and “\texttt{Examine}” is pressed, the main character Fran Bow says something about the item. In addition, there is a “\texttt{Combine}” button which allows the player to choose two items and create a new one in their place within the inventory. Finally, the third button with the “\texttt{Use}” label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (e.g., unlocking a locked box and finding hidden items), or use the item outside of the inventory (e.g. giving an item to another character in the game). At the bottom of the screen, a short sentence is created according to what the player will do.
+Although the game uses only three commands, which is a very limited number compared to other games with similar systems, these commands are considerably more versatile. When an item in the inventory is selected and “\texttt{Examine}” is pressed, the main character Fran Bow says something about the item. In addition, there is a “\texttt{Combine}” button which allows the player to choose two items and create a new one in their place within the inventory. Finally, the third button with the “\texttt{Use}” label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (e.g. unlocking a locked box and finding hidden items), or use the item outside of the inventory (e.g. giving an item to another character in the game). At the bottom of the screen, a short sentence is created according to what the player will do.
 
 Lastly, some inventories are only partially hidden, such as the one in \textit{Beneath a Steel Sky}. The player must move the mouse cursor to the top of the screen to make the inventory panel slide down. Once visible, the player can see the icons of all items in the inventory as well as their names when the mouse hovers over an icon of a metal bar, as depicted in Figure \ref{fig:I-BaSS2}. To see a longer description, the player has to click on the item with the left mouse button. The arrows on both sides of the panel are used to navigate the inventory if it contains many items.
 
@@ -135,10 +121,8 @@ Lastly, some inventories are only partially hidden, such as the one in \textit{B
 \label{fig:I-BaSS2}
 \end{figure}
 
-It is clear that the approach of games from the point-and-click genre to an inventory is very varied. That is why we want to give developers the freedom to implement it their own way by developing an inventory system that is easy to integrate and customize while supporting multiple inventory formats (static, pop-up, or sliding), including text-based lists and icon-based layouts. 
-
 \subsubsection{Requirements}
-The inventory system should be flexible and customizable. In summary, here are the requirements:
+It is clear that the approach of games from the point-and-click genre to an inventory is very varied. That is why we want to give developers the freedom to implement it their own way by developing an inventory system that is easy to integrate and customize. In summary, here are the requirements:
 
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}},resume]
   \item \label{intro:req:inv_formats} The system should support multiple inventory formats, such as static, pop-up, or sliding inventories.
@@ -159,7 +143,7 @@ As outlined in the previous sections, the main two ways of controlling a charact
 \label{fig:M-TSoMI-W}
 \end{figure}
 
-To move the character to another position, the second option involves just clicking on a point in the environment with a mouse that is not occupied by any object. If a point occupied by an object is selected, the main character will not only walk to the point but will also interact with it as seen in Figure \ref{fig:M-BaSS}.
+To move the character to another position, the second option involves just clicking on a point in the environment with a mouse that is not occupied by any object as seen in Figure \ref{fig:M-BaSS}. If a point occupied by an object is selected, the main character will not only walk to the point but will also interact with it.
 
 \begin{figure}[H]
 \centering
@@ -168,13 +152,11 @@ To move the character to another position, the second option involves just click
 \label{fig:M-BaSS}
 \end{figure}
 
-Since both types of character movement are a distinguishing feature of 2D point-and-click adventure games, we want to implement a walking system that supports both command-based movement (e.g. selecting a “\texttt{Walk to}” button) and direct mouse-based movement (clicking on a location). It is also important to have the option to specify what the end result of the movement will be, such as whether clicking on an object results in movement only or both movement and interaction. In addition to that, our aim is to incorporate pathfinding so that characters automatically navigate around obstacles to reach the desired location. 
-\par
-\vspace{5mm}
+%\vspace{5mm}
 \textbf{Requirements} \quad In the framework, the character movement system supporting multiple interaction methods and intelligent navigation has the following requirements:
 
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}},resume]
-  \item \label{intro:req:com+mouse_move} Both command-based movement (e.g., selecting a “\texttt{Walk to}” button) and direct mouse-based movement (clicking on a location) should be supported.
+  \item \label{intro:req:com+mouse_move} Both command-based movement (e.g. selecting a “\texttt{Walk to}” button) and direct mouse-based movement (clicking on a location) should be supported.
   \item \label{intro:req:mox_move} Developers should have the option to define whether clicking on an object triggers only movement or both movement and interaction.
   \item \label{intro:req:pathfinding}Pathfinding should be incorporated so characters can automatically navigate around obstacles to reach their destination.
 \end{enumerate}
@@ -201,6 +183,12 @@ Another way to create the illusion of a three-dimensional space within a 2D envi
 
 A similar effect was also achieved in \textit{Beneath a Steel Sky} where the main protagonist walks down a set of stairs while also being partially obscured by the platform above, which is depicted in Figure \ref{fig:M-BaSS0}.  Upon closer inspection, it appears that this process is at least partially pre-rendered in the form of a cutscene, as the player is unable to make the character move elsewhere when he reaches the staircase up until he exits it. 
 
+\begin{notImplemented}
+\quad {\footnotesize \textit{(not implemented)}} \par
+\vspace{3mm}
+Although cutscenes are widely used across various game genres, this framework will not include them. Our goal is to provide support for features commonly found in the 2D point-and-click genre, but the scope of a bachelor thesis limits the number of features that can be implemented. Cutscenes are one such feature that falls outside this scope.
+\end{notImplemented}
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\linewidth]{img/M-BaSS00.png}
@@ -208,9 +196,7 @@ A similar effect was also achieved in \textit{Beneath a Steel Sky} where the mai
 \label{fig:M-BaSS0}
 \end{figure}
 
-Dynamic and continuous character scaling, along with the ability for objects to appear in front of or behind others, plays a crucial role in maintaining the illusion of depth. To prevent the game from feeling stiff or unnatural, it is important to allow movement that preserves this 3D effect, ensuring a more immersive experience. However, some animations may be challenging to achieve just by offering the scaling and layering system. Cutscenes are often used to get around these difficult situations. However, even though cutscenes are very common in games, this thesis will not support them.
-\par
-\vspace{5mm}
+%\vspace{5mm}
 \textbf{Requirements} \quad In summary, the illusion of depth enables the player to immerse themselves into the game's world and is achieved by the following:
 
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}},resume]
@@ -222,7 +208,7 @@ Dynamic and continuous character scaling, along with the ability for objects to 
 \label{sec:Dialogue}
 Dialogues are a very important part of a 2D point-and-click game. In some examples, it is more advanced, with many options to choose from (\textit{The Secret of Monkey Island}), and in others its structure is more simple (\textit{Fran Bow}).  
 
-In the following paragraph, we refer to terms \textit{dialogue mode} and \textit{gameplay mode} to describe how the game handles conversations. These are not standard definitions of game design. Instead, they describe the state of the games based on our observations. To initialize a dialogue with an NPC in \textit{The Secret of Monkey Island}, the player must first enter the \textit{dialogue mode} by selecting the “\texttt{Talk to}” command and then clicking on them, as shown in Figure \ref{fig:D-TSoMI0}. When done so, the dialogue starts and some features, such as the inventory, are inaccessible. Instead, the player can choose an option on how to respond to the NPC as seen in Figure \ref{fig:D-TSoMI1}. 
+In the following paragraph, we refer to terms \textit{dialogue mode} and \textit{gameplay mode} to describe how the game handles conversations. These are not standard definitions of game design. Instead, they describe the state of the games based on our observations. To initialize a dialogue with an NPC in \textit{The Secret of Monkey Island}, the player must first enter the \textit{dialogue mode} by selecting the “\texttt{Talk to}” command and then clicking on them, as shown in Figure \ref{fig:D-TSoMI0}. When done so, the dialogue starts and some features, such as the inventory, are inaccessible. Instead, the player can choose an option on how to respond to the NPC (see Figure \ref{fig:D-TSoMI1}). 
 
 \begin{figure}[H]
 \centering
@@ -234,7 +220,7 @@ In the following paragraph, we refer to terms \textit{dialogue mode} and \textit
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\linewidth]{img/D-TSoMI1.png}
-\caption{The Secret of Monkey Island: Dialogue options of the player in a conversation}
+\caption{The Secret of Monkey Island: Dialogue options in a conversation}
 \label{fig:D-TSoMI1}
 \end{figure}
 
@@ -252,24 +238,43 @@ By selecting the option, the player responds, and the dialogue continues until t
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\linewidth]{img/D-FB.png}
-\caption{Fran Bow: Conversation with a character}
+\caption{Fran Bow: Conversation with an NPC}
 \label{fig:D-FranBow}
 \end{figure}
 
-In these two examples, the NPCs were static, so to talk to them, the character must approach them. However, this is not always the case. When examining \textit{Beneath a Steel Sky} a bit closer, one may notice that the NPCs move quite a lot around the environment and this includes also the characters player can talk to. This means that the main character must meet the character at some point on the map. \textit{Beneath a Steel Sky} solves it by determining a fixed point where the player character and the NPC must go and start the conversation depicted in Figure xxx.
-\todo{include this in the project?}
+In these two examples, the NPCs were static, so to talk to them, the character must approach them. However, this is not always the case. When examining \textit{Beneath a Steel Sky} a bit closer, one may notice that the NPCs move quite a lot around the environment and this includes also the characters player can talk to. This means that the main character must meet the character at some point on the map. \textit{Beneath a Steel Sky} solves it by determining a fixed point where the player character and the NPC must go and start the conversation depicted in Figure \ref{fig:C-BaSS3}. When the player initiates a conversation with the NPC wearing pink, they are standing in positions \texttt{A} and \texttt{C} respectively. Afterwards, the characters move to positions \texttt{B} and \texttt{D} where they start with the conversation.
+%\todo{include this in the project?}
 
-Looking at these examples, the goal is clear. We want to implement a dialogue system that supports even more complex branching conversations with multiple-choice dialogue options. Next, we aim to establish a clear distinction between dialogue mode and gameplay mode, ensuring that interactions like inventory access are appropriately restricted during conversations. Finally, we want to include subtitles to enhance accessibility and improve player comprehension, regardless of audio availability, while allowing for different visual styles of dialogue presentation, such as text appearing in a dedicated panel or speech bubbles above characters. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\linewidth]{img/C-BaSS2.png}
+\caption{Beneath a Steel Sky: Conversation with a moving NPC}
+\label{fig:C-BaSS3}
+\end{figure}
 
 \subsubsection{Requirements}
 To summarize, these are the rules the dialogue system should follow:
 
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}},resume]
-  \item \label{intro:req:multi_dialogue} It should allow for complex branching conversations with multiple-choice dialogue options.
+  \item \label{intro:req:multi_dialogue} It should allow for complicated branching conversations with multiple-choice dialogue options.
   \item \label{intro:req:modes} There should be a clear distinction between dialogue mode and gameplay mode, restricting interactions like inventory access during conversations.
   \item \label{intro:req:subs} Subtitles should be included to improve accessibility and player comprehension, regardless of audio availability.
   \item \label{intro:req:sub_format} Different visual styles for dialogue presentation should be supported, such as text in a dedicated panel or speech bubbles above characters.
 \end{enumerate}
 
-\section{Unsupported features}
-The framework could offer countless features, but the ones highlighted in the previous section represent only the core mechanics typically found in a 2D point-and-click adventure game. Many games in this genre, among others, include systems for animation, cutscenes, minigames, and sound management. However, these were not discussed as they are either not distinctive enough to be considered fundamental to the genre or fall outside the scope of this project. Naturally, the framework could be expanded in the future to incorporate these features. 
+
+\section{Showcase}
+\label{intro:showcase}
+Outside the framework itself, another goal of the thesis is to showcase the implemented features. This will be achieved by making a game that only consists of certain scenes from a few 2D point-and-click games recreated using our framework. The scenes will include:
+\begin{itemize}
+    \item \textit{The Secret of Monkey Island} (1990)
+    \item \textit{Beneath a Steel Sky} (1990)
+\end{itemize}
+
+\section{Goals}
+\label{intro:goals}
+\begin{enumerate}[label=\color{orange}\textbf{G{\arabic*}}]
+  \item \label{intro:goals:framework} 
+  Design a framework in the Unity game engine \textit{TaleCraft} satisfying requirements \ref{intro:req:com_pan}--\ref{intro:req:sub_format}.
+  \item \label{intro:goals:demo} Create a demo game consisting of scenes from different games of the 2D point-and-click adventure genre outlined in Section \ref{intro:showcase}.
+\end{enumerate}
