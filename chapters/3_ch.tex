@@ -42,14 +42,14 @@ The main advantage of this approach is the ability of the user of the framework 
 A crucial part of character movement is the ability to find a path to the goal. Objects typically get there by taking the shortest route possible. This makes sense in point-and-click adventure games, as player input is intentional and direct: clicking on a location implies that the character should move there efficiently, without unnecessary detours. The problem of finding the shortest path is a well-studied field in computer science, with several established algorithms designed to solve it. 
 
 \subsubsection{Weighted Graph}
-Polygons only serve as a visual representation of the walkable area to the framework users, and essentially this is everything they need to care about. However, to enable algorithms like pathfinding to operate effectively, the walkable area must also be represented in a form suitable for computation. Specifically, if we want to determine the shortest path to a destination, we need a way to calculate the distances between specific points—without this, identifying the optimal route would be impossible. A weighted graph provides an ideal structure for this purpose. It consists of nodes connected by edges, each assigned a non-negative value representing the distance between them. That said, generating a graph that includes every possible node and edge would be both inefficient and impractical. So let us set up some rules that we need to follow:
+Polygons only serve as a visual representation of the walkable area to the framework users, and essentially this is everything they need to care about. However, to enable algorithms like pathfinding to operate effectively, the walkable area must also be represented in a form suitable for computation. Specifically, if we want to determine the shortest path to a destination, we need a way to calculate the distances between the points—without this, identifying the optimal route would be impossible. A weighted graph provides an ideal structure for this purpose. It consists of nodes connected by edges, each assigned a non-negative value representing the distance between them. That said, generating a graph that includes every possible node and edge would be both inefficient and impractical. So let us set up some rules that we need to follow:
 
 \begin{enumerate}[label=\color{purple}\textbf{R{\arabic*}}]
   \item \label{analysis:concave} In the main polygon, every concave vertex (a vertex with an interior angle greater than 180°) is a node.
   \item \label{analysis:convex} In the obstacle polygons, every convex vertex (a vertex with an interior angle less than 180°) is a node.
   \item \label{analysis:start} The position of the character (start position) is a node.
   \item \label{analysis:end} The end position (e.g. the mouse cursor) is a node.
-  \item \label{analysis:LOS} For each two nodes, we create an edge if they are in line of sight (a straight line from a node to another node inside the polygon without crossing an edge of the polygon). 
+  \item \label{analysis:LOS} For each two nodes, we create an edge if they are in line of sight (a straight line from a node to another node inside the polygon without crossing an edge of any polygon). 
 \end{enumerate}
 
 According to Rule \ref{analysis:concave}, a node is included based on type of the vertex of the corresponding polygon. In basic shapes like triangles, rectangles, and squares, any two points can be connected by a straight line without encountering obstacles. However, if the walkable area is concave (containing one or more concave verices), some vertices point inward, creating obstructions that block direct visibility between points, as depicted in Figure \ref{fig:Polygons}. To account for these obstructions, a node is added to the graph only if its corresponding vertex is concave. On the other hand, convex vertices are excluded as they do not create such obstructions.
@@ -88,7 +88,7 @@ To determine which vertices are convex, we can iterate through them one by one a
 \end{algorithmic}
 \end{algorithm}
 
-However, this method can produce incorrect results if the vertex order is not handled carefully. Reversing the order of the vertices results in the opposite angle, which may misclassify the convex and concave points (see Figure \ref{fig:Clock}). The Algorithm \ref{alg:IsVertexConcave} works only in the case that the vertices of a polygon are ordered clockwise. To avoid getting the wrong result, we must also make sure that the vertices are ordered clockwise or counter-clockwise. This can be done using the Algorithm \ref{alg:IsOrientationClockwise}.
+However, this method can produce incorrect results if the vertex order is not handled carefully. Reversing the order of the vertices results in the opposite angle, which may misclassify the convex and concave points (see Figure \ref{fig:Clock}). The Algorithm \ref{alg:IsVertexConcave} works only in the case that the vertices of a polygon are ordered clockwise. To avoid getting the wrong result, we must also check that the vertices are ordered clockwise or counter-clockwise. This can be done using the Algorithm \ref{alg:IsOrientationClockwise}.
 The algorithm essentially calculates a signed value based on the positions of consecutive vertices. It does this by summing the expression $(b.x-a.x)\cdot(b.y+a.y)$ for each edge, where $a$ and $b$ are adjacent vertices. A positive result indicates a clockwise orientation, while a negative result indicates counter-clockwise.
 
 \begin{figure}[H]
@@ -120,7 +120,7 @@ The next rule \ref{analysis:convex} tells us that the situation is reversed for 
 
 When it comes to the starting and ending positions (typically those of the main character and the mouse cursor), we need to include them as well. Because our primary aim is to find a path between them in the graph, the Rules \ref{analysis:start} and \ref{analysis:end} are necessary for this purpose.
 
-Finally, in terms of edges, an edge is included in the graph only if the two nodes that form it are within each other's line of sight, as mentioned in Rule \ref{analysis:LOS}. If other edges were included, we would get edges that run through obstacles and outside of the main walkable area, which is definitely not what we want. This is why we need to do a check of visibility. The Algorithm \ref{alg:InLineOfSight} \todo{finish this}
+Finally, in terms of edges, an edge is included in the graph only if the two nodes that form it are within each other's line of sight, as mentioned in Rule \ref{analysis:LOS}. If other edges were included, we would get edges that run through obstacles and outside of the main walkable area, which is definitely not what we want. This is why we need to do a check of visibility. The Algorithm \ref{alg:InLineOfSight} depicts the process of check if two nodes are in line of sight. \todo{finish this}
 
 \begin{algorithm}
 \caption{Check Line of Sight Between Two Points}\label{alg:InLineOfSight}
@@ -186,7 +186,7 @@ Firstly, we will look closely at character scaling. There are a number of ways w
 
 Another option is to keep additional information on the scaling inside the vertices of polygons that make up the walkable map. By doing so, we could calculate the scaling factor based on the distance from each node with a floating number representing the scaling. This approach is a bit more complicated, but still simple to implement. An advantage is the fact that the developer could have a free range on the exact details of the area. However, modifying the scales is not that easy because it is necessary to go through the necessary nodes and change the factor by hand.
 
-Finally, it is possible to use a bitmap and map the alpha value of each pixel to a scaling factor. This would be very precise, as the developer can set it up exactly as they wish. However, we again come across the problem we discussed in Section \ref{analysis:walkableMap} where we made it clear that we prefer to implement features that can be simply modified inside the Unity Engine.
+Finally, it is possible to use a bitmap and map the alpha value of each pixel to a scaling factor. This would be very precise, as the developer can set it up exactly as they wish. However, we again come across the problem we discussed in Section \ref{analysis:walkableMap} where we made it clear that we prefer to implement features that can be simply modified inside Unity.
 
 From these three approaches only two seem to be doable entirely inside the framework: Y scaling (optionally X scaling) and custom vertices scaling. We aim to implement both of them in the hopes of offering a wide variety of options to developers.
 
