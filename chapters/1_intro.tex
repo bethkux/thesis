@@ -56,7 +56,7 @@ Most commonly, there are three forms of a sentence that can be created by combin
 \begin{itemize}
     \item \verb|(verb)|, e.g. “\texttt{Walk to}”
     \item \verb|(verb noun)|, e.g. “\texttt{Look at poster}”
-    \item \verb|(verb noun noun)|, e.g. “\texttt{Use key with lock}”
+    \item \verb|(verb noun connector noun)|, e.g. “\texttt{Use key with lock}”
 \end{itemize}
 
 \begin{figure}[H]
@@ -161,7 +161,7 @@ To move the character to another position, the second option involves just click
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}},resume]
   \item \label{intro:req:com+mouse_move} Both command-based movement (e.g. selecting a “\texttt{Walk to}” button) and direct mouse-based movement (clicking on a location) should be supported.
   \item \label{intro:req:mox_move} Developers should have the option to define whether clicking on an object triggers only movement or both movement and interaction.
-  \item \label{intro:req:pathfinding}Pathfinding should be incorporated so characters can automatically navigate around obstacles to reach their destination.
+  \item \label{intro:req:pathfinding}Pathfinding should be incorporated so that characters can automatically navigate around the map to reach their destination.
 \end{enumerate}
 
 \subsubsection{Depth simulation}

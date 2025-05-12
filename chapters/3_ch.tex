@@ -2,13 +2,11 @@
 
 Before going over the actual programming of the framework, we need to further inspect some of the features we have specified in the Introduction in Chapter \ref{Intro}. In this chapter, we will analyse features of this project, as well as suggest ways of solving problems, and in case there are more solutions, we will select the most suitable one with a proper explanation.
 
-
 \section{Command System}
 
 
-\section{Pathfinding}
-In Requirement \ref{intro:req:pathfinding}  we have established that the player should have the ability to move around the map while avoiding obstacles. 
-The development of the walking system could be divided into two main parts:
+\section{Walking system}
+In Requirement \ref{intro:req:pathfinding}  we have established that the player should have the ability to move around the playable area (map). The development of the walking system could be divided into two main parts:
 \begin{enumerate}
     \item The representation of the walkable area,
     \item The problem of finding the path to a goal.
@@ -16,7 +14,11 @@ The development of the walking system could be divided into two main parts:
 
 \subsection{Walkable Area}
 \label{analysis:walkableMap}
-One possible way of representing the walkable map would be to create a walkability bitmap. It is essentially an image with a few colors which represents a piece of information. In our case, this bitmap would describe the possible walkable areas that the player may traverse. Figure \ref{fig:WS:Bitmap} shows one such bitmap on top of the scene. In this example, the player is able to freely walk around the area highlighted with green color, while the dark areas are inaccessible. Finally, the player can step on the blue area only when certain conditions are met (e.g. after talking to the bouncer). This approach is further explained in the article by Steven Henk Don \cite{Shdon}.   
+
+The characters in a video game exist within a defined in-game world. Naturally, this world needs boundaries and areas where the player can move and interact. The walkable area refers to the regions of the game world that the player is allowed to access and navigate. It often consists of a collection of rooms, but it could be just as easily a city square, a forest, or any other kind of space that the developer envisions. While it is easy to imagine these spaces and the areas accessible to the player in our minds, we need a clear and practical way to define them within the game engine. 
+
+\subsubsection{Bitmap}
+In his article, Steven Henk Don \cite{Shdon} outlines an approach to representing walkable areas using a walkability bitmap. This method involves creating an image composed of a limited set of colors, where each color conveys specific information about the game environment. In our case, this bitmap would describe the possible walkable areas that the player may traverse. Figure \ref{fig:WS:Bitmap} shows one such bitmap on top of the scene. In this example, the player is able to freely walk around the area highlighted with green color, while the dark areas are inaccessible. Finally, the player can step on the blue area only when certain conditions are met (e.g. after talking to the bouncer).  
 
 \begin{figure}[H]
 \centering
@@ -27,22 +29,86 @@ One possible way of representing the walkable map would be to create a walkabili
 
 To obtain such a bitmap, the user must use image-editing software to manually create colorful shapes that represent the accessible parts of the environment and then save the image. Additionally, modifying the bitmap is difficult and time-consuming, as it requires reopening the editing software and making manual changes. Our goal is to find a solution that can be integrated directly into the framework while keeping the experience user-friendly, something this approach does not support. 
 
-The second option enables us to create the map in the Unity engine itself. The idea is to have one primary shape that defines the main walkable area, be it a room, a hall, or a town square. Inside that area, there can be places that are not accessible currently or indefinitely (e.g. furniture), let us call them obstacles. We can define the boundaries of the walkable area and the obstacles using polygons, as seen in Figure \ref{fig:WS:Poly}. One such polygon can be used to outline the primary area where the user walks around, while additional polygons can be viewed as obstacles that the player must avoid. This implementation is examined in detail in the articles by Mic Uurloon \cite{Uurloon1}\cite{Uurloon2}.
-
-The main advantage of this approach is the ability of the user of the framework to modify the shapes on the fly whenever necessary. Next, this system can be implemented directly in Unity and does not require any other software to set it up. For these reasons, we decided to go with this solution.
+\subsubsection{Polygons}
+Another approach to this problem is discussed in detail in articles by Mic Uurloon \cite{Uurloon1}\cite{Uurloon2}, where walkable areas and obstacles are defined using polygon shapes directly within the Unity engine. The idea is to have one primary shape that defines the main walkable area, be it a room, a hall, or a town square. Inside that area, there can be places that are not accessible currently or indefinitely (e.g. furniture), let us call them obstacles. We can define the boundaries of the walkable area and the obstacles using polygons, as seen in Figure \ref{fig:WS:Poly}. One such polygon can be used to outline the primary area where the user walks around, while additional polygons can be viewed as obstacles that the player must avoid.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.8\linewidth]{img/WS-polygons4.png}
+\includegraphics[width=.7\linewidth]{img/WS-polygons4.png}
 \caption{Polygonal map: the room as the main walkable area (green) and the table as an obstacle (yellow). Source \cite{Uurloon1}.}
 \label{fig:WS:Poly}
 \end{figure}
 
+The main advantage of this approach is the ability of the user of the framework to modify the shapes on the fly whenever necessary. Next, this system can be implemented directly in Unity and does not require any other software to set it up. For these reasons, we decided to go with this solution.
+
+\subsubsection{Sierra}
+Since Chapter \ref{Intro} focused heavily on the features of classic point-and-click games, it makes sense to now examine how walking systems are implemented by prominent studios. Unfortunately, there is limited publicly available information on this topic, possibly due to the existence of patents or proprietary techniques that are not openly shared. However, we have found one notable example. According to ScummVM, an open-source project that reimplements classic game engines, a prominent game company Sierra behind classics such as \textit{King's Quest} implemented their own patented pathfinding algorithm designed to navigate game characters around obstacles \cite{ScummVM-polygons}. Similarly to the second approach, it uses polygons to represent the area as well as the obstacles. But unlike it, is also uses a complex system of four types of polygons with different rules. 
+\begin{itemize}
+    \item  \textit{Barred access polygons} strictly block entry, meaning if the end point lies inside one, the path ends at the nearest point on the polygon’s boundary. 
+    \item On the other hand, \textit{total access polygons} are ignored if the start or end point is inside them, allowing paths to begin or end there, but otherwise preventing entry. \textit{
+    \item Near-point access polygons} require that the path enters or exits through the closest boundary point (near-point) if the start or end lies within. 
+    \item Finally, \textit{contained access polygons} define strict boundaries within which the entire path must remain; if the end point lies outside, the path stops at the near-point. Since polygons cannot intersect, only one contained access polygon can exist in a scene.
+\end{itemize}
+
+This method is very similar to the one introduced in the previous section but with more options to allow...
+
 \subsection{Pathfinding}
-A crucial part of character movement is the ability to find a path to the goal. Objects typically get there by taking the shortest route possible. This makes sense in point-and-click adventure games, as player input is intentional and direct: clicking on a location implies that the character should move there efficiently, without unnecessary detours. The problem of finding the shortest path is a well-studied field in computer science, with several established algorithms designed to solve it. 
+A crucial part of character movement is the ability to find a path to the goal. The simplest option is to take a direct line to the goal. However, this approach drastically restricts the types of map available. Firstly, the main walkable area is only restricted to basic shapes like triangles, rectangles, and squares, where any two points can be connected by a straight line that is entirely contained inside that shape. However, if the walkable area is concave (containing one or more concave verices), some vertices point inward, creating obstructions that block direct visibility between points, as depicted in Figure \ref{fig:Polygons}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\linewidth]{img/polygons.png}
+\caption{Convex (left) and concave (right) polygons. Source \cite{Polygons}.}
+\label{fig:Polygons}
+\end{figure}
+
+But it is not just the shape of the main walkable area that poses limitations. The idea of placing obstacles within that area introduces a challenge, as a straight line alone cannot accurately represent the action of navigating around such objects. This means that areas like the ones in Figures \ref{fig:Path-B}  and \ref{fig:Path-M}  cannot be replicated.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.7\linewidth]{img/Path-BaSS.png}
+\caption{Beneath a Steel Sky: A concave path where no one straight line would access each point from where the character is standing.}
+\label{fig:Path-B}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.7\linewidth]{img/Path-TSoMI.png}
+\caption{The Secret of Monkey Island: An obstacle (table) in the middle of the room restricts the player's access to the other part of the room.}
+\label{fig:Path-M}
+\end{figure}
+
+So if one straight line is not enough, we can use multiple lines. This way of dividing the path into smaller sub-paths allows the character to get to the goal while being restricted to the walkable area. But now the question is which lines we should chose.
+
+We might intuitively imagine an algorithm that first attempts to follow a straight line toward the goal. When an obstacle approaches, whether it is the edge of the walkable area or an internal obstacle, it would try to move sideways and find a way around it. While this seems like a reasonable approach, it does not truly solve the core problem: finding an actual route. Instead, it merely postpones the decision-making. So what are our options?
+
+A naive strategy would be to follow the edge of the obstacle, either to the left or to the right, until a straight line to the goal becomes possible again. If another obstacle is encountered, the process repeats. However, this approach glosses over a critical point: How do we decide which direction to follow? Picking a random direction can lead to highly inefficient paths. The Figure \ref{fig:Path-P}  highlights a situation where the goal is to get to the right side of the polygon. However, the direct path (blue) is obstructed by an edge of the polygon itself. Looking at the picture, we can see that following red path on the left causes an unnecessary detour, making the movement appear unnatural. Ideally, we want the path to look natural and intuitive, similar to the green path to the right.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.7\linewidth]{img/polygon-prototyp.png}
+\caption{Pathfinding in a concave polygon - simple approach}
+\label{fig:Path-P}
+\end{figure}
+
+In real life, people instinctively aim for the shortest or most efficient route. By comparing the left and right paths in Figure \ref{fig:Path-P}, we can identify the shorter one - likely the more natural and visually appealing choice. But even this can be improved. If we examine the start of the path, our algorithm initially attempts to move straight toward the goal until hitting an obstacle. However, a person would probably try to avoid the obstacle from the beginning, aiming to take the shortest path right away. That’s the key insight: instead of reacting to obstacles as they come, we should aim to find the shortest path from the start, just like the one in Figure \ref{fig:Path-P2}.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=.7\linewidth]{img/polygon-prototyp2.png}
+\caption{Pathfinding in a concave polygon - shortest path}
+\label{fig:Path-P2}
+\end{figure}
+
+A very similar approach was also used in Sierra's engine with multiple levels of optimization that essentially aim to find the shortest path to the goal \cite{ScummVM-patent}.
+
+
+%Objects typically get there by taking the shortest route possible. This makes sense in point-and-click adventure games, as player input is intentional and direct: clicking on a location implies that the character should move there efficiently, without unnecessary detours. The problem of finding the shortest path is a well-studied field in computer science, with several established algorithms designed to solve it. 
 
 \subsubsection{Weighted Graph}
-Polygons only serve as a visual representation of the walkable area to the framework users, and essentially this is everything they need to care about. However, to enable algorithms like pathfinding to operate effectively, the walkable area must also be represented in a form suitable for computation. Specifically, if we want to determine the shortest path to a destination, we need a way to calculate the distances between the points—without this, identifying the optimal route would be impossible. A weighted graph provides an ideal structure for this purpose. It consists of nodes connected by edges, each assigned a non-negative value representing the distance between them. That said, generating a graph that includes every possible node and edge would be both inefficient and impractical. So let us set up some rules that we need to follow:
+Polygons only serve as a visual representation of the walkable area to the framework users, and essentially this is everything they need to care about. However, to enable algorithms like pathfinding to operate effectively, the walkable area must also be represented in a form suitable for computation. Specifically, if we want to determine the shortest path to a destination, we need a way to calculate the distances between the points—without this, identifying the optimal route would be impossible. A weighted graph provides an ideal structure for this purpose. It consists of nodes connected by edges, each assigned a non-negative value representing the distance between them. That said, generating a graph that includes every possible node and edge would be both inefficient and impractical. The approach for creating a graph from polygons that was used in our project was adapted from the articles by Mic Uurloon. Details about this method together with more interactive examples explaining how the algorithm works can be found in his articles Part 1 \cite{Uurloon1} and Part 2 \cite{Uurloon2}, which further reference an article by David Gouveia \cite{Gouveia}.
+
+So let us set up some rules that we need to follow:
 
 \begin{enumerate}[label=\color{purple}\textbf{R{\arabic*}}]
   \item \label{analysis:concave} In the main polygon, every concave vertex (a vertex with an interior angle greater than 180°) is a node.
@@ -54,12 +120,6 @@ Polygons only serve as a visual representation of the walkable area to the frame
 
 According to Rule \ref{analysis:concave}, a node is included based on type of the vertex of the corresponding polygon. In basic shapes like triangles, rectangles, and squares, any two points can be connected by a straight line without encountering obstacles. However, if the walkable area is concave (containing one or more concave verices), some vertices point inward, creating obstructions that block direct visibility between points, as depicted in Figure \ref{fig:Polygons}. To account for these obstructions, a node is added to the graph only if its corresponding vertex is concave. On the other hand, convex vertices are excluded as they do not create such obstructions.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=.8\linewidth]{img/polygons.png}
-\caption{Convex (left) and concave (right) polygons. Source \cite{Polygons}.}
-\label{fig:Polygons}
-\end{figure}
 
 To determine which vertices are convex, we can iterate through them one by one and check the angle formed by the lines from the previous and next vertices to the current one. We do that by calculating the cross product, as seen in Algorithm \ref{alg:IsVertexConcave}.
 
@@ -165,33 +225,43 @@ By combining all of these Rules \ref{analysis:concave}--\ref{analysis:LOS}, we g
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.8\linewidth]{img/WS-polygons3.png}
+\includegraphics[width=.7\linewidth]{img/WS-polygons3.png}
 \caption{Graph: Walkable area consisting of polygons (green and yellow) and a graph (white) with a possible path (violet). Source \cite{Uurloon1}.}
 \label{fig:Graph}
 \end{figure}
 
 \subsubsection{A* algorithm}
-When it comes to the algorithms themselves, we aim to find one that would reliably and efficiently determine the shortest path between two points in a 2D space while maintaining reasonable performance. A* is a strong candidate for this purpose—it is a graph traversal and pathfinding algorithm widely used in the games because of its efficiency. A key component of the A* algorithm is the heuristic function which estimates the cost of the cheapest path to the goal. If the function never overestimates it, A* is guaranteed to return one of the shortest paths from start to goal. For the purpose of free character movement on a 2D plane, the Euclidean distance was chosen as a heuristic function. It is well-suited for point-and-click adventure games, where characters can move freely in any direction, making straight-line distance a natural and accurate estimate of travel cost.  It can be calculated from the Cartesian coordinates of the points while also applying the Pythagorean theorem:
+When it comes to choosing a pathfinding algorithm, our goal is to find one that reliably and efficiently determines the shortest path between two points in a 2D space. Since our maps typically contain only a few dozen vertices, raw performance is not a critical concern. Among the most commonly used algorithms in game development is A*, known for its balance of simplicity and efficiency. While our project doesn’t demand high performance, A* still meets all our needs and is straightforward to implement. Moreover, if the project were to scale and require handling more complex maps with a larger number of vertices, A* would still be a solid choice due to its proven performance. 
+
+A key component of the A* algorithm is the heuristic function which estimates the cost of the cheapest path to the goal. If the function never overestimates it, A* is guaranteed to return one of the shortest paths from start to goal. For the purpose of free character movement on a 2D plane, the Euclidean distance was chosen as a heuristic function. It is well suited for point-and-click adventure games, where characters can move freely in any direction, making straight-line distance a natural and accurate estimate of travel cost.  It can be calculated from the Cartesian coordinates of the points while also applying the Pythagorean theorem:
 
 \[
 d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
 \]
 
 \section{Depth Simulation}
-As we have specified in Requirements \ref{intro:req:scale} and \ref{intro:req:layers}, we want to simulate the feeling of a 3D space.
+As we have specified in Requirements \ref{intro:req:scale} and \ref{intro:req:layers}, we want to simulate the feeling of a 3D space. 
 
 \subsection{Scaling}
 \label{analysis:depth:scaling}
-Firstly, we will look closely at character scaling. There are a number of ways we can achieve this. An option would be to do so by only looking at the Y coordinates. This way, we can set boundaries for the minimum and the maximum scale of the moving object in the given area, and then, based on the distance from those boundaries, set the appropriate value. This approach is very simple, which is both its advantage and its disadvantage. Although it is easy to implement, it is not possible to achieve more complex scenes in which a character's sprite scales dynamically independently of the Y coordinates. A similar problem would arise with only considering the X coordinates.
+The human eye perceives depth by observing objects in the distance as smaller than they actually are. There are a number of ways we can simulate this phenomenon in a 2D video game. One option would be to scale the size of the character based only on the Y coordinates. This way, we can set the boundaries for the minimum and maximum scale of the moving object in the given area, and then, based on the distance from those boundaries, set the appropriate value, visualized in Figure \ref{fig:Room} . This approach is very simple, which is both its advantage and its disadvantage. Although it is easy to implement, it is not possible to achieve more complex scenes in which a character's sprite scales dynamically independently of the Y coordinates. A similar problem would arise with only considering the X coordinates.
 
-Another option is to keep additional information on the scaling inside the vertices of polygons that make up the walkable map. By doing so, we could calculate the scaling factor based on the distance from each node with a floating number representing the scaling. This approach is a bit more complicated, but still simple to implement. An advantage is the fact that the developer could have a free range on the exact details of the area. However, modifying the scales is not that easy because it is necessary to go through the necessary nodes and change the factor by hand.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.6\linewidth]{img/room.png}
+\caption{Character scaling by Y axis.}
+\label{fig:Room}
+\end{figure}
+
+Our goal is to dynamically scale the character sprite based on its position on the map. To achieve this, we need a system that adjusts the sprite’s size depending on its location. A suitable way to store this scaling data is by assigning it to the vertices of the polygons that define the walkable area. Each vertex could carry a floating-point value representing the desired scale at that point, allowing us to interpolate the character's size as it moves across the map.  An advantage is the fact that the developer could have a free range on the exact details of the area. However, modifying the scales is not that easy because one must go through the necessary nodes and change the factor essentially by hand. This approach is a bit more complicated than the previous ones, but still fairly simple to implement and doable entirely in Unity.
 
 Finally, it is possible to use a bitmap and map the alpha value of each pixel to a scaling factor. This would be very precise, as the developer can set it up exactly as they wish. However, we again come across the problem we discussed in Section \ref{analysis:walkableMap} where we made it clear that we prefer to implement features that can be simply modified inside Unity.
 
 From these three approaches only two seem to be doable entirely inside the framework: Y scaling (optionally X scaling) and custom vertices scaling. We aim to implement both of them in the hopes of offering a wide variety of options to developers.
 
 \subsection{Layering}
-Next, let us examine the layering. Our aim is to dynamically adjust the visibility of objects, as seen in Figure \ref{fig:Layers}. Because we are working with a 2D space, we have to do a bit more work determining in what order the sprites of objects should be displayed. Fortunately, it is very simple since all we need is to look at the Y coordinates. If object A has a smaller Y coordinate than object B, it means that A should be drawn on top of B. This is not complicated, but also not trivial, since it would be necessary to perform this check between each two objects in the scene. Lucky for us, Unity offers tools for 2D renderer sorting \cite{Unity-sorting} and can therefore take care of this problem for us. What we are looking for is the Custom Axis sort mode \cite{Unity-customAxis} in Graphics section under the Project Settings window. Details on the setup with a couple more modifications to make it just right can be found online in the Sunny Valley Studio article \cite{Piotr} . 
+Next, let us examine the layering. Our aim is to dynamically adjust the visibility of objects, as seen in Figure \ref{fig:Layers}. The human eye and brain can process this kind of information in the real world naturally and can therefore create a visual image of how objects are ordered one after the other. Because we are working with a 2D space, we have to do a bit more work simulating this phenomenon and determining in what order the sprites of objects should be displayed. Fortunately, it is very simple since all we need is to look at the Y coordinates. If object A has a smaller Y coordinate than object B, it means that A should be drawn on top of B. This is not complicated, but also not trivial, since it would be necessary to perform this check between each two objects in the scene. Lucky for us, Unity offers tools for 2D renderer sorting \cite{Unity-sorting} and can therefore take care of this problem for us. What we are looking for is the Custom Axis sort mode \cite{Unity-customAxis} in Graphics section under the Project Settings window. Details on the setup with a couple more modifications to make it just right can be found online in the Sunny Valley Studio article \cite{Piotr} . 
 
 \begin{figure}[H]
 \centering
@@ -204,5 +274,17 @@ Next, let us examine the layering. Our aim is to dynamically adjust the visibili
 
 
 \section{Dialogue System}
+Conversations between characters help players understand the story and connect with the game world. While they usually take the form of a dialogue between two characters, that is not always the case. When only one character is speaking, it becomes a monologue or thinking aloud. On the other hand, conversations can also involve more than two characters, resulting in group interactions. 
 
+In cases where dialogue is limited to a simple exchange of lines without requiring player input, the representation of a conversation can be fairly straightforward: the dialogue can be stored as a list of data containing the text and other relevant information. In an \textit{Game Dev Beginner} article \cite{Dialogue-French}, John French presents a possible implementation of this approach.  However, this linear method has its drawbacks. Managing longer conversations can become cumbersome as one needs to scroll through the entire list to reach specific lines, which quickly becomes inconvenient. The situation becomes even more complex when players are given the ability to make choices. Even a handful of branching lines can lead to a complicated structure that is nearly impossible to manage using a linear format. The complexity increases further when cyclic paths are introduced, where characters may repeat lines in response to specific prompts. Implementing such behavior in a linear format is not only difficult, but also tends to produce a cluttered and confusing system. 
 
+Due to the limitations of the linear method, it is necessary to explore more flexible solutions. A particular data structure that can effectively represent the complexity of a branching dialogue is a graph. Its structure allows for direct access to specific dialogue lines and, in the case of branching paths, offers an intuitive way to manage and visualize the flow. Additionally, graphs make it easy to implement cyclic paths, enabling characters to reuse parts of the dialogue under certain conditions. Looking at these advantages, it is clear that this data structure is suitable for our needs. So, let us take a look at the tools Unity offers for creating graphs.
+
+\subsection{Graph Tools in Unity}
+Currently, there is no officially supported non-experimental graph tool or framework available in Unity. A new system named \textit{Graph Toolkit}  \cite{Unity-GraphToolkit} is under development and aims to provide a unified solution for graph-based editing. However, it has not yet been released. Due to the lack of official support, alternative options must be explored. Since one of the core goals of this project is to remain free and open source, the tools used should ideally follow the same principles. While the Unity Asset Store offers numerous graph-based tools, many of them do not meet these criteria. Tools such as \textit{FlowCanvas} \cite{FlowCanvas}, \textit{Xtebs Graph Framework} \cite{XtebsGraphFramework}, and \textit{uNode 3 Pro} \cite{uNode3Pro} are all commercial products. On the other hand, \textit{FlowReactor} \cite{FlowReactor} and \textit{xNode} \cite{xNode} are free but have not received updates in several years. \textit{NodeGraphProcessor} \cite{NodeGraphProcessor} emerged as a potential candidate, but its complexity and extensive set of features go beyond the needs of this project.
+
+Among the tools offered directly by Unity, we identified \textit{GraphView} \cite{Unity-GraphView} as a possible solution. It is a C\# API provided through Unity’s UI Toolkit framework, designed for building custom, node-based editor tools within Unity Editor. GraphView is commonly used in the creation of visual scripting environments, dialogue systems, shader editors, behavior trees, and similar graph-based tools. However, it remains experimental and lacks official documentation, as it is within the \verb|UnityEditor.Experimental.GraphView| namespace. Notably, NodeGraphProcessor itself is built on top of GraphView, highlighting its utility despite its unofficial status.
+
+Although the current state of graph tool support in Unity is somewhat fragmented, we ultimately decided to build a custom graph system using GraphView. Despite its limitations, GraphView continues to enjoy community interest, with recent tutorials drawing significant attention \cite{NodeEditor-YT}. Moreover, it remains supported in Unity 6, ensuring that it will remain viable for at least the near future—until the release and widespread adoption of the upcoming Graph Toolkit.
+
+For the implementation of the dialogue system, we plan to follow the approach developed by \textit{Kasper Dev Unity}, who created a project \cite{Kasper-Dialogue-Tutorial-git} and a series of tutorials \cite{Kasper-Dialogue-Tutorial-YT} focused on building a dialogue system using Unity’s GraphView API. His method offers a clear and practical foundation for creating node-based dialogue editors, which fits well with the goals of this thesis. While his work will serve as the main reference, we also want to explore other tutorials, such as those by \textit{Mert Kirimgeri} \cite{merpheus-Dialogue-Tutorial-git}\cite{merpheus-Dialogue-Tutorial-YT} and \textit{Indie Wafflus} \cite{Wafflus-Dialogue-Tutorial-git}\cite{Wafflus-Dialogue-Tutorial-YT}—to gather different ideas and perspectives. By combining the strengths of these approaches, we aim to build a system that is well-suited to the needs of this project: flexible enough to handle branching and cyclic dialogue, but still simple and intuitive for developers to use. 
