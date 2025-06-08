@@ -8,12 +8,12 @@ One genre that holds a special place in gaming history is point-and-click advent
 However, there is a lack of accessible, beginner-friendly tools dedicated specifically to the point-and-click adventure genre. While there are powerful frameworks available in Unity, such as \textit{Adventure Creator} \cite{AdvCreator}, they often come with a broad set of features that can overwhelm newcomers and a price tag that may deter hobbyists or students. To fill this demand, the goal of this Bachelor thesis is to design and implement an accessible framework tailored to the development of 2D point-and-click adventure games. This framework, called \textit{TaleCraft}, will prioritize functionality and user-friendliness to help beginner to intermediate developers create engaging games without need for advanced programming skills. By offering a streamlined, free and open source alternative to more complex and often paid tools, \textit{TaleCraft} aims to lower the barrier to entry and make the genre more accessible for aspiring creators. It will include only the essential mechanics of the genre, providing core systems: movement, dialogue, control system, and inventory management. Additionally, it will allow developers to customize these elements to fit their vision. By addressing the unique challenges associated with point-and-click adventure game development, this thesis aims to provide a valuable tool for aspiring developers. To develop our framework, we will use the Unity game engine. Microsoft Visual Studio will be used to write scripts in the C\# programming language. 
 
 \section{Point-and-click adventure games}
-A typical point-and-click adventure game emphasizes exploration, puzzle solving, and narrative engagement often involving mystery and exploration. Players interact with in-game environments through mouse-based controls and a cursor is used to click on objects, locations, or characters within a visual scene to trigger actions or dialogues. 
+A typical point-and-click adventure game emphasizes exploration, puzzle solving, and narrative engagement often involving mystery and exploration. Players interact with in-game environments through context-based controls and a cursor is used to click on objects, locations, or characters within a visual scene to trigger actions or dialogues. 
 
-A very important aspect of this genre is the inventory system, which allows players to collect, examine, and use items to advance the story. Similarly, a dialogue system plays a major role, as conversations with non-player characters (NPCs) often provide essential information, influence story progression, or present choices that shape the outcome of the game. Additionally, character movement is typically controlled by clicking on a location, guiding the protagonist to navigate the world and interact with objects. Another defining feature is the command system, which determines how players interact with the world. Some games use a command panel with verbs such as “\texttt{Look at}”, “\texttt{Pick up}”, or “\texttt{Talk to}”, allowing players to take specific actions, while others rely solely on mouse-based interactions, where clicking on an object automatically triggers the most appropriate action. 
+A very important aspect of this genre is the inventory system, which allows players to collect, examine, and use items to advance the story. Similarly, a dialogue system plays a major role, as conversations with non-player characters (NPCs) often provide essential information, influence story progression, or present choices that shape the outcome of the game. Additionally, character movement is typically controlled by clicking on a location, guiding the protagonist to navigate the world and interact with objects. Another defining feature is the command system, which determines how players interact with the world. Some games use a action panel with verbs such as “\texttt{Look at}”, “\texttt{Pick up}”, or “\texttt{Talk to}”, allowing players to take specific actions, while others rely solely on context-based interactions, where clicking on an object automatically triggers the most appropriate action. 
 
 \subsection{History}
-Early text-based video games like \textit{The Sumerian Game} (1964) introduced simple verb-noun parsers that allowed players to interact with the game world by typing commands \cite{Salter2014}[p. 29]. Building on this foundation, a notable predecessor to the point-and-click genre \textit{Colossal Cave Adventure} (1976) and games directly inspired by its legacy took the first steps toward integrating graphics into adventure gameplay. These games, while still reliant on text-based commands, used static visuals to represent the game world. This marked a significant departure from the purely text-driven interfaces of earlier adventure titles. Later, games started to implement simplified interaction systems such as command buttons (e.g. “\texttt{Look at}”), which significantly improved accessibility. Some later titles took this concept even further by eliminating the need for players to choose between commands. Instead, the game selects the appropriate action based on the context and object with which the player interacts like in \textit{Beneath a Steel Sky} (1994) \cite{Carton2023history}.
+Early text-based video games like \textit{The Sumerian Game} (1964) introduced simple verb-noun parsers that allowed players to interact with the game world by typing commands \cite{Salter2014}[p. 29]. Building on this foundation, a notable predecessor to the point-and-click genre \textit{Colossal Cave Adventure} (1976) and games directly inspired by its legacy took the first steps toward integrating graphics into adventure gameplay. These games, while still reliant on text-based commands, used static visuals to represent the game world. This marked a significant departure from the purely text-driven interfaces of earlier adventure titles. Later, games started to implement simplified interaction systems such as action buttons (e.g. “\texttt{Look at}”), which significantly improved accessibility. Some later titles took this concept even further by eliminating the need for players to choose between commands. Instead, the game selects the appropriate action based on the context and object with which the player interacts like in \textit{Beneath a Steel Sky} (1994) \cite{Carton2023history}.
 
 Point-and-click adventure games experienced their golden age in the late 1980s and early 1990s, with iconic titles such as \textit{The Secret of Monkey Island} (1990), and \textit{Myst} (1993) charming players with their innovative storytelling and puzzle-solving gameplay. However, as the decade progressed, the popularity of the genre slowed \cite{Qaffas202022} with fewer mainstream releases and a shift to more niche titles such as the \textit{Nancy Drew} game series.
 
@@ -23,7 +23,7 @@ In recent years, the point-and-click adventure genre has undergone a renaissance
 \label{sec:Common features}
 So far in the previous subsection, the importance of point-and-click adventure games as a game genre has been highlighted. Now, it is necessary to take a look at concrete examples of 2D point-and-click adventure games and specifically their prominent features and characteristics. By doing this, we can find inspiration to design and create the framework. We will look closely at the following features: Commands, Inventory, Character movement, Dialogue, Animations, Sound management, Bonus features.
 
-Understanding these core features is essential for shaping the framework, but not every mechanic found in point-and-click games can be included within the scope of this project. Games as a medium is very complex with a lot of mechanics and features and point-and-click adventure games are no exception. The framework we are creating should enable smooth and simple creation process, however the scope of such framework that would handle this huge variety of different features is quite large for a bachelor thesis and therefore we need to select a set of these features. We primarily aim for those that would build a base of our framework and their presence is an integral part of a 2D point-and-click adventure game, even though creating a finished game only using these is not possible. We would also like to emphasize that some features will not be implemented in the showcase of our framework. These features will be marked by the following box:
+Understanding these core features is essential for shaping the framework, but not every mechanic found in point-and-click games can be included within the scope of this thesis. Games as a medium is very complex with a lot of mechanics and features and point-and-click adventure games are no exception. The framework we are creating should enable smooth and simple creation process, however the scope of such framework that would handle this huge variety of different features is quite large for a bachelor thesis and therefore we need to select a set of these features. We primarily aim for those that would build a base of our framework and their presence is an integral part of a 2D point-and-click adventure game, even though creating a finished game only using these is not possible. We would also like to emphasize that some features will not be implemented in the showcase of our framework. These features will be marked by the following box:
 %\todo{Ideally, other features would be added in the future, and so we do not want to approach this project in a way that would restrict its scalability. That is why we are going to implement only a limited number of them. To demonstrate its functionality and ease of use, a prototype game will be developed using the framework. }
 
 \newtcolorbox{notImplemented}{
@@ -46,13 +46,14 @@ The defining feature of every video game is the ability to interact with this me
 became clickable, allowing players to point to places or objects in the environment to interact with them.  Not only did it feel more intuitive, but it also eliminated the problem of trying to figure out what exact words the game wants the player to use. So, the point-and-click adventure game genre was born. From then on, a mouse (or a touchpad) was almost a requirement when playing on a PC. However, there is not only one way to interact with the environment, and many modern 2D point-and-click adventure games implement different methods, sometimes even combining them.
 
 \subsubsection{Command panel}
+\label{ActionPanel}
 One of the main ways players can engage with the world is a \textit{command panel} (see Figure \ref{fig:C-TSoMI}). This panel, typical of games from the golden era of 2D point-and-click adventure games, consists of a variety of verbs. Typically, if the player selects a command from the panel and hovers over an object on the screen, a short sentence will be created in the upper part of the panel (\textit{The Secret of Monkey Island}) or above the mouse cursor (\textit{Thimbleweed Park}). This provides an indication to the player of what the main character is going to do. 
 
 For example, in Figure \ref{fig:C-TSoMI}, the command “\texttt{Look at}” is selected, and then the mouse cursor is placed over a poster. This sequence of actions creates the sentence “\texttt{Look at poster}”. By following this logic, longer sentences can be obtained if we also take items in the inventory into account. 
 
-Upon closer inspection, one can also notice that in Figure \ref{fig:C-TSoMI} the “\texttt{Look at}” button is highlighted in a yellow color. This occurs in certain instances to indicate the most reasonable way to interact with the object, such as “\texttt{Look at poster}”, “\texttt{Talk to pirates}”, and “\texttt{Open door}”.
+%Upon closer inspection, one can also notice that in Figure \ref{fig:C-TSoMI} the “\texttt{Look at}” button is highlighted in a yellow color. This occurs in certain instances to indicate the most reasonable way to interact with the object, such as “\texttt{Look at poster}”, “\texttt{Talk to pirates}”, and “\texttt{Open door}”.
 
-Most commonly, there are three forms of a sentence that can be created by combining commands and objects:
+Most commonly, there are three forms of a sentence that can be created by combining command verbs and objects:
 \begin{itemize}
     \item \verb|(verb)|, e.g. “\texttt{Walk to}”
     \item \verb|(verb noun)|, e.g. “\texttt{Look at poster}”
@@ -62,14 +63,14 @@ Most commonly, there are three forms of a sentence that can be created by combin
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\linewidth]{img/C-TSoMI.png}
-\caption{The Secret of Monkey Island: Using commands and forming sentences.}
+\caption{The Secret of Monkey Island: Using commands to form sentences.}
 \label{fig:C-TSoMI}
 \end{figure}
  
-For each object in the game, there is a limited number of commands that have a meaningful result. Those that do not make sense for the given object result in the straightforward response something along the lines of “\texttt{That doesn't seem to work.}”  Then there are some that result in a humorous response, but do not help to progress the story either. And finally, certain panel actions help the player obtain a piece of information (“\texttt{Look at}”), change the state of an object (“\texttt{Open}”, “\texttt{Push}”, etc.), let them talk to a character (“\texttt{Talk to}”), or let them obtain or remove an item from the inventory (“\texttt{Pick up}” and “\texttt{Give}”).
+For each object in the game, there is a limited number of commands that have a meaningful result. Those that do not make sense for the given object result in the straightforward response something along the lines of “\texttt{That doesn't seem to work.}”  Then there are some that result in a humorous response, but do not help to progress the story either. And finally, certain commands help the player obtain a piece of information (“\texttt{Look at}”), change the state of an object (“\texttt{Open}”, “\texttt{Push}”, etc.), let them talk to a character (“\texttt{Talk to}”), or let them obtain or remove an item from the inventory (“\texttt{Pick up}” and “\texttt{Give}”).
 
-\subsubsection{Mouse-based commands}
-Some games are controlled by the mouse without the need for a panel of actions. Typically, the player clicks on an object with the mouse, and the game decides what to do based on the context. When hovering the mouse cursor over an object, a short text will pop up describing what that object is.
+\subsubsection{Context-based commands}
+Some games are controlled by the mouse without the need for a panel of commands. Typically, the player clicks on an object with the mouse, and the game decides what to do based on the context. When hovering the mouse cursor over an object, a short text will pop up describing what that object is.
 
 For example, in \textit{Beneath a Steel Sky} (see Figure \ref{fig:C-BaSS}), clicking with the right mouse button on an interactable object in the environment, the main character Foster will either pick it up or use it in some way (or talk to a character if that object was one). The same action with the left mouse button will result in the main character commenting about (e.g. describing) that object. If the player decides to use an item on an object, they must grab an icon using the right mouse button and then lead the item to the location of the object. Finally, if the player clicks on an empty spot that the main character can reach using either of the mouse buttons, Foster will move there. Overall, the game decides what the action will lead to.
 
@@ -84,8 +85,8 @@ For example, in \textit{Beneath a Steel Sky} (see Figure \ref{fig:C-BaSS}), clic
 To summarize, the framework should support multiple ways for players to interact with the game's world and these are the requirements:
 
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}}]
-  \item \label{intro:req:com_pan} The interaction can be based on a command panel, allowing structured and predefined inputs.
-  \item \label{intro:req:mouse} Alternatively, players can use direct mouse-based commands for a more intuitive and hands-on approach.
+  \item \label{intro:req:com_pan} The interaction can be based on an command panel, allowing structured and predefined inputs.
+  \item \label{intro:req:mouse} Alternatively, players can use direct context-based commands for a more intuitive and hands-on approach.
   \item \label{intro:req:mix} A game designer should be able to choose either of these methods or combine them to match different styles of gameplay.
 \end{enumerate}
 
@@ -102,7 +103,7 @@ Every game handles an inventory a bit differently. In \textit{The Secret of Monk
 \label{fig:I-TSoMI}
 \end{figure}
 
-To interact with items in the inventory, the game uses the \textit{command panel} just as the rest of the environment. Although this may sound obvious, this is not always true for other games. 
+To interact with items in the inventory, the game uses the \textit{action panel} just as the rest of the environment. Although this may sound obvious, this is not always true for other games. 
 
 \textit{Fran Bow} is an example of a more modern take on the genre while still maintaining core elements from the golden era of point-and-click adventures.  A significant difference from the previous example is the fact that the inventory is completely hidden and accessible as an independent UI element in the form of a pop-up window (see Figure \ref{fig:I-FranBow}). In the game, the inventory can be opened by clicking on an icon of a purse in the lower left corner of the screen, which then displays a panel with item icons. What is also notable about \textit{Fran Bow} is the fact that its inventory uses a different command system than the rest of the game. In the game world, the player only clicks on objects, while the inventory is controlled by three buttons, shown in Figure \ref{fig:I-FranBow}. 
 
@@ -113,7 +114,7 @@ To interact with items in the inventory, the game uses the \textit{command panel
 \label{fig:I-FranBow}
 \end{figure}
 
-Although the game uses only three commands, which is a very limited number compared to other games with similar systems, these commands are considerably more versatile. When an item in the inventory is selected and “\texttt{Examine}” is pressed, the main character Fran Bow says something about the item. In addition, there is a “\texttt{Combine}” button which allows the player to choose two items and create a new one in their place within the inventory. Finally, the third button with the “\texttt{Use}” label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (e.g. unlocking a locked box and finding hidden items), or use the item outside of the inventory (e.g. giving an item to another character in the game). At the bottom of the screen, a short sentence is created according to what the player will do.
+Although the game uses only three action verbs, which is a very limited number compared to other games with similar systems, these verbs are considerably more versatile. When an item in the inventory is selected and “\texttt{Examine}” is pressed, the main character Fran Bow says something about the item. In addition, there is a “\texttt{Combine}” button which allows the player to choose two items and create a new one in their place within the inventory. Finally, the third button with the “\texttt{Use}” label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (e.g. unlocking a locked box and finding hidden items), or use the item outside of the inventory (e.g. giving an item to another character in the game). At the bottom of the screen, a short sentence is created according to what the player will do.
 
 Lastly, some inventories are only partially hidden, such as the one in \textit{Beneath a Steel Sky}. The player must move the mouse cursor to the top of the screen to make the inventory panel slide down. Once visible, the player can see the icons of all items in the inventory as well as their names when the mouse hovers over an icon of a metal bar, as depicted in Figure \ref{fig:I-BaSS2}. To see a longer description, the player has to click on the item with the left mouse button. The arrows on both sides of the panel are used to navigate the inventory if it contains many items.
 
@@ -130,14 +131,15 @@ It is clear that the approach of games from the point-and-click genre to an inve
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}},resume]
   \item \label{intro:req:inv_formats} The system should support multiple inventory formats, such as static, pop-up, or sliding inventories.
   \item \label{intro:req:text_icon} Both text-based lists and icon-based layouts should be available as inventory options.
+\item \label{intro:req:tag}  There should be an option to display a tag when e.g. hovering over an object.
 \end{enumerate}
 
 \subsection{Character movement}
 \label{sec:Character movement}
-Exploration of the in-game world is achieved through character movement. A typical way to achieve this is by clicking on a location in the environment, which prompts the character to find the shortest path and move there. The way movement is implemented can greatly impact the player's sense of control and immersion. Some games incorporate command buttons to refine the movement system. Additionally, other techniques, like character scaling, help create the illusion of depth in a 2D space to immerse the player into the game's world.
+Exploration of the in-game world is achieved through character movement. A typical way to achieve this is by clicking on a location in the environment, which prompts the character to find the shortest path and move there. The way movement is implemented can greatly impact the player's sense of control and immersion. Some games incorporate action buttons to refine the movement system. Additionally, other techniques, like character scaling, help create the illusion of depth in a 2D space to immerse the player into the game's world.
 
 \subsubsection{Types of control}
-As outlined in the previous sections, the main two ways of controlling a character either involve or do not involve the use of a command button. The one in \textit{The Secret of Monkey Island} is a prime example of the use of a command button. To move the character to another position, one must select the “\texttt{Walk to}” button and then click on a point in the environment that is not occupied by any object, as seen in Figure \ref{fig:M-TSoMI-W}. In case an object stands in that place, the character will just walk to the object without interacting with it. If there does not exist a path to the given point, the character will find the closest position to that point and walk there.
+As outlined in the previous sections, the main two ways of controlling a character either involve or do not involve the use of an action button. The one in \textit{The Secret of Monkey Island} is a prime example of the use of an action button. To move the character to another position, one must select the “\texttt{Walk to}” button and then click on a point in the environment that is not occupied by any object, as seen in Figure \ref{fig:M-TSoMI-W}. In case an object stands in that place, the character will just walk to the object without interacting with it. If there does not exist a path to the given point, the character will find the closest position to that point and walk there.
 
 \begin{figure}[H]
 \centering
@@ -159,7 +161,7 @@ To move the character to another position, the second option involves just click
 \textbf{Requirements} \quad In the framework, the character movement system supporting multiple interaction methods and intelligent navigation has the following requirements:
 
 \begin{enumerate}[label=\color{teal}\textbf{R{\arabic*}},resume]
-  \item \label{intro:req:com+mouse_move} Both command-based movement (e.g. selecting a “\texttt{Walk to}” button) and direct mouse-based movement (clicking on a location) should be supported.
+  \item \label{intro:req:com+mouse_move} Both action-based movement (e.g. selecting a “\texttt{Walk to}” button) and direct context-based movement (clicking on a location) should be supported.
   \item \label{intro:req:mox_move} Developers should have the option to define whether clicking on an object triggers only movement or both movement and interaction.
   \item \label{intro:req:pathfinding}Pathfinding should be incorporated so that characters can automatically navigate around the map to reach their destination.
 \end{enumerate}
@@ -189,7 +191,7 @@ A similar effect was also achieved in \textit{Beneath a Steel Sky} where the mai
 \begin{notImplemented}
 \quad {\footnotesize \textit{(not implemented)}} \par
 \vspace{3mm}
-Cutscenes are sequences during which usually the player cannot interact with the game. Its main goal is mostly to show an even or a transition from one scene to another. Although cutscenes are widely used across various game genres, this framework will not include them, as they fall outside the scope of this project.
+Cutscenes are sequences during which usually the player cannot interact with the game. Its main goal is mostly to show an even or a transition from one scene to another. Although cutscenes are widely used across various game genres, this framework will not include them, as they fall outside the scope of this thesis.
 \end{notImplemented}
 
 \begin{figure}[H]
@@ -290,7 +292,7 @@ A soundtrack and sound effects are an integral part of every video game, be it a
 \begin{notImplemented}
 \quad {\footnotesize \textit{(not implemented)}} \par
 \vspace{3mm}
-Although the inclusion of sound effects and a soundtrack is very important in every game, this framework will not include them, as they are not a crucial feature in the base of the framework we are designing. Naturally, if we were to push the project further and if we wanted to finalize the project, the inclusion of a sound management system would be a necessity.
+Although the inclusion of sound effects and a soundtrack is very important in every game, this framework will not include them, as they are not a crucial feature in the base of the framework we are designing. Naturally, if we were to push the thesis further and if we wanted to finalize it, the inclusion of a sound management system would be a necessity.
 \end{notImplemented}
 
 \subsection{Mini-games}
@@ -314,7 +316,7 @@ Finally, many 2D point-and-click adventure games include features that cannot be
 \begin{notImplemented}
 \quad {\footnotesize \textit{(not implemented)}} \par
 \vspace{3mm}
-Game developers take inspiration from various genres and are not restricted by the norms of just one. On one hand, this makes games unique and intriguing, but on the other, it makes creating a system for such a feature very challenging, as it is impossible to predict what a developer might want to implement. That is why this is outside the scope of the project, and the framework will not include it. 
+Game developers take inspiration from various genres and are not restricted by the norms of just one. On one hand, this makes games unique and intriguing, but on the other, it makes creating a system for such a feature very challenging, as it is impossible to predict what a developer might want to implement. That is why this is outside the scope of the thesis, and the framework will not include it. 
 \end{notImplemented}
 
 

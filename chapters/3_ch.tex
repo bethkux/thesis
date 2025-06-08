@@ -1,12 +1,60 @@
 \chapter{Analysis}
 
-Before going over the actual programming of the framework, we need to further inspect some of the features we have specified in the Introduction in Chapter \ref{Intro}. In this chapter, we will analyse features of this project, as well as suggest ways of solving problems, and in case there are more solutions, we will select the most suitable one with a proper explanation.
+Before going over the actual programming of the framework, we need to further inspect some of the features we have specified in the Introduction in Chapter \ref{Intro}. In this chapter, we will analyse features of this thesis, as well as suggest ways of solving problems, and in case there are more solutions, we will select the most suitable one with a proper explanation.
 
 \section{Command System}
+The most distinguishing feature of any game is its interactivity, and point-and-click adventure games are no different. We have already established the most common types of command systems in Chapter \ref{Intro} but now we need to design the command system according to our requirements \ref{intro:req:com_pan} - \ref{intro:req:mix}. 
+
+One option is to split the controls into two separate systems, context-based and action-based, but that would make it difficult to mix them, which we need per requirement \ref{intro:req:mix}. Instead, we can build a single, unified framework that flexibly supports both modes.
+
+Let us begin with the action-based command system, since its requirements are clear: we need a way to define actions and display their corresponding buttons in the UI. Once that core system is in place, we can incorporate situation-based controls. Notice that a situation-based system really offers only one 'action' (let us call it \textbf{Default}), which could simply be another entry in our action list. In other words, by treating 'Default' as just another action, our one command system can drive both explicit, multi-button interactions and context-sensitive, giving developers the freedom to mix and match however they like.
+
+\subsection{Command structure}
+As introduced in Section \ref{ActionPanel}, we want to display a sentence that clearly communicates what the character is about to do. To achieve this, we need a system that can dynamically build these sentences based on the player's input as well as react to the input appropriately.
+
+Typically, there are three main sentence structures that emerge from combining command verbs with objects in the game world:
+\begin{itemize}
+    \item \verb|(verb)|, e.g. “\texttt{Walk to}”
+    \item \verb|(verb noun)|, e.g. “\texttt{Look at poster}”
+    \item \verb|(verb noun connector noun)|, e.g. “\texttt{Use key with lock}”
+\end{itemize}
+
+Each of these sentence structures requires a different number of inputs from the player. For example, the command “\texttt{Look at}” needs just a single object to complete the sentence, whereas “\texttt{Use}” requires two: an item and a target. Because of this, each command must define a rule that determines how many objects are needed and how they should be combined to form a meaningful interaction.
+
+Generally, the verb always appears at the beginning of the sentence. What follows can either be nothing or a noun (i.e., a game object). The only common case where nothing follows the verb is with the command “\texttt{Walk to}.” This form is used when the player clicks somewhere in the scene that is not associated with any specific object, usually just to move closer to that point. Every other verb we have encountered is typically followed by at least one noun. Interestingly, “\texttt{Walk to}” can also be used in the \verb|(verb noun)| structure (e.g., “\texttt{Walk to poster}.”). Because of this flexibility, we can treat “\texttt{Walk to}” as a special case and consider it to be part of the \verb|(verb noun)| category for consistency.
+
+From there, the sentence can either end or continue with a connector followed by another noun. The connector (e.g., “with”) links the two objects and indicates how they are meant to interact.
+
+In general, when looking at sentence structures, we can work with nouns and connectors. While the connector is purely visual and tells us essentially nothing about the logic of the command, the number of nouns is essential to detect when the game should react and execute an action when clicking on an object. 
+
+\subsection{Logic system}
+Each object in the scene needs to know how to react when a certain action is chosen. This means that when interacting with objects in the game, the player must follow a sequence of actions in order to progress—they must meet certain requirements. For example, only when having enough money can the player buy a map in the Secret of Monkey Island. This means that we need to create a logic system.
+
+We need to define a list of actions that are triggered only under certain conditions, such as combining two items, giving an item to a character, or using an item to unlock something. These scenarios typically require interacting with at least one object beforehand. For instance, consider the example from Beneath a Steel Sky shown in Figure \ref{fig:Logic-BaSS}, where the player attempts to use a metal bar on a door. In this case, the metal bar is the previously selected object and the door is the one currently being interacted with.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\linewidth]{img/C-BaSS.png}
+\caption{Beneath a Steel Sky: Using an object (a metal bar) on another object (a door).}
+\label{fig:Logic-BaSS}
+\end{figure}
+
+When defining which items can be used on which objects, it is important to keep the logic organized, as this kind of system can become complex quickly. It makes the most sense to associate these interaction rules with the final object—the one currently being targeted. So, in the example above, the door object should contain the logic for what happens when the metal bar is used on it. Although it is technically possible to store this information on the metal bar instead, organizing it from the perspective of the final object is often more logical. It shifts the question from “What other items does this item interact with?” to “What items are needed to interact with this object?” We will refer to these first-selected items as \textit{Previous Interactables}.
+
+Finally, some actions may depend on additional conditions, such as whether the player has enough money or has spoken to a certain character. In these cases, the player does not need to use an item. Instead, different actions can occur under various conditions. We will refer to these simply as \textit{Conditions}.
+
+In the end, we obtain the system depicted in Figure \ref{fig:Logic:Diagram}. On the left, we have the \textit{Commands} that define the possible verbs such as “\texttt{Use}”, “\texttt{Talk to}”, “\texttt{Pull}” etc. Then there is an item which contains the possible \textit{Actions} assigned to each of the commands. Finally on the right we have two \textit{Actions}, each of them containing \textit{Previous Interactables}, \textit{Conditions} and the \textit{Actions} themselves. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{img/Action-diagram.png}
+\caption{Logic system.}
+\label{fig:Logic:Diagram}
+\end{figure}
 
 
 \section{Walking system}
-In Requirement \ref{intro:req:pathfinding}  we have established that the player should have the ability to move around the playable area (map). The development of the walking system could be divided into two main parts:
+In Requirement \ref{intro:req:pathfinding}  we have established that the player should have the ability to move around the walking area. The development of the walking system could be divided into two main parts:
 \begin{enumerate}
     \item The representation of the walkable area,
     \item The problem of finding the path to a goal.
@@ -39,7 +87,7 @@ Another approach to this problem is discussed in detail in articles by Mic Uurlo
 \label{fig:WS:Poly}
 \end{figure}
 
-The main advantage of this approach is the ability of the user of the framework to modify the shapes on the fly whenever necessary. Next, this system can be implemented directly in Unity and does not require any other software to set it up. For these reasons, we decided to go with this solution.
+The main advantage of this approach is the ability of the user of the framework to modify the shapes on the fly whenever necessary. Next, this system can be implemented directly in Unity and does not require any other software to set it up. Given these benefits, this will be the primary approach explored and implemented in this thesis, while still considering alternative methods for comparison in the following section. 
 
 \subsubsection{Sierra}
 Since Chapter \ref{Intro} focused heavily on the features of classic point-and-click games, it makes sense to now examine how walking systems are implemented by prominent studios. Unfortunately, there is limited publicly available information on this topic, possibly due to the existence of patents or proprietary techniques that are not openly shared. However, we have found one notable example. According to ScummVM, an open-source project that reimplements classic game engines, a prominent game company Sierra behind classics such as \textit{King's Quest} implemented their own patented pathfinding algorithm designed to navigate game characters around obstacles \cite{ScummVM-polygons}. Similarly to the second approach, it uses polygons to represent the area as well as the obstacles. But unlike it, is also uses a complex system of four types of polygons with different rules. 
@@ -50,10 +98,13 @@ Since Chapter \ref{Intro} focused heavily on the features of classic point-and-c
     \item Finally, \textit{contained access polygons} define strict boundaries within which the entire path must remain; if the end point lies outside, the path stops at the near-point. Since polygons cannot intersect, only one contained access polygon can exist in a scene.
 \end{itemize}
 
-This method is very similar to the one introduced in the previous section but with more options to allow...
+While this method shares similarities with the approach introduced in the previous section, it introduces additional polygon types to support more nuanced navigation behavior. However, these specialized polygons appear to add unnecessary complexity, as the same results, such as adjusting start or end points to valid locations, can be achieved through simpler means. Unity supports storing data in game objects and these additional rules can be simply integrated this way. Therefore, this thesis will adopt select ideas from Sierra’s method, but will not implement multiple polygon types, in favor of a more user-friendly solution. 
 
 \subsection{Pathfinding}
-A crucial part of character movement is the ability to find a path to the goal. The simplest option is to take a direct line to the goal. However, this approach drastically restricts the types of map available. Firstly, the main walkable area is only restricted to basic shapes like triangles, rectangles, and squares, where any two points can be connected by a straight line that is entirely contained inside that shape. However, if the walkable area is concave (containing one or more concave verices), some vertices point inward, creating obstructions that block direct visibility between points, as depicted in Figure \ref{fig:Polygons}.
+A crucial part of character movement is the ability to find a path to the goal.
+
+\subsubsection{Straight line}
+The simplest option is to take a direct line to the goal. However, this approach drastically restricts the types of walkable areas. Firstly, the walkable area is restricted only to convex shapes, where any two points can be connected by a straight line that is entirely contained inside that shape. However, if the walkable area is concave, some vertices point inward, creating obstructions that block direct visibility between points, as depicted in Figure \ref{fig:Polygons}. In the convex polygon on the left, any two points can be connected by a straight line that remains entirely within the boundaries of the shape. In contrast, the polygon on the right is not convex, and as a result the line connecting points B and D exits the shape. 
 
 \begin{figure}[H]
 \centering
@@ -62,27 +113,28 @@ A crucial part of character movement is the ability to find a path to the goal. 
 \label{fig:Polygons}
 \end{figure}
 
-But it is not just the shape of the main walkable area that poses limitations. The idea of placing obstacles within that area introduces a challenge, as a straight line alone cannot accurately represent the action of navigating around such objects. This means that areas like the ones in Figures \ref{fig:Path-B}  and \ref{fig:Path-M}  cannot be replicated.
+But it is not just the shape of the main walkable area that poses limitations. The idea of placing obstacles within that area introduces a challenge, as a straight line alone cannot accurately represent the action of navigating around such objects. This means that areas like the ones in Figures \ref{fig:Path-B}  and \ref{fig:Path-M}  cannot be replicated. In both of the Figures, a character is tasked to move along the straight blue line. However, either the polygon of the walkable area itself (Figure \ref{fig:Path-B}) or another polygon (Figure \ref{fig:Path-B}) pose as a block, shown by the dotted line segment.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.7\linewidth]{img/Path-BaSS.png}
+\includegraphics[width=.7\linewidth]{img/Path-BaSS2.png}
 \caption{Beneath a Steel Sky: A concave path where no one straight line would access each point from where the character is standing.}
 \label{fig:Path-B}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.7\linewidth]{img/Path-TSoMI.png}
+\includegraphics[width=.7\linewidth]{img/Path-TSoMI2.png}
 \caption{The Secret of Monkey Island: An obstacle (table) in the middle of the room restricts the player's access to the other part of the room.}
 \label{fig:Path-M}
 \end{figure}
 
-So if one straight line is not enough, we can use multiple lines. This way of dividing the path into smaller sub-paths allows the character to get to the goal while being restricted to the walkable area. But now the question is which lines we should chose.
+\subsubsection{Multiple line segments}
+So if one straight line is not enough, we can break it into smaller line segments. This way of dividing the path into smaller sub-paths allows the character to get to the goal while being restricted to the walkable area. But now the question is which lines we should choose.
 
 We might intuitively imagine an algorithm that first attempts to follow a straight line toward the goal. When an obstacle approaches, whether it is the edge of the walkable area or an internal obstacle, it would try to move sideways and find a way around it. While this seems like a reasonable approach, it does not truly solve the core problem: finding an actual route. Instead, it merely postpones the decision-making. So what are our options?
 
-A naive strategy would be to follow the edge of the obstacle, either to the left or to the right, until a straight line to the goal becomes possible again. If another obstacle is encountered, the process repeats. However, this approach glosses over a critical point: How do we decide which direction to follow? Picking a random direction can lead to highly inefficient paths. The Figure \ref{fig:Path-P}  highlights a situation where the goal is to get to the right side of the polygon. However, the direct path (blue) is obstructed by an edge of the polygon itself. Looking at the picture, we can see that following red path on the left causes an unnecessary detour, making the movement appear unnatural. Ideally, we want the path to look natural and intuitive, similar to the green path to the right.
+A naive strategy would be to follow the edge of the obstacle, either to the left or to the right, until a straight line to the goal becomes possible again. If another obstacle is encountered, the process is repeated. However, this approach glosses over a critical point: How do we decide which direction to follow? Picking a random direction can lead to highly inefficient paths. Figure \ref{fig:Path-P} highlights a situation in which the goal is to get from point A to point B. However, the direct path (blue) is obstructed by an edge of the polygon itself. Looking at the figure, we can see that the following red path causes an unnecessary detour, making the movement appear unnatural. Ideally, we want the path to look natural and intuitive, similar to the green path.
 
 \begin{figure}[H]
 \centering
@@ -91,6 +143,7 @@ A naive strategy would be to follow the edge of the obstacle, either to the left
 \label{fig:Path-P}
 \end{figure}
 
+\subsubsection{Shortest path}
 In real life, people instinctively aim for the shortest or most efficient route. By comparing the left and right paths in Figure \ref{fig:Path-P}, we can identify the shorter one - likely the more natural and visually appealing choice. But even this can be improved. If we examine the start of the path, our algorithm initially attempts to move straight toward the goal until hitting an obstacle. However, a person would probably try to avoid the obstacle from the beginning, aiming to take the shortest path right away. That’s the key insight: instead of reacting to obstacles as they come, we should aim to find the shortest path from the start, just like the one in Figure \ref{fig:Path-P2}.
  
 \begin{figure}[H]
@@ -100,138 +153,7 @@ In real life, people instinctively aim for the shortest or most efficient route.
 \label{fig:Path-P2}
 \end{figure}
 
-A very similar approach was also used in Sierra's engine with multiple levels of optimization that essentially aim to find the shortest path to the goal \cite{ScummVM-patent}.
-
-
-%Objects typically get there by taking the shortest route possible. This makes sense in point-and-click adventure games, as player input is intentional and direct: clicking on a location implies that the character should move there efficiently, without unnecessary detours. The problem of finding the shortest path is a well-studied field in computer science, with several established algorithms designed to solve it. 
-
-\subsubsection{Weighted Graph}
-Polygons only serve as a visual representation of the walkable area to the framework users, and essentially this is everything they need to care about. However, to enable algorithms like pathfinding to operate effectively, the walkable area must also be represented in a form suitable for computation. Specifically, if we want to determine the shortest path to a destination, we need a way to calculate the distances between the points—without this, identifying the optimal route would be impossible. A weighted graph provides an ideal structure for this purpose. It consists of nodes connected by edges, each assigned a non-negative value representing the distance between them. That said, generating a graph that includes every possible node and edge would be both inefficient and impractical. The approach for creating a graph from polygons that was used in our project was adapted from the articles by Mic Uurloon. Details about this method together with more interactive examples explaining how the algorithm works can be found in his articles Part 1 \cite{Uurloon1} and Part 2 \cite{Uurloon2}, which further reference an article by David Gouveia \cite{Gouveia}.
-
-So let us set up some rules that we need to follow:
-
-\begin{enumerate}[label=\color{purple}\textbf{R{\arabic*}}]
-  \item \label{analysis:concave} In the main polygon, every concave vertex (a vertex with an interior angle greater than 180°) is a node.
-  \item \label{analysis:convex} In the obstacle polygons, every convex vertex (a vertex with an interior angle less than 180°) is a node.
-  \item \label{analysis:start} The position of the character (start position) is a node.
-  \item \label{analysis:end} The end position (e.g. the mouse cursor) is a node.
-  \item \label{analysis:LOS} For each two nodes, we create an edge if they are in line of sight (a straight line from a node to another node inside the polygon without crossing an edge of any polygon). 
-\end{enumerate}
-
-According to Rule \ref{analysis:concave}, a node is included based on type of the vertex of the corresponding polygon. In basic shapes like triangles, rectangles, and squares, any two points can be connected by a straight line without encountering obstacles. However, if the walkable area is concave (containing one or more concave verices), some vertices point inward, creating obstructions that block direct visibility between points, as depicted in Figure \ref{fig:Polygons}. To account for these obstructions, a node is added to the graph only if its corresponding vertex is concave. On the other hand, convex vertices are excluded as they do not create such obstructions.
-
-
-To determine which vertices are convex, we can iterate through them one by one and check the angle formed by the lines from the previous and next vertices to the current one. We do that by calculating the cross product, as seen in Algorithm \ref{alg:IsVertexConcave}.
-
-\algrenewcommand\algorithmicrequire{\textbf{Input:}}
-\algrenewcommand\algorithmicensure{\textbf{Output:}}
-\renewcommand{\alglinenumber}[1]{#1.}  % Change numbering from "1:" to "1."
-\begin{algorithm}[H]
-\caption{Check if a Vertex is Concave}\label{alg:IsVertexConcave}
-\begin{algorithmic}[1]
-\Require Array of vertices $vertices$, index of vertex $vertex$
-\Ensure \textbf{true} if the vertex is concave, \textbf{false} otherwise
-\Statex
-\Function{IsVertexConcave}{$vertices, vertex$}
-    \State $current \gets vertices[vertex]$
-    \State $next \gets vertices[(vertex + 1) \bmod \Call{Length}{vertices}]$
-    \If{$vertex = 0$}
-        \State $previous \gets vertices[\Call{Length}{vertices} - 1]$
-    \Else
-        \State $previous \gets vertices[vertex - 1]$
-    \EndIf
-    \State $left \gets$ \Call{Vector}{$current.x - previous.x,\ current.y - previous.y$}
-    \State $right \gets$ \Call{Vector}{$next.x - current.x,\ next.y - current.y$}
-    \State $cross \gets (left.x \cdot right.y) - (left.y \cdot right.x)$
-    \State \Return $cross < 0$
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-However, this method can produce incorrect results if the vertex order is not handled carefully. Reversing the order of the vertices results in the opposite angle, which may misclassify the convex and concave points (see Figure \ref{fig:Clock}). The Algorithm \ref{alg:IsVertexConcave} works only in the case that the vertices of a polygon are ordered clockwise. To avoid getting the wrong result, we must also check that the vertices are ordered clockwise or counter-clockwise. This can be done using the Algorithm \ref{alg:IsOrientationClockwise}.
-The algorithm essentially calculates a signed value based on the positions of consecutive vertices. It does this by summing the expression $(b.x-a.x)\cdot(b.y+a.y)$ for each edge, where $a$ and $b$ are adjacent vertices. A positive result indicates a clockwise orientation, while a negative result indicates counter-clockwise.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=.6\linewidth]{img/clock.png}
-\caption{Clockwise (left) and counter-clockwise (right) polygons. Source \cite{Clock}.}
-\label{fig:Clock}
-\end{figure}
-
-\begin{algorithm}[H]
-\caption{Check if Polygon Orientation is Clockwise}\label{alg:IsOrientationClockwise}
-\begin{algorithmic}[1]
-\Require Array of vertices $vertices$
-\Ensure \textbf{true} if orientation is clockwise, \textbf{false} otherwise
-\Statex
-\Function{IsOrientationClockwise}{$vertices$}
-    \State $sum \gets 0$
-    \For{$i \gets 0$ to $\Call{Length}{vertices} - 1$}
-        \State $a \gets vertices[i]$
-        \State $b \gets vertices[(i + 1) \bmod \Call{Length}{vertices}]$
-        \State $sum \gets sum + (b.x - a.x) \cdot (b.y + a.y)$
-    \EndFor
-    \State \Return $sum > 0$
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-The next rule \ref{analysis:convex} tells us that the situation is reversed for obstacles (meaning non-main polygons) as we do not want to stay inside these obstacles but on the outside. Since we need to go around them, in this case we include convex vertices instead of concave ones. Here, the concave vertices do not stand in the way of two points, but the convex ones do. 
-
-When it comes to the starting and ending positions (typically those of the main character and the mouse cursor), we need to include them as well. Because our primary aim is to find a path between them in the graph, the Rules \ref{analysis:start} and \ref{analysis:end} are necessary for this purpose.
-
-Finally, in terms of edges, an edge is included in the graph only if the two nodes that form it are within each other's line of sight, as mentioned in Rule \ref{analysis:LOS}. If other edges were included, we would get edges that run through obstacles and outside of the main walkable area, which is definitely not what we want. This is why we need to do a check of visibility. The Algorithm \ref{alg:InLineOfSight} depicts the process of check if two nodes are in line of sight. \todo{finish this}
-
-\begin{algorithm}
-\caption{Check Line of Sight Between Two Points}\label{alg:InLineOfSight}
-\begin{algorithmic}[1]
-\Require Start point \texttt{start}, End point \texttt{end}, List of polygons \texttt{polygons}
-\Ensure \textbf{true} if \texttt{start} and \texttt{end} are in line of sight, \textbf{false} otherwise
-\Statex
-\Function{InLineOfSight}{start, end}
-    \State $\epsilon \gets 0.5$
-    \If{not polygons[0].pointInside(start) or not polygons[0].pointInside(end)}
-        \State \Return \textbf{false}
-    \EndIf
-    \If{Length(Subtract(start, end)) < epsilon}
-        \State \Return \textbf{false}
-    \EndIf
-    \State inSight $\gets$ \textbf{true}
-    \ForAll{polygon in polygons}
-        \For{$i \gets 0$ to Length(polygon.vertices) $-1$}
-            \State $v1 \gets$ polygon.vertices[$i$]
-            \State $v2 \gets$ polygon.vertices[$(i+1) \bmod$ Length(polygon.vertices)]
-            \If{LineSegmentsCross(start, end, v1, v2)}
-                \If{distanceToSegment(start.x, start.y, v1.x, v1.y, v2.x, v2.y) > 0.5 and distanceToSegment(end.x, end.y, v1.x, v1.y, v2.x, v2.y) > 0.5}
-                    \State \Return \textbf{false} 
-                \EndIf
-            \EndIf
-        \EndFor
-    \EndFor
-    \State $v \gets$ Add(start, end)
-    \State $mid \gets$ Vector($v.x / 2$, $v.y / 2$)
-    \State $inside \gets$ polygons[0].pointInside(mid)
-    \For{$i \gets 1$ to Length(polygons) $-1$}
-        \If{polygons[$i$].pointInside(mid, false)}
-            \State $inside \gets$ \textbf{false}
-        \EndIf
-    \EndFor
-    \State \Return $inside$
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-By combining all of these Rules \ref{analysis:concave}--\ref{analysis:LOS}, we get a graph showing possible ways to get between points (see Figure \ref{fig:Graph}). This entire algorithm for creating a graph from polygons was adapted from the articles by Mic Uurloon. Details about this method together with more interactive examples explaining how the algorithm works can be found in his articles Part 1 \cite{Uurloon1} and Part 2 \cite{Uurloon2}.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=.7\linewidth]{img/WS-polygons3.png}
-\caption{Graph: Walkable area consisting of polygons (green and yellow) and a graph (white) with a possible path (violet). Source \cite{Uurloon1}.}
-\label{fig:Graph}
-\end{figure}
-
-\subsubsection{A* algorithm}
-When it comes to choosing a pathfinding algorithm, our goal is to find one that reliably and efficiently determines the shortest path between two points in a 2D space. Since our maps typically contain only a few dozen vertices, raw performance is not a critical concern. Among the most commonly used algorithms in game development is A*, known for its balance of simplicity and efficiency. While our project doesn’t demand high performance, A* still meets all our needs and is straightforward to implement. Moreover, if the project were to scale and require handling more complex maps with a larger number of vertices, A* would still be a solid choice due to its proven performance. 
+When it comes to choosing a pathfinding algorithm, our goal is to find one that reliably and efficiently determines the shortest path between two points in a 2D space. Since our maps typically contain only a few dozen vertices, raw performance is not a critical concern. Among the most commonly used algorithms in game development is A*, known for its balance of simplicity and efficiency. While our thesis doesn’t demand high performance, A* still meets all our needs and is straightforward to implement. Moreover, if the project were to scale and require handling more complex maps with a larger number of vertices, A* would still be a solid choice due to its proven performance. 
 
 A key component of the A* algorithm is the heuristic function which estimates the cost of the cheapest path to the goal. If the function never overestimates it, A* is guaranteed to return one of the shortest paths from start to goal. For the purpose of free character movement on a 2D plane, the Euclidean distance was chosen as a heuristic function. It is well suited for point-and-click adventure games, where characters can move freely in any direction, making straight-line distance a natural and accurate estimate of travel cost.  It can be calculated from the Cartesian coordinates of the points while also applying the Pythagorean theorem:
 
@@ -239,23 +161,56 @@ A key component of the A* algorithm is the heuristic function which estimates th
 d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
 \]
 
+\subsubsection{Sierra}
+A very similar approach was also used in Sierra's engine with multiple levels of optimization that essentially aim to find the shortest path to the goal \cite{ScummVM-patent}. The algorithm consists of three distinct phases: pre-processing, pathfinding, and post-processing. In pre-processing, the input is adjusted so that start and end points are not inside any polygons, with special rules for total and near-point access polygons. Post-processing then reattaches any final segments. The pathfinding phase begins by attempting a straight-line path from start to end and rerouting around any intersected polygons. At optimization level 0, the algorithm simply detours along the shortest boundary path between the first and last intersection points of a polygon. Optimization level 1 improves this by attempting shortcuts between path nodes, as long as they do not intersect any polygons. Level 2 further enhances this by testing all possible combinations of routes around each polygon to find the shortest overall path. However, this exhaustive approach still does not guarantee a globally shortest path in all cases, as it only considers polygons intersected by the initial straight trajectory. Because of this, we will rather use the previous method as it provides us with a stable solution and a guarantee of the shortest path.
+
+
+%Objects typically get there by taking the shortest route possible. This makes sense in point-and-click adventure games, as player input is intentional and direct: clicking on a location implies that the character should move there efficiently, without unnecessary detours. The problem of finding the shortest path is a well-studied field in computer science, with several established algorithms designed to solve it. 
+
+\subsubsection{Weighted Graph}
+Polygons only serve as a visual representation of the walkable area to the framework users. However, in order for the algorithms to work, the walkable area must also be represented in a suitable form for computation. Specifically, if we want to determine the shortest path to a destination, we need a way to calculate the distances between the points. Without this, identifying the optimal route would be impossible. A weighted graph provides an ideal structure for this purpose. It consists of nodes connected by edges, each assigned a non-negative value representing the distance between them. That said, generating a graph that includes every possible node and edge would be both inefficient and impractical. The approach for creating a graph from polygons that was used in our thesis was adapted from the articles by Mic Uurloon. Details about this method together with more interactive examples explaining how the algorithm works can be found in his articles Part 1 \cite{Uurloon1} and Part 2 \cite{Uurloon2}, which further reference an article by David Gouveia \cite{Gouveia}.
+Figure \ref{fig:Graph}
+showcases a graph created using Uurloon's method.
+\begin{figure}[H]
+\centering
+\includegraphics[width=.7\linewidth]{img/WS-polygons3.png}
+\caption{Graph: Walkable area consisting of polygons (green and yellow) and a graph (white) with a possible path (violet). Source \cite{Uurloon1}.}
+\label{fig:Graph}
+\end{figure}
+
+\subsubsection{NavMesh}
+Developers familiar with Unity’s pathfinding tools may know about NavMesh, a system that generates a mesh to represent walkable surfaces and obstacles in a 3D environment, while also supporting AI navigation. While powerful in 3D projects, NavMesh presents challenges in 2D development, as Unity's 2D space uses the X and Y axes, whereas NavMesh operates on the XZ plane. Some open-source projects, such as NavMeshPlus, extend the NavMesh functionality to 2D environments. However, NavMeshPlus is a complex and feature-rich project, which can be overwhelming for beginners and includes functionality beyond the needs of simpler projects. For this reason, a more lightweight and user-friendly alternative is preferred, one that prioritizes ease of integration and clarity over extensive feature sets. 
+
 \section{Depth Simulation}
 As we have specified in Requirements \ref{intro:req:scale} and \ref{intro:req:layers}, we want to simulate the feeling of a 3D space. 
 
 \subsection{Scaling}
 \label{analysis:depth:scaling}
-The human eye perceives depth by observing objects in the distance as smaller than they actually are. There are a number of ways we can simulate this phenomenon in a 2D video game. One option would be to scale the size of the character based only on the Y coordinates. This way, we can set the boundaries for the minimum and maximum scale of the moving object in the given area, and then, based on the distance from those boundaries, set the appropriate value, visualized in Figure \ref{fig:Room} . This approach is very simple, which is both its advantage and its disadvantage. Although it is easy to implement, it is not possible to achieve more complex scenes in which a character's sprite scales dynamically independently of the Y coordinates. A similar problem would arise with only considering the X coordinates.
+The human eye perceives depth by observing objects in the distance as smaller than they actually are. There are a number of ways we can simulate this phenomenon in a 2D video game. 
 
+\subsubsection{Axis-based scaling}
+One option would be to scale the size of the character based only on the Y coordinates. This way, we can set the boundaries for the minimum and maximum scale of the moving object in the given area, and then, based on the distance from those boundaries, set the appropriate value, visualized in Figure \ref{fig:Room} . 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.6\linewidth]{img/room.png}
-\caption{Character scaling by Y axis.}
+\includegraphics[width=.6\linewidth]{img/room2.png}
+\caption{Character scaling by Y axis—success.}
 \label{fig:Room}
 \end{figure}
 
+This approach is very simple, which is both its advantage and its disadvantage. Although it is easy to implement, it is not possible to achieve more complex scenes in which a character's sprite scales dynamically independently of the Y coordinates, such as the example in Figure \ref{fig:ScaleF}. Although both characters share the same Y-coordinate, the overall image appears off. Due to the perspective of the corridor on the right side of the figure, one character looks disproportionately large and unnatural.  A similar problem would arise with only considering the X coordinates.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.7\linewidth]{img/scalef-y.png}
+\caption{Character scaling by Y axis—fail.}
+\label{fig:ScaleF}
+\end{figure}
+
+\subsubsection{Vertex-based scaling}
 Our goal is to dynamically scale the character sprite based on its position on the map. To achieve this, we need a system that adjusts the sprite’s size depending on its location. A suitable way to store this scaling data is by assigning it to the vertices of the polygons that define the walkable area. Each vertex could carry a floating-point value representing the desired scale at that point, allowing us to interpolate the character's size as it moves across the map.  An advantage is the fact that the developer could have a free range on the exact details of the area. However, modifying the scales is not that easy because one must go through the necessary nodes and change the factor essentially by hand. This approach is a bit more complicated than the previous ones, but still fairly simple to implement and doable entirely in Unity.
 
+\subsubsection{Bitmap-based scaling}
 Finally, it is possible to use a bitmap and map the alpha value of each pixel to a scaling factor. This would be very precise, as the developer can set it up exactly as they wish. However, we again come across the problem we discussed in Section \ref{analysis:walkableMap} where we made it clear that we prefer to implement features that can be simply modified inside Unity.
 
 From these three approaches only two seem to be doable entirely inside the framework: Y scaling (optionally X scaling) and custom vertices scaling. We aim to implement both of them in the hopes of offering a wide variety of options to developers.
@@ -271,20 +226,102 @@ Next, let us examine the layering. Our aim is to dynamically adjust the visibili
 \end{figure}
 
 \section{Inventory System}
+Collecting items and using them in the environment is a classic feature of point-and-click adventure games. To support this gameplay element, we need a system that makes it easy to define, collect, and use items. 
+
+In order to meet the system's needs as well as the requirements listed in \ref{intro:req:inv_formats} – \ref{intro:req:tag}, each item should include the following data:
+\begin{itemize}
+\item a name,
+\item a sprite (image),
+\item a description.
+\end{itemize}
+
+The name is used when the inventory is set to display item names, and can also appear as a tag when hovering over interactive items in the game world. The sprite is used when the inventory shows icons instead of names, in which case the visual representation alone is shown. Lastly, the description comes into play when the game needs to explain the item's function or purpose, as further discussed in Section \ref{sec:Inventory}.
+
 
 
 \section{Dialogue System}
 Conversations between characters help players understand the story and connect with the game world. While they usually take the form of a dialogue between two characters, that is not always the case. When only one character is speaking, it becomes a monologue or thinking aloud. On the other hand, conversations can also involve more than two characters, resulting in group interactions. 
 
-In cases where dialogue is limited to a simple exchange of lines without requiring player input, the representation of a conversation can be fairly straightforward: the dialogue can be stored as a list of data containing the text and other relevant information. In an \textit{Game Dev Beginner} article \cite{Dialogue-French}, John French presents a possible implementation of this approach.  However, this linear method has its drawbacks. Managing longer conversations can become cumbersome as one needs to scroll through the entire list to reach specific lines, which quickly becomes inconvenient. The situation becomes even more complex when players are given the ability to make choices. Even a handful of branching lines can lead to a complicated structure that is nearly impossible to manage using a linear format. The complexity increases further when cyclic paths are introduced, where characters may repeat lines in response to specific prompts. Implementing such behavior in a linear format is not only difficult, but also tends to produce a cluttered and confusing system. 
+There are cases where dialogue is limited to a simple exchange of lines without requiring player input, such as the first dialogue between Foster and Joey in Beneath a Steel Sky in Figure \ref{fig:DialogueSimple}. 
 
-Due to the limitations of the linear method, it is necessary to explore more flexible solutions. A particular data structure that can effectively represent the complexity of a branching dialogue is a graph. Its structure allows for direct access to specific dialogue lines and, in the case of branching paths, offers an intuitive way to manage and visualize the flow. Additionally, graphs make it easy to implement cyclic paths, enabling characters to reuse parts of the dialogue under certain conditions. Looking at these advantages, it is clear that this data structure is suitable for our needs. So, let us take a look at the tools Unity offers for creating graphs.
+\begin{figure}[H]
+\centering
+\includegraphics[width=.6\linewidth]{img/dialogueSimple.png}
+\caption{A simple conversation between two characters in \textit{Beneath a Steel Sky}.}
+\label{fig:DialogueSimple}
+\end{figure}
+
+The representation of this conversation in the framework can be fairly straightforward: the dialogue can be stored as a list of data containing the text and other relevant information. In the \textit{Game Dev Beginner} article \cite{Dialogue-French}, John French presents a possible implementation of this approach. However, this linear method has its drawbacks. The complexity increases further when the player is given choices, as shown in Figure \ref{fig:DialogueChoices}. From the start, there are six options A to F the player can select, each branching into a different line of dialogue. When choosing some, like option B for example, the conversation ends the exchange and the option is removed from the list of the six options.  Others, like A, evolve, replacing the original line A1 with a follow-up A2 “\texttt{What IS this place?}”, followed by the return to the list of now updated options. Even though the example depicts a relatively simple interaction, it already highlights the limitations of entering dialogue lines linearly. Adding just a few more branches can result in a tangled structure that becomes nearly unmanageable. The challenge escalates further with the introduction of cyclic paths, where characters may repeat lines based on specific conditions. Representing such behavior using a purely linear format is not only impractical, but also leads to a cluttered and confusing system.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.5\linewidth]{img/DialogueBig3.png}
+\caption{A part of a conversation between two characters in \textit{Beneath a Steel Sky}.}
+\label{fig:DialogueChoices}
+\end{figure}
+
+Due to the limitations of the linear method, it is necessary to explore more flexible solutions. A particular data structure that can effectively represent the complexity of a branching dialogue is a graph. Its structure allows for direct access to specific dialogue lines and, in the case of branching paths, offers an intuitive way to manage and visualize the flow. Additionally, graphs make it easy to implement cyclic paths, enabling characters to reuse parts of the dialogue under certain conditions. All of these advantages are clearly illustrated in Figure \ref{fig:DialogueGraph}, which shows a conversation with multiple branching options represented as a graph. One of the branches even connects to another node across the graph, demonstrating how this structure naturally supports complex and non-linear conversations.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\linewidth]{img/image_2025-06-02_133436738.png}
+\caption{A conversation with a lot of branching options represented in a graph. Soure: \cite{wiki:DialogueGraph}.}
+\label{fig:DialogueGraph}
+\end{figure}
+
+Our goal is to design a system that allows for the creation of dialogues within our framework. By using graphs, we can provide users of the framework with a way to manage and edit even complex dialogues in an intuitive and efficient manner. The next step is to determine how such a graph can be represented within Unity. To do this, we will examine the tools Unity provides for working with graphs. 
 
 \subsection{Graph Tools in Unity}
-Currently, there is no officially supported non-experimental graph tool or framework available in Unity. A new system named \textit{Graph Toolkit}  \cite{Unity-GraphToolkit} is under development and aims to provide a unified solution for graph-based editing. However, it has not yet been released. Due to the lack of official support, alternative options must be explored. Since one of the core goals of this project is to remain free and open source, the tools used should ideally follow the same principles. While the Unity Asset Store offers numerous graph-based tools, many of them do not meet these criteria. Tools such as \textit{FlowCanvas} \cite{FlowCanvas}, \textit{Xtebs Graph Framework} \cite{XtebsGraphFramework}, and \textit{uNode 3 Pro} \cite{uNode3Pro} are all commercial products. On the other hand, \textit{FlowReactor} \cite{FlowReactor} and \textit{xNode} \cite{xNode} are free but have not received updates in several years. \textit{NodeGraphProcessor} \cite{NodeGraphProcessor} emerged as a potential candidate, but its complexity and extensive set of features go beyond the needs of this project.
+Currently, there is no officially supported non-experimental graph tool or framework available in Unity. A new system named \textit{Graph Toolkit}  \cite{Unity-GraphToolkit} is under development and aims to provide a unified solution for graph-based editing. However, it has not yet been released. Due to the lack of official support, alternative options must be explored. Since one of the core goals of this thesis is to remain free and open source, the tools used should ideally follow the same principles. While the Unity Asset Store offers numerous graph-based tools, many of them do not meet these criteria. Tools such as \textit{FlowCanvas} \cite{FlowCanvas}, \textit{Xtebs Graph Framework} \cite{XtebsGraphFramework}, and \textit{uNode 3 Pro} \cite{uNode3Pro} are all commercial products. On the other hand, \textit{FlowReactor} \cite{FlowReactor} and \textit{xNode} \cite{xNode} are free but have not received updates in several years. \textit{NodeGraphProcessor} \cite{NodeGraphProcessor} emerged as a potential candidate, but its complexity and extensive set of features go beyond the needs of this thesis.
 
 Among the tools offered directly by Unity, we identified \textit{GraphView} \cite{Unity-GraphView} as a possible solution. It is a C\# API provided through Unity’s UI Toolkit framework, designed for building custom, node-based editor tools within Unity Editor. GraphView is commonly used in the creation of visual scripting environments, dialogue systems, shader editors, behavior trees, and similar graph-based tools. However, it remains experimental and lacks official documentation, as it is within the \verb|UnityEditor.Experimental.GraphView| namespace. Notably, NodeGraphProcessor itself is built on top of GraphView, highlighting its utility despite its unofficial status.
 
 Although the current state of graph tool support in Unity is somewhat fragmented, we ultimately decided to build a custom graph system using GraphView. Despite its limitations, GraphView continues to enjoy community interest, with recent tutorials drawing significant attention \cite{NodeEditor-YT}. Moreover, it remains supported in Unity 6, ensuring that it will remain viable for at least the near future—until the release and widespread adoption of the upcoming Graph Toolkit.
 
-For the implementation of the dialogue system, we plan to follow the approach developed by \textit{Kasper Dev Unity}, who created a project \cite{Kasper-Dialogue-Tutorial-git} and a series of tutorials \cite{Kasper-Dialogue-Tutorial-YT} focused on building a dialogue system using Unity’s GraphView API. His method offers a clear and practical foundation for creating node-based dialogue editors, which fits well with the goals of this thesis. While his work will serve as the main reference, we also want to explore other tutorials, such as those by \textit{Mert Kirimgeri} \cite{merpheus-Dialogue-Tutorial-git}\cite{merpheus-Dialogue-Tutorial-YT} and \textit{Indie Wafflus} \cite{Wafflus-Dialogue-Tutorial-git}\cite{Wafflus-Dialogue-Tutorial-YT}—to gather different ideas and perspectives. By combining the strengths of these approaches, we aim to build a system that is well-suited to the needs of this project: flexible enough to handle branching and cyclic dialogue, but still simple and intuitive for developers to use. 
+For the implementation of the dialogue system, we plan to follow the approach developed by \textit{Kasper Dev Unity}, who created a project \cite{Kasper-Dialogue-Tutorial-git} and a series of tutorials \cite{Kasper-Dialogue-Tutorial-YT} focused on building a dialogue system using Unity’s GraphView API. His method offers a clear and practical foundation for creating node-based dialogue editors, which fits well with the goals of this thesis. While his work will serve as the main reference, we also want to explore other tutorials, such as those by \textit{Mert Kirimgeri} \cite{merpheus-Dialogue-Tutorial-git}\cite{merpheus-Dialogue-Tutorial-YT} and \textit{Indie Wafflus} \cite{Wafflus-Dialogue-Tutorial-git}\cite{Wafflus-Dialogue-Tutorial-YT}—to gather different ideas and perspectives. By combining the strengths of these approaches, we aim to build a system that is well-suited to the needs of this thesis: flexible enough to handle branching and cyclic dialogue, but still simple and intuitive for developers to use. 
+
+\subsection{Implementation}
+Kasper Dev's solution is somewhat more comprehensive than necessary for our purposes, particularly its use of character icons. In Section \ref{sec:Common features}, we closely examined common features of the point-and-click genre and have not encountered such icons. Since they are not essential to our framework, they can be omitted. The same applies to the support for audio clips. As established in Section \ref{sec:Sound_Management}, this thesis does not include the implementation of a sound system, and therefore, audio functionality can be ignored.
+
+On the other hand, what makes this solution beneficial to our framework is its use of various types of nodes, including the \textit{Start Node}, \textit{End Node}, \textit{Dialogue Node}, \textit{Choice Node}, \textit{Branch Node} and \textit{Event Node}. While their functions are somewhat self-explanatory, a brief overview is still useful:
+
+\begin{itemize}
+    \item \textbf{Start Node}
+    
+This node's only purpose is to mark the initiation point of the conversation. No other node can precede it, meaning that it has no predecessor.
+
+    \item \textbf{End Node}
+
+The node indicates the end of a conversation, with options to return to the previous node or restart. No other node can follow it, meaning that it has no successor.
+
+    \item \textbf{Dialogue Node}
+
+It displays the actual dialogue content. It contains the option to select between the continue types, meaning what the player is supposed to do to progress to the other dialogue nodes: either waiting for a set time or by clicking a continue button. The node also contains the lines of the conversation and can branch to other choice nodes, explained in the following section. It is generally the most frequently used node.
+
+    \item \textbf{Choice Node}
+
+This node presents the player with dialogue choices. Conditions can be assigned to each node whose role is to determine if the choice can be shown or hidden.
+
+    \item \textbf{Branch Node}
+
+It determines which of the two nodes comes next based on specific conditions.
+
+    \item \textbf{Event Node}
+
+The node triggers an in-game event.
+\end{itemize}
+
+However, there are certain features missing in Kasper Dev's implementation that would significantly enhance the usability and flexibility of our framework. First and foremost, because the dialogue system is closely tied to the player’s actions, such as picking up items or selecting particular dialogue paths, it is important to have a clear and manageable way of tracking those actions. In particular, being able to check whether the player has already selected a specific dialogue option is essential. As illustrated in Figure \ref{fig:DialogueChoices}, selecting one dialogue option can reveal another, making this feature a necessary part of the system. To address this, we take inspiration from \textit{Charles Engine FMV} \cite{CharlesEngine}, a toolkit designed for the development of live-action games. Since this genre places a heavy emphasis on dialogue, it requires a robust dialogue system, which the \textit{Charles Engine} provides. It solves the issue of dialogue tracking by assigning a \verb|Visited boolean ScriptableObject| to dialogue nodes \cite{CharlesEngine-tut}. When the player passes through a node, its Visited status is set to true, allowing future interactions to reference this information easily.
+
+Another limitation in Kasper Dev's solution is the lack of support for multiple simultaneous text boxes. There are situations in which multiple characters speak at once, such as the example shown in Figure \ref{fig:DialogueConvo}, taken from The Secret of Monkey Island. To accommodate this, we propose a system that allows the addition of an arbitrary number of text boxes, each associated with a corresponding character ID. This approach allows the developer to decide whether multiple characters should speak simultaneously or whether a character should appear at all, for instance, to create dramatic pauses.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\linewidth]{img/Dialogue-talking_at_the_same_time.png}
+\caption{The Secret of Monkey Island: A conversation with two characters saying something at the same time.}
+\label{fig:DialogueConvo}
+\end{figure}
+
+When looking at the other two projects by Mert Kirimgeri and Indie Wafflus, we identified several small features that would be beneficial for organizing the dialogue graph. Notably, both tutorials introduce the concept of a \textit{minimap}—a small floating window that displays a zoomed-out view of the currently edited graph. This gives the developer a better overview of the dialogue flow, especially in large or branching conversations. 
+
+Additionally, Indie Wafflus implements a feature called \textit{groups}, which allow developers to organize subsets of nodes within the graph. Each group can be assigned a custom name, and dragging the group box moves all nodes it contains, making it easier to manage complex dialogue structures. This system is particularly useful when working on nodes which all share a common topic or characteristic, making them thematically or logically connected dialogue blocks. Since dialogue graphs can quickly become complex, these features offer a valuable and much-needed organization. 
