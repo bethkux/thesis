@@ -1,13 +1,173 @@
 \chapter{Implementation}
+This chapter outlines the details of the implementation of the TaleCraft framework along with the overall project structure. Our framework is developed using Unity version Unity 2022.3.61f1 and is compatible with Unity Hub, which can be used to open and manage the project environment. All referenced files are provided in Attachment A for further inspection.
+
+\section{Architecture}
+The core of the project is found in the \verb|Assets/TaleCraft| directory. \verb|Assets| is the standard location in Unity for storing scripts, game assets, and other project resources, and the folder \verb|TaleCraft| is our custom folder. The contents are organized into several subfolders, each serving a specific purpose, as described in the sections that follow.
+
+\begin{itemize}
+    \item \textbf{Runtime}: This folder contains all scripts that are executed during the game’s runtime. The codebase is further organized into five distinct modules: \verb|Core|, \verb|CommandSystem|, \verb|DialogueSystem|, \verb|InventorySystem|, and \verb|WalkingSystem|. Each of these categories contains specific functionality of the framework.
+    \item \textbf{Editor}: It includes scripts that extend or customize Unity Editor. These scripts are not executed at runtime. The folder structure within \verb|Editor| mirrors that of the \verb|Runtime| folder.
+    \item \textbf{Prefabs}: This folder holds reusable prefab assets utilized throughout the framework.
+    \item \textbf{Resources}: It contains various assets required by the framework, such as sprite images and Unity Style Sheets (USS), which define the visual styling of the UI components. 
+    \item \textbf{Examples}: The \verb|Examples| folder includes two prototype projects that demonstrate practical applications of the TaleCraft framework. Each prototype features its own scene along with supporting assets, such as custom scripts, prefabs, fonts, and sprites that are specific to those demonstrations. 
+\end{itemize}
+
+In the rest of this chapter, we focus on classes located in the \verb|Runtime| and \verb|Editor| folders, as well as the relations between them.
+
+\section{Core}
+The scripts located in the \verb|Core| folder implement core functionalities of the framework.
+
+\subsection{GameManager}
+
+
+\subsection{PrefabLibrary}
 
 
 \section{Command System}
+The scripts located in the \verb|CommandSystem| folder process input and act accordingly.
+
+\subsection{CommandManager}
+The \verb|CommandManager| is implemented as a singleton and serves as the central interface for managing game commands within the framework. Developers can create new commands directly through the editor interface by clicking the \textit{Add Command} button and assigning a name to the newly generated command. Commands can be renamed at any point during development; the system ensures that all references to the command across other scripts are automatically updated to reflect the new name. This feature significantly reduces the risk of broken references and allows developers to make adjustments even in later stages of the project without introducing inconsistencies.
+
+To assign both the movement command and the default command, the developer can simply select the desired options from a list of all available commands within the editor interface. They can also define rules that commands must adhere to, following the specifications outlined in Section \ref{Analysis:CommandStructure}. Additionally, the \verb|CommandManager| script allows assigning a default action for each command, which is executed when no other specific action is available.
+
+\subsection{SlotManager}
 
 
 \section{Walking System}
+The scripts in \verb|WalkingSystem| take care of creating the polygons representing the walkable areas (in)accessible to the player as well as the generation of a graph described in Section \ref{Analysis:Graph} and the movement of the characters.
+
+\subsection{Polygon}
+In Section \ref{Analysis:Polygon}, we decided to represent the walkable area as well as the obstacles in form of polygons, so let us define this data structure. The \verb|Polygon| class defines a collection of connected points (\verb|GraphNode|s) that form a polygon in a 2D space. It is designed to run both during gameplay and in the Unity Editor, where it dynamically manages and visualizes its vertices using Gizmos. The class ensures that the vertices are ordered clockwise for correct algorithmic behavior, which is validated by the \verb|IsOrientationClockwise()| method.
+
+To assist with pathfinding and spatial calculations, \verb|Polygon| includes methods to determine whether a point lies inside the shape, whether a point should be removed from the polygon, and where the nearest point on the polygon's edge is relative to a given location. These checks are based on geometrical principles such as ray-casting and distance-to-segment calculations.
+
+In edit mode, the polygon continuously scans its child objects to update its list of vertices using the \verb|ListChildrenWithComponent()| method. It expects these children to have a \verb|Point| component and uses their positions to form the polygon.
+
+Graphical properties like edge drawing, point visibility, and point scaling are configurable and updated automatically. The editor visualization adapts to zoom using Unity’s handle size system to maintain consistent point sizes when viewing in the Scene window.
+
+
+\subsection{Graph}
+\verb|Graph| class models a cyclic, undirected graph composed of \verb|GraphNode| vertices and \verb|GraphEdge| connections. It is the foundational data structure used in pathfinding, as established in Section \ref{Analysis:Graph}. Each node is stored in a list, and its neighbors are tracked in a parallel adjacency list. Edges between nodes are recorded in a dictionary, keyed by the smaller of the two node indices, making sure that we get an undirected and non-redundant representation.
+
+The graph provides utility functions for calculating Euclidean distances between nodes and between a point and a line segment. These are essential for visibility checks and path optimization. Nodes and edges can be dynamically added. When an edge is added, it is also registered in the neighbor lists of both nodes to maintain symmetry. The graph keeps references to a \verb|Start| and \verb|End| node, which are required for executing pathfinding algorithms such as A*.
+
+ A \verb|GraphNode| encapsulates a 2D coordinate and an optional reference to a \verb|Point| game object. It serves as a vertex in the \verb|Graph|. Nodes can be constructed from Unity \verb|Vector3|, raw coordinates, or \verb|Point| objects. The node exposes its position through \verb|X|, \verb|Y|, and a \verb|GetLocation()| method that returns a \verb|Vector2|.
+
+ A \verb|GraphEdge| represents an undirected connection between two graph nodes, identified by their indices and storing a precomputed length for efficiency. Edges are normalized such that the smaller node index is always \verb|N1|, which standardizes storage and retrieval in the \verb|Graph| structure.
+
+
+\subsection{PathFinder}
+\verb|PathFinder| is responsible for calculating the shortest navigable route between two points within a walkable area defined by \verb|WalkableMap|. It constructs a visibility graph based on polygonal data and uses A* search to determine the optimal path.
+
+The core logic starts by constructing a graph where nodes are placed at concave vertices of the defined walkable area and obstacle polygons. Additional nodes are inserted at the given start and end positions, which can be adjusted to meet constraints, such as staying inside the main polygon or outside obstacles, depending on the settings of WalkableMap.
+
+To determine possible connections between nodes, PathFinder uses line-of-sight (LOS) checks. These ensure that no segment intersects any polygon edge and that the midpoint of each connection lies within the walkable region and outside obstacles. Nodes that satisfy the LOS criteria are connected with graph edges. The shortest path is then computed using an A* algorithm in the \verb|AStar| script applying a Euclidean heuristic function.  The resulting path consists of a list of \verb|GraphNode| points and their respective distances. For visualization purposes, the class can draw both the full graph and the shortest path using Unity Gizmos.
+
+
+% \subsection{AStar}
+%The \verb|AStar| class implements the A* search algorithm to compute the shortest path between two nodes within a \verb|Graph| object. It uses a best-first search strategy, implementing a cost function \verb|f(n) = g(n) + h(n)|, where \verb|g(n)| is the known cost from the start node to node \verb|n|, and \verb|h(n)| is a heuristic estimation of the cost from \verb|n| to the goal. The heuristic is based on Euclidean distance, ensuring admissibility and consistency for this geometric use case. Finally, upon reaching the goal, a backtracking method (\verb|ConstructPath|) reconstructs the optimal path. 
+
+
+\subsection{SpriteScaler}
+In order to simulate depth and give characters the appearance of existing in 3D space (as discussed in Section \ref{analysis:depth:scaling}), the \verb|SpriteScaler| class dynamically adjusts the scale of a GameObject based on its position.  The scale is continuously updated during both run-time and edit mode using the \verb|[ExecuteAlways]| attribute. This makes sure the object's size always matches its intended perspective in the scene. Having the correct scale during editing is especially useful when setting up the layout before running the game. The script supports multiple scaling modes including none, X-axis based, Y-axis based, and a custom scale blending based on proximity to vertices of a defined polygonal walkable area.
+
+Using configurable parameters such as \verb|upperScale|, \verb|lowerScale|, and \verb|perspectiveFactor|, the first two modes (X-axis / Y-axis scaling)  calculate the appropriate scale by interpolating the object's position relative to the walkable polygon’s bounds. The custom scaling mode, on the other hand, employs a weighted average of vertex scales inversely proportional to their distance. 
+
+
+\subsection{CharacterMovement}
+The \verb|CharacterMovement| class manages the movement itself. It integrates with a \verb|WalkableMap| and a pathfinding system (\verb|PathFinder|) to compute traversable paths between points. Movement allows the character to smoothly interpolate along a computed path using coroutines while adapting speed based on the object's scale via the \verb|SpriteScaler| component. The \verb|Move| methods handle both direct target positions and precomputed paths, initiating a coroutine that interpolates the character’s position over time. The class also ensures that if a new movement command is issued mid-transition, the current motion is halted, and a new path is followed. It also supports visual debugging via Unity’s Gizmos for path visualization.
+
+ 
+\subsection{WalkableMap}
+Everything comes together in \verb|WalkableMap|, which manages the pathfinding logic within a scene by maintaining and organizing the walkable area and a collection of obstacle regions. It is responsible for ensuring that the start and end points of a path remain within valid constraints, such as staying inside the main walkable polygon or outside defined obstacles.
+
+The script is initialized by identifying all child objects tagged as obstacles and storing their corresponding \verb|Polygon| components. These obstacle polygons, along with the main walkable polygon, are used to construct a map for navigation. Any null references within the obstacle list are actively removed to maintain consistency.
+
+\verb|WalkableMap| also provides options to visualize the graph structure and the computed path within the editor using specified colors. The script is designed to run during both the play mode and the edit mode using Unity’s \verb|ExecuteAlways| attribute, which allows it to dynamically update the polygon structure and maintain accurate data even while editing the scene.
+
+
+\subsection{WalkingSystem}
+The \verb|WalkingSystem| script provides editor functionality to instantiate a predefined walking system prefab into the current Unity scene. It integrates into the Unity Editor menu and allows developers to quickly add the walking system via a custom menu item.
+
+Upon selection, the script retrieves the corresponding prefab from a centralized prefab library managed by the \verb|GameManager|, and instantiates it in the hierarchy. The newly created object is registered with Unity’s undo system, allowing users to reverse the action if needed. This utility is available only within the Unity Editor environment and is excluded from runtime builds.
+
 
 \section{Inventory System}
+Text
 
+\subsection{InventoryManager}
 
 
 \section{Dialogue System}
+Dialog scripts handle both user-facing and back-end aspects of the dialogue system. For example, \verb | DialogueWindowEditor | manages the editing of dialogue graphs through an interactive interface, while less visible utilities such as \verb | DialogueSaveLoad | manage the saving and loading of graph data. Additionally, these scripts control the runtime logic of the dialogue nodes during gameplay, including tasks such as hiding or revealing specific choice options, triggering events, and displaying the appropriate dialogue text above the corresponding characters. 
+
+\subsection{Elements}
+A graph consists of nodes, edges, and, in our case, also groups. While Unity’s \verb|GraphView| API provides built-in support for these elements, their default implementations are too minimal for our needs. To support features like saving, loading, and conditional branching, we must extend these base components with additional properties. One such property is a globally unique identifier (GUID), which allows us to maintain reliable references to nodes and groups across editing and serialization. In this framework, each node and group is assigned a GUID to support consistent tracking. Graph edges are defined by the connections between nodes, and their relationships can be stored directly within the nodes themselves. Therefore, the following section will closely examine the extended implementations of nodes and groups.
+
+
+\subsubsection{Nodes}
+The nodes are a central piece of the dialogue graph. It consists of various types of nodes.
+
+At the heart of this system is \verb|BaseNode|, which inherits from the \verb|Node| in \verb|GraphView| API and provides all shared behavior for node-based interaction. It handles input/output port creation, holds a unique identifier, and manages condition logic such as booleans, integers, floats, and strings. These conditions are used to control the flow of the dialogue graph based on variables, and the node provides a dynamic UI to configure them. It manages a \textit{Visited} flag, which can be toggled or generated as a variable. All of the other nodes inherit from the \verb|BaseNode| all of the properties as well as the methods.
+
+\verb|StartNode| represents the entry point of a dialogue flow. It is a minimal extension of \verb|BaseNode|, featuring a single output port and simple setup for ID and visited state. It lacks the branching logic of \verb|BranchNode| but retains the same core structure and UI support. This node effectively serves as the beginning of the conversation graph, initiating the traversal through the dialogue nodes.
+
+ The \verb|DialogueNode|, on the other hand, represents a standard dialogue step in the graph. It contains one input port and multiple output ports for branching conversations, that can only be connected to a \verb|ChoiceNode|. Internally, it holds a list of text boxes where each entry can represent a character's line. It supports two dialogue continuation styles: automatic after a wait time, or manual via player input. The visual elements dynamically adjust based on the continuation type and presence of choice ports. Choices are represented by additional output ports and are stored in \verb|DialogueNodePort| instances.
+
+ The \verb|ChoiceNode| is designed for player decision points. It displays a single text field and conditions that determine whether it appears. If conditions are not met, a fallback behavior can be selected via an enum. This node includes one input port and one output port. The enum selector and its UI container become visible only if conditions exist. All conditions are inherited from the base node system and are managed using the overridden methods \verb|AddCondition|.
+
+\verb|BranchNode| extends \verb|BaseNode| to implement decision-making logic. It sets up one input port and two output ports labelled \textit{True} and \textit{False}, allowing the dialogue to split based on the evaluation of its conditions. 
+
+The \verb|EventNode| allows triggering predefined events using \verb|EventScriptableObject| assets. These objects reference \verb|DialogueEvent| assets that encapsulate game-side logic. Each event is shown in the UI as an \verb|ObjectField| and can be added or removed with the corresponding buttons. The node contains a single input and output port, which supports linear progression after an event. All event assets are stored in a list and serialized through the node class.
+
+Finally, \verb|EndNode| signals the end of a dialogue path. It contains only one multi-input port and no output ports. Internally, it uses an \verb|EnumField| to define how the dialogue ends. 
+ 
+
+\subsubsection{Groups}
+As established in Section \ref{Analysis:Dialogue:Features}, we would like to have the ability to organize subsets of nodes within the graph, and the \verb|BaseGroup| class serves that purpose. It is a lightweight extension of Unity’s \verb|Group| from the \verb|GraphView| system, used in the Unity Editor for grouping nodes visually in a graph interface. It adds a single field, \verb|GroupGuid|, which uniquely identifies the group via a generated GUID. This is useful for saving, loading, and tracking groups independently of their visual layout.
+
+
+\subsection{DialogueGraphData}
+In order to access dialogue graphs during the gameplay, we, of course, need a way to represent the data. The \verb|DialogueGraphData| class functions as a data container for the dialogue system. Implemented as a \verb|ScriptableObject|, it exists as a persistent asset that can be saved, edited, and reused directly in the Unity Editor. Its primary responsibility is to store the entire structure of a dialogue graph, including dialogue lines, choices, branching logic, events, and the connections between nodes.
+
+All node data inherit from the \verb|BaseNodeData| class, which provides common properties such as a unique identifier (GUID), editor position, display name, a runtime \verb|Visited| flag, and a collection of conditions. More specialized node types include \verb|DialogueNodeData| (storing character-linked dialogue text and output ports), \verb|ChoiceNodeData| (for player-selectable options), \verb|EventNodeData| (triggering scripted actions), \verb|BranchNodeData| (evaluating conditions for flow control), and \verb|EndNodeData| (defining how a dialogue sequence concludes, whether by ending, repeating, or restarting).
+
+In addition to node data, the class stores group and edge information. \verb|GroupData| allows developers to visually organize related nodes within the editor by assigning them to named movable containers. Each group includes an ID, a name, a position in the graph view, and a list of GUIDs corresponding to the nodes it contains. \verb|EdgeData| defines the directional links between nodes and represents the logical flow of the conversation. Each edge stores the GUIDs and port names of both the source and target nodes, allowing the system to determine the next node in the sequence during both editing and runtime.
+
+
+\subsection{DialogueSaveLoad}
+The saving and loading of a graph occurs in the \verb|DialogueSaveLoad| class. It is achieved by serialization and deserialization of the data the graphs consist of. 
+
+When saving, the class converts the current graph state into a \verb|DialogueGraphData| object. This process involves capturing the structure and properties of groups (including their names, positions, and contained nodes), serializing connections between nodes, and storing the data specific to each node type. For example, \verb|Dialogue Nodes| store text box content and port configurations; \verb|Event Nodes| preserve references to \verb|ScriptableObject| instances; and \verb|Branch Nodes| save conditional data as well as the GUIDs of the nodes connected to their \textit{true} and \textit{false} outputs.
+
+During loading, the class first clears the current graph to ensure a clean state. Then it reconstructs groups based on the stored data, followed by instantiating nodes using their saved attributes such as position, GUID, visited status, and type-specific data. Nodes are then reassigned to their appropriate groups, and the edges are reconnected by matching saved port names with the correct input and output ports.
+
+
+\subsection{DialogueGraphView}
+\verb|DialogueGraphView| manages the visual interface and logic of a node-based dialogue system in Unity's \verb|GraphView|. It supports creation, manipulation, serialization, and deserialization of various dialogue nodes and groups within the editor. The graph enables standard manipulations such as dragging, selection, and zooming and includes a customizable minimap for navigation. Users can also interact with the graph by adding nodes via a search window, grouping them, or copying/pasting selected elements. 
+
+For copy-paste functionality, the script serializes selected nodes, edges, and groups into a \verb|CopyData| class, which regenerates them at the mouse position after pasting. During serialization, each node is assigned a new GUID to maintain graph integrity, and edges are reconstructed by mapping these new GUIDs. The grouping is preserved by reassigning nodes into their respective regenerated groups.
+
+ 
+\subsection{DialogueWindowEditor}
+The \verb|DialogueWindowEditor| class is a custom Unity editor window that is used to create and edit dialogue graphs. It is built using Unity’s UI Toolkit and works directly with \verb|DialogueGraphData| assets. When one of these assets is opened in the Unity editor, the \verb|[OnOpenAsset]| callback opens this custom window and loads the selected asset.
+
+When the window is enabled, the \verb|OnEnable()| method sets up the main interface. It creates a resizable \verb|DialogueGraphView| that fills the editor panel and adds a toolbar with useful buttons. These buttons let the user save the current graph, load data from the asset, and show or hide a minimap.
+
+\verb|DialogueSaveLoad| handles saving and loading of graph data. This keeps the file management logic separate from the user interface. When the window is closed or disabled using \verb|OnDisable()|, all visual elements are removed from the UI to prevent memory or display issues.
+
+
+\subsection{DialogueController }
+The \verb|DialogueController| class is a central piece that manages the flow of a dialogue that runs within a Unity game. It uses with a \verb|DialogueUIController| to show or hide dialogue UI elements and displays the content to the player. When a dialogue is started via the \verb|StartDialogue| method, it initializes the system using the provided \verb|DialogueGraphData|, invokes any start events, and immediately begins processing the dialogue from the designated start node.
+
+Through the \verb|CheckNodeType| method, the class handles different node types dynamically, which routes execution to specific functions based on whether the node is a start node, dialogue node, event node, branch node, or an end node. For each node, it sets a \verb|Visited| flag, which can be used to track player progress or avoid repeating dialogue unnecessarily.
+
+The dialogue progression is asynchronous: if a node requires player input, buttons are shown; if it should continue automatically, a timed wait is performed before advancing. The class includes utility methods for fetching nodes by GUID or port information and navigating through the edges of the graph.
+
+\subsection{Dialogue UI}
+On the other hand, \verb|DialogueUIController| manages the visual and interactive elements. Its main job is to show dialogue text, speaker names, and player choices during conversations, and to handle input like button clicks or key presses to move dialogue forward.
+
+It controls visibility of the UI, sets up text boxes dynamically based on who is speaking and where they are in the scene, and adjusts button states depending on the dialogue logic (like whether a choice should be interactable, grayed out, or hidden). Internally, the class caches and stores UI elements like buttons and text boxes to reuse them efficiently across dialogue sequences. It also supports positioning UI elements relative to characters in the game world, so text appears near the speaker.
+
+ 
