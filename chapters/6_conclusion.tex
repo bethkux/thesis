@@ -1,10 +1,39 @@
-
 \chapwithtoc{Conclusion}
+In this chapter, the goals from Section \ref{intro:goals} will be compared with the actual implementation of our framework.
 
-In the conclusion, you should summarize what was achieved by the thesis. In a few paragraphs, try to answer the following:
-\begin{itemize}
-\item Was the problem stated in the introduction solved? (Ideally include a list of successfully achieved goals.)
-\item What is the quality of the result? Is the problem solved for good and the mankind does not need to ever think about it again, or just partially improved upon? (Is the incompleteness caused by overwhelming problem complexity that would be out of thesis scope\todo{This is quite common.}, or any theoretical reasons, such as computational hardness?)
-\item Does the result have any practical applications that improve upon something realistic?
-\item Is there any good future development or research direction that could further improve the results of this thesis? (This is often summarized in a separate subsection called `Future work'.)
-\end{itemize}
+
+\section{Goal Assessment}
+
+\hspace{0.5 cm} \ref{intro:req:com_pan} \quad \textbf{The interaction can be based on a command panel.} The TaleCraft framework does support command-based interaction, an example being the showcase of \textit{The Secret of Monkey Island}.
+
+\ref{intro:req:mouse} \quad  \textbf{The interaction can be based on context-based commands. } The TaleCraft framework also supports context-based interaction, an example being the showcase of \textit{Beneath a Steel Sky}.
+
+\ref{intro:req:mix} \quad  \textbf{A game designer should be able to choose one of these methods or combine them.} The framework supports implementing one of these methods and allows one to even combine them, all according to the developer's vision.
+
+\ref{intro:req:sentence} \quad  \textbf{A simple sentence describing the actions being taken should be included.} The framework implements this feature as well.
+
+\ref{intro:req:inv_formats} \quad  \textbf{The system should support multiple inventory formats.} The framework builds a basis for this goal, but creating the specific inventory formats turned out to be an unrealistic task. The two scenes that are included in the project showcase two examples of inventories that have two very different formats and one of them required an additional script to enable this feature, so creating unique inventories on top of the framework is possible.
+
+\ref{intro:req:text_icon} \quad  \textbf{Both text-based and icon-based layouts of inventory should be available.} The framework does support this feature. It is showcased in the two scenes included into the project.
+
+\ref{intro:req:tag} \quad  \textbf{There should be an option to display a tag when e.g. hovering over an object.} This feature is present and working, and is even included in one of the showcasing scenes.
+
+\ref{intro:req:com+mouse_move} \quad  \textbf{Both action-based movement and direct context-based movement should be supported.} TaleCraft supports this feature in its Command System.
+
+\ref{intro:req:mox_move} \quad  \textbf{There should be an option to define whether clicking on an object triggers only movement or both movement and interaction.} This feature is present in the framework as well.
+
+\ref{intro:req:pathfinding} \quad  \textbf{Pathfinding should be incorporated so that characters can navigate around the map.} TaleCraft fully supports pathfinding.
+
+\ref{intro:req:scale} \quad  \textbf{Characters should dynamically scale.} The framework enables the \verb|GameObjects| to change scale automatically based on their position in the scene.
+ 
+\ref{intro:req:layers} \quad  \textbf{Characters should adjust their position in front of or behind objects to preserve the 3D effect.} This feature is already possible only using Unity project settings and is also function in the TaleCraft framework.
+
+\ref{intro:req:multi_dialogue} \quad  \textbf{Dialogue should allow for complicated branching conversations with multiple-choice dialogue options.} The framework can create even complicated dialogue paths with multiple choice options.
+
+\ref{intro:req:modes}\quad  \textbf{There should be a clear distinction between dialogue mode and gameplay mode.} Using TaleCraft, a developer is able to easily set up what happens when the conversation is initiated or terminated.
+
+\ref{intro:req:subs} \quad  \textbf{Subtitles should be included, regardless of audio availability.} The dialogue system fully supports the addition of subtitles during conversations.
+
+
+\section{Future Work}
+Although we accomplished what we initially set out to do, the framework is far from complete. In Chapter \ref{Intro}, we chose to leave out several features that should eventually be part of the framework, the most important being animation, sound, and a saving system. In addition to these, there are a few smaller features that would further enhance the framework and improve the overall experience. For example, our framework currently implements pathfinding using Euclidean distance, but some older games use Manhattan distance, which resembles movement on a grid. It would also be helpful to include another demo showcasing a more modern 2D point-and-click game, such as \textit{Fran Bow}. 
