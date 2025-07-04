@@ -5,35 +5,35 @@ In the first part, this chapter introduces a description of the framework itself
 The TaleCraft framework consists of five main systems whose role is to manage and execute the primary features of a point-and-click adventure game. We will go through them and explain the ideal process of creating a game using this framework. The project also includes two scenes showcasing the use of our framework. In this chapter, we will refer to these two scenes by an abbreviation: The scene from our framework showcasing an area from Beneath a Steel Sky will be referred to as \textbf{BaSS}, whereas the one from The Secret of Monkey Island will be called \textbf{TSoMI}.
 
 \subsection{Core}
+To create a scene using the TaleCraft framework, it must include a \verb|GameObject| with the \textbf{Prefab Manager} component. This component provides a centralized and convenient way to reference prefabs across the framework's scripts. The Prefab Manager relies on a \verb|ScriptableObject| called the \textbf{Prefab Library}, which stores a dictionary of prefabs accessible via string labels. A new Prefab Library asset can be created in the \verb|Assets| folder by right-clicking and selecting \verb|Create > Prefab Library|.
+
+Multiple parts of the framework make use of the Prefab Library to instantiate or reference prefabs. The \verb|Assets/Prefabs| directory contains an instance of the Prefab Library, along with a collection of predefined prefabs tailored for the framework. These prefabs are already referenced within the Prefab Library and are intended to be reused and extended by users of the framework.
 
 \subsection{Walking System}
-The walking system is a good starting point right after setting up the other main scripts from the Core system. To instantiate a prefab for the Walkable System, the user must navigate the menu options \verb|GameObject > Walking System|, shown in Figure \ref{fig:Manual-WS}.
-\begin{figure}[H]
-\centering
-\includegraphics[width=.5\linewidth]{img/User doc/walking_system.png}
-\caption{Access to new Walking System prefab instance.}
-\label{fig:Manual-WS}
-\end{figure}
+The walking system is a good starting point right after setting up the the core system. 
 
-The framework provides its own default implementation of the prefab which contains a \verb|GameObject| with \textbf{Walkable Map} script attached to it as a component. The prefab also comes with a polygon that describes the walkable area accessible to characters. In Figure \ref{fig:Manual-WM}, we can see Unity inspector for the Walkable Map component together with a possible use of this component in scene BaSS. An important part of the walking system is the possibility to create obstacles for the player. To do that, the user can simply press at the \textit{Build new polygon obstacle} button, which generates a new \verb|GameObject| with the \textbf{Polygon} component script attached to it (see Figure\ref{fig:Manual-Polygon}). To remove this obstacle from the walking system, one can simply press a button \textit{X} next to the desired polygon in the list of obstacle polygons. 
+\subsubsection{Walkable Map}
+The framework provides its own default implementation of the prefab which contains a \verb|GameObject| with \textbf{Walkable Map} script attached to it as a component and by navigating the menu options \verb|GameObject > Walking System| it can be instantiated in the hierarchy. The prefab also comes with a polygon that describes the walkable area accessible to characters. In Figure \ref{fig:Manual-WM}, we can see Unity inspector for the \textbf{Walkable Map} component together with a possible use of this component in scene BaSS. An important part of the walking system is the possibility to create obstacles for the player. To do that, the user can simply press at the \textit{Build new polygon obstacle} button, which generates a new \verb|GameObject| with the \textbf{Polygon} component script attached to it (see Figure\ref{fig:Manual-Polygon}). To remove this obstacle from the walking system, one can simply press the button \textit{X} next to the desired polygon in the list of obstacle polygons. 
 
-Below that, there are options to constrain the starting or the ending points inside the walkable area and outside the obstacle polygons. In other words, if the player clicks on a point outside the walkable area defined by the developer and the option \textit{End Main} is true, then the system will find the closest possible point in the walkable area from the position of the mouse and will move the character to that point. On the other hand, if false is selected, the character will not move as there is no viable path to the position of the mouse click. Similar rules apply to the \textit{End Obstacles} option, where if a mouse click is registered to be inside an obstacle polygon, the closest possible accessible position is found in the walkable area. The \textit{Start Main} and \textit{Start Obstacle} options work similarly but for the starting position, meaning the character. If the character finds itself to be outside the walkable area and the option Start Main or Start Obstacles is selected, the character will try to find a way to the given position, otherwise not.
-
-Finally, the component also contains some visual enhancements for the developer. It is possible to visualise the graph created by the polygons and the character with the option to select a desired colour for the graph. At the very bottom, there is an option to quickly show or hide all edges and points of all polygons contained in this walking system. 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\linewidth]{img/User doc/walkable_map.png}
-\caption{Walkable Map inspector}
+\caption{Walkable Map inspector.}
 \label{fig:Manual-WM}
 \end{figure}
 
+Below that, there are options to constrain the starting or the ending points inside the walkable area and outside the obstacle polygons. In other words, if the player clicks on a point outside the walkable area defined by the developer and the option \textit{End Main} is true, then the system will find the closest possible point in the walkable area from the position of the mouse and will move the character to that point. On the other hand, if false is selected, the character will not move as there is no viable path to the position of the mouse click. Similar rules apply to the \textit{End Obstacles} option, where if a mouse click is registered to be inside an obstacle polygon, the closest possible accessible position is found in the walkable area. The \textit{Start Main} and \textit{Start Obstacle} options work similarly but for the starting position, meaning the character. If the character finds itself to be outside the walkable area and the option \textit{Start Main} or \textit{Start Obstacles} is selected, the character will try to find a way to the given position, otherwise not.
+
+Finally, the component also contains some visual enhancements for the developer. It is possible to visualize the graph created by the polygons and the character with the option to select a desired color for the graph. At the bottom, there is an option to quickly show or hide all edges and points of all polygons contained in this walking system. 
+
+\subsubsection{Polygon}
 The Figure \ref{fig:Manual-Polygon} shows an example of an obstacle polygon. The inspector provides some basic visual adjustments to help the workflow of the developer. These settings include the visibility of the edges and points together with a colour that can be set easily to visually distinguish different polygons from one another. One option also includes the sizing of the points together with a possibility to turn off automatic zooming. \textit{Automatic zooming} (depicted in Figure \ref{fig:Manual-Zoom}) makes the points change size based on the zoom level of the scene. If turned off and zoomed in, the points become very large and the screen is unreadable, so this option is turned on by default.
 
 Undoubtedly, the developer needs to adjust the position and the number of nodes. When the given polygon is selected in the hierarchy, position handles can be seen on top of the vertices of the polygons. These enable easy and intuitive editing of points without the need to individually click on each point \verb|GameObject| in the hierarchy. If the developer then wishes to add a new point, they can simply click on the circle in the middle of the line between two already present points. A new point \verb|GameObject| with the component \textbf{Point} is then created in the exact position of the circle. If a point needs to be deleted, the user needs to press Ctrl key and click on the given point. If done so, the point is removed and a new line edge is formed between the two neighbouring points.
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\linewidth]{img/User doc/polygon.png}
-\caption{Polygon inspector}
+\caption{Polygon inspector.}
 \label{fig:Manual-Polygon}
 \end{figure}
 
@@ -44,7 +44,9 @@ Undoubtedly, the developer needs to adjust the position and the number of nodes.
 \caption{Point scaling based on zoom level.}
 \label{fig:Manual-Zoom}
 \end{figure}
-The last two components of the walking system are \textbf{Character Movement} and \textbf{Sprite Scaler} scripts, whose application in the framework can be seen in Figure \ref{fig:Manual-ChM&SS} for TSoMI. 
+
+\subsubsection{Character Movement \& Sprite Scaler}
+The last two components of the walking system are \textbf{Character Movement} and \textbf{Sprite Scaler} scripts, whose application in the framework can be clearly seen in Figure \ref{fig:Manual-ChM&SS} for scene TSoMI. 
 
 \textbf{Character Movement} is attached to the player \verb|GameObject| or possibly to any other character that needs to move in the given walking area. The script needs to get a reference to the walkable map and the desired speed of movement can also be adjusted. An end point can also be given and is mainly for debugging purposes. If defined, the graph in the walkable map component can display a path between a starting point (character) and the ending point without the need to start gameplay. The user can move the end point object around the screen and check if the polygons are adjusted properly.
 
@@ -73,7 +75,7 @@ Finally, the \textit{Default Actions} let the developer set up what happens if a
 \end{figure}
 \todo{divide into multiple pictures}
 
-In order to create an interactable object in the scene, the user first needs to create a scriptable object in the Assets folder by pressing right click and selecting \verb|Create > Item > World Item|. Here, the user can define the name as well as the description of the item. This asset helps to reference the item throughout the whole project, even in other scenes. Features like the sprite or what the item does when interacted with needs to be set in the \verb|GameObject| with the component \textbf{World Object} attached to with a possible implementation in Figure \ref{fig:Manual-WO} from the BaSS scene. The script takes a \textbf{World Item} asset as a reference in order to assign the item with the actions defined. Except for an option to show a tag with a name of the object, the script also offers a way to define the position of the player when interaction is initiated. The can define multiple of these so-called Go To Points using 2D vector coordinates and during runtime the closest of them is chosen. If none are defined and the character is ordered to move to that position, it selects the position of the object itself. If the object changes position (it is a moving character, for example), the user can define if the position of these points is relative to the object or not. There are also visual settings like selecting a colour and the size of the circle defining the point.
+In order to create an interactable object in the scene, the user first needs to create a \verb|ScriptableObject| in the Assets folder by pressing right click and selecting \verb|Create > Item > World Item|. Here, the user can define the name as well as the description of the item. This asset helps to reference the item throughout the whole project, even in other scenes. Features like the sprite or what the item does when interacted with needs to be set in the \verb|GameObject| with the component \textbf{World Object} attached to with a possible implementation in Figure \ref{fig:Manual-WO} from the BaSS scene. The script takes a \textbf{World Item} asset as a reference in order to assign the item with the actions defined. Except for an option to show a tag with a name of the object, the script also offers a way to define the position of the player when interaction is initiated. The can define multiple of these so-called Go To Points using 2D vector coordinates and during runtime the closest of them is chosen. If none are defined and the character is ordered to move to that position, it selects the position of the object itself. If the object changes position (it is a moving character, for example), the user can define if the position of these points is relative to the object or not. There are also visual settings like selecting a colour and the size of the circle defining the point.
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\linewidth]{img/User doc/world_object.png}
@@ -111,11 +113,46 @@ Finally, the \textit{Max Item Count} option sets how many items can be visible a
 \subsection{Dialogue System}
 The dialogue system provides the necessary tools for creating and managing conversations between characters. Dialogues are represented as dialogue graphs, which can be created in the Assets folder by right-clicking and selecting \verb|Create > Dialogue > Dialogue Graph|. Once opened, the asset displays a dedicated editor window, as shown in Figure \ref{}.
 
-At the top of the window is a panel displaying the file name alongside three buttons. The first, \textit{Save}, stores the current state of the graph. If the window is closed without pressing this button, any unsaved changes will be lost. The second button, \textit{Load}, reloads the last saved version of the graph. This means any edits made since the last save will be discarded. The third button, \textit{MiniMap}, toggles the visibility of a small map in the top-left corner of the editor window, which provides an overview of the graph layout.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{img/User doc/image_2025-07-04_123651622.png}
+\caption{Dialogue graph window.}
+\label{fig:Manual-DW}
+\end{figure}
 
-To add elements into the graph, the user must press Space key and a new search window will appear. It prompts the user to create either \textit{Node} or \textit{Group}. Selecting the Node option lets the user choose between six different types of nodes:
+At the top of the window is a panel that displays the file name along with three buttons. The first, \textit{Save}, stores the current state of the graph. If the window is closed without pressing this button, any unsaved changes will be lost. The second button, \textit{Load}, reloads the last saved version of the graph. This means any edits made since the last save will be discarded. The third button, \textit{MiniMap}, toggles the visibility of a small map in the top-left corner of the editor window, which provides an overview of the graph layout.
 
-\todo{add}
+To add elements to the dialogue graph, the user must press the Space key, which opens a search window. This interface allows the creation of either a \textit{Node} or a \textit{Group}. Selecting the \textit{Node} option presents six different node types to choose from. All node types support naming and include the option to generate a corresponding boolean variable called \textit{Visited}. This variable tracks whether the node has been accessed during a conversation, enabling conditional behaviour based on the history of dialogues.
+
+A new Visited variable can be created by clicking the "\textit{+}" button next to its field in the node's configuration. The asset is automatically stored at the following path: \verb|Assets/Variables/Visited/[GraphName]|, where \verb|[GraphName]| corresponds to the name of the dialogue graph. The filename of the Visited variable is either the node’s custom ID (if specified) or its unique GUID. For this reason, it is recommended to assign an ID to the node before creating the Visited variable.
+
+Otherwise the nodes have a very different structure from one another:
+
+\begin{itemize}
+    \item The \textbf{Start node }is a straightforward element in the dialogue graph. Aside from allowing the assignment of an ID and a corresponding \textit{Visited} variable, it features a single output port. Only one Start node is required per graph, any additional Start nodes present will be ignored. This node functions only as an entry point, indicating where the dialogue begins within the graph.
+    \item In addition to the basic functionality common to all nodes, the Event node includes an \textit{Add Event} button. As the name implies, clicking this button adds a new slot for an associated \textbf{EventScriptableObject}, which references a \verb|ScriptableObject| used to trigger events. Since dialogue graphs are assets and cannot directly reference scene objects, this mechanism establishes the necessary link between the dialogue system and the game scene. A dialogue event \verb|ScriptableObject| can be created via the menu path: \verb|Create > Dialogue > Dialogue Event|. To bind this \verb|ScriptableObject| to the scene, a \verb|GameObject| in the scene must include the \textbf{Event Listener} component. This component maintains a list of pairs, where each pair consists of an event \verb|ScriptableObject| and a corresponding Unity Event that is invoked when the event is triggered. 
+    \item The Branch node enables conditional branching, which allows the conversation flow to change based on the defined criteria. A new condition can be added by clicking the \textit{Add Condition} button and selecting one of four available types: boolean, integer, float, or string. Afterwards, a new field appears at the bottom of the node, which allows the user to specify the expected value for that condition. The node includes two output ports labeled \textit{True} and \textit{False}. If all defined conditions are satisfied, the graph continues along the \textit{True} output. If any condition fails, the flow proceeds through the \textit{False} output instead. 
+    \item The Dialogue node provides the actual lines of dialogue spoken by characters. Initially, the node contains a single input and output port, as well as a setting labeled \textit{Continue Style}. The user can choose between two options: \textit{Wait} or \textit{Button}. The \textit{Wait} option allows the user to specify a duration (in seconds) for which the dialogue remains on screen before automatically continuing. The \textit{Button} option, on the other hand, enables the user to define a button that, when clicked, progresses the dialogue.
+
+Additional dialogue entries can be added using the \textit{Add Text} button. Each entry consists of a pair: a \textit{Character ID} and a \textit{Dialogue Text} field. The \textit{Character ID} takes a reference to a \verb|ScriptableObject| of type \textbf{CharacterID}, which can be created by right-clicking in the Assets folder and selecting \verb|Create > Dialogue > Character ID|. This object allows configuration of the character's name, text offset (in \verb|Vector2|), and text color—settings that control how the text is displayed on screen. The actual binding of the ID to a specific \verb|GameObject| in the scene is explained later in this section. The \textit{Dialogue Text} field contains the line spoken by the character associated with the selected ID.
+
+The \textit{Dialogue} node also supports branching through dialogue choices. By clicking the \textit{Add Choice} button, additional output ports are generated. These are used exclusively to connect to \textit{Choice} nodes, which enable the player to select from multiple dialogue options during gameplay.
+
+    \item The \textit{Choice} node connects exclusively to additional output ports of a \textit{Dialogue} node and is used to present clickable options to the player during dialogue sequences. It contains a text field where the developer specifies the content of the choice that will be shown on screen. Similar to the \textit{Branch} node, the \textit{Choice} node allows the addition of conditions that determine whether the choice is visible or interactable during gameplay. 
+    \item  The final node type is the \textit{End} node, which is responsible for terminating the dialogue flow. It offers three options: ending the conversation entirely, repeating the last \textit{Dialogue} node, or returning to the \textit{Start} node. Regardless of the selected behavior, the \textit{End} node does not contain any output ports, since it marks the end of a given dialogue path. 
+\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{img/User doc/nodes1.png}
+\caption{Start, Event and Branch nodes.}
+\label{fig:Manual-Nodes1}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{img/User doc/nodes2.png}
+\caption{Dialogue, Choice and End nodes.}
+\label{fig:Manual-Nodes2}
+\end{figure}
 
 If the user chooses to create a new group from the search window via the path \verb|Groups > Base group|, a new box titled \textit{Dialogue Group} will appear in the editor. Nodes can be added to the group by clicking and holding the left mouse button on a node, dragging it into the group area, and then releasing the button. Multiple nodes can be added to a single group, and it is possible to create connections between any nodes, even those outside the group. When a node is part of a group, moving the group box will also move the contained nodes accordingly. To remove a node from the group, the node needs to be dragged outside of the group while holding Shift key. A group can be renamed by double-clicking on its title. 
 

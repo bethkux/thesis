@@ -14,7 +14,7 @@ The core of the project is found in the \verb|Assets/TaleCraft| directory. \verb
 
 In the rest of this chapter, we focus on classes located in the \verb|Runtime| and \verb|Editor| folders, as well as the relations between them. In Figure \ref{fig:TaleCraft}, we can see a simple diagram describing the five main groups the classes can be divided into, as well as the connections between them. These groups are the following: 
 \begin{itemize}
-    \item \textbf{Core} scripts implement key functionalities of the framework, which include Game Manager and Input Manager. This system is closely examined in Section \ref{Core}.
+    \item \textbf{Core} scripts implement key functionalities of the framework, which include Prefab Manager and Input Manager. This system is closely examined in Section \ref{Core}.
     \item The \textbf{Command System} manages the logic behind interactions for items in the inventory as well as those in the in-game world. It is referenced from the Input Manager in the Core group and more information can be found in Section \ref{CommandSystem}.
     \item The scripts in \textbf{Walking System} take care of creating polygons representing the walkable areas (in)accessible to the player as well as the generating of a graph described in Section \ref{Analysis:Graph}. The system also enables movement of characters, which needs to be called from Command System in order to move closer to the required spot upon clicking on it. The Walking System is further examined in Section \ref{Walkingystem}.
     \item  Dialogue scripts in the \textbf{Dialogue System} handle both user-facing and back-end aspects of the dialogue system, such as managing the editing of dialogue graphs through an interactive interface or the saving and loading of graph data. Additionally, some scripts control the runtime logic of the dialogue nodes during gameplay, including tasks such as hiding or revealing specific choice options, triggering events, and displaying the appropriate dialogue text above the corresponding characters. This system is largely separated from other systems except for the reference to variables and conditions from the Command System. We will look closely at the system in Section \ref{DialogueSystem}. 
@@ -32,8 +32,8 @@ In the rest of this chapter, we focus on classes located in the \verb|Runtime| a
 \label{Core}
 The scripts in the \textbf{Core} folder work independently of one another and are responsible for managing foundational functionalities that fall outside the scope of the four main systems. 
 
-\subsection{GameManager}
-The \verb|GameManager| is a singleton that handles core game logic and provides global access to shared systems. It holds a reference to the \verb|PrefabLibrary|, which stores prefabs used throughout the game. The singleton instance is created on demand by searching the scene, ensuring only one instance exists by destroying duplicates on \verb|Awake|. For now, it does not include many functionalities, but it can be useful to track gameplay-related logic.
+\subsection{PrefabManager}
+The \verb|PrefabManager| is a singleton that provides global access to shared systems. It holds a reference to the \verb|PrefabLibrary|, which stores prefabs used throughout the game. The singleton instance is created on demand by searching the scene, ensuring only one instance exists by destroying duplicates on \verb|Awake|. For now, it does not include many functionalities, but it can be useful to track gameplay-related logic.
 
 \subsection{PrefabLibrary}
 The \verb|PrefabLibrary| is a simple asset manager that stores references to named prefabs, making it easier for other scripts to access and spawn them without needing hardcoded links in the scene or code. It keeps a list of entries, each made up of a name and a corresponding \verb|GameObject|. The main method, \verb|GetPrefabByName|, looks up a prefab by its name and returns the matching object.
