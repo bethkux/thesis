@@ -78,9 +78,20 @@ In his article, Steven Henk Don \cite{Shdon} outlines an approach to representin
 
 To obtain such a bitmap, the user must use image-editing software to manually create colorful shapes that represent the accessible parts of the environment and then save the image. Additionally, modifying the bitmap is difficult and time-consuming, as it requires reopening the editing software and making manual changes. Our goal is to find a solution that can be integrated directly into the framework while keeping the experience user-friendly, something this approach does not support. 
 
+\subsubsection{Sierra's approach}
+Since Chapter \ref{Intro} focused heavily on the features of classic point-and-click games, it makes sense to now examine how walking systems are implemented by prominent studios. Unfortunately, there is limited publicly available information on this topic, possibly due to the existence of patents or proprietary techniques that are not openly shared. However, we have found one notable example. According to ScummVM, an open-source project that reimplements classic game engines, a prominent game company Sierra behind classics such as \textit{King's Quest} implemented their own patented pathfinding algorithm designed to navigate game characters around obstacles \cite{ScummVM-polygons}. It uses polygons to represent the area as well as obstacles, which can be divided into four types with the following rules:
+\begin{itemize}
+    \item  \textit{Barred access polygons} strictly block entry, meaning if the end point lies inside one, the path ends at the nearest point on the polygon’s boundary. 
+    \item On the other hand, \textit{total access polygons} are ignored if the start or end point is inside them, allowing paths to begin or end there, but otherwise preventing entry. \textit{
+    \item Near-point access polygons} require that the path enters or exits through the closest boundary point (near-point) if the start or end lies within. 
+    \item Finally, \textit{contained access polygons} define strict boundaries within which the entire path must remain; if the end point lies outside, the path stops at the near-point. Since polygons cannot intersect, only one contained access polygon can exist in a scene.
+\end{itemize}
+
+While this method is more useful and usable in the Unity engine, it also introduces additional polygon types to support more nuanced navigation behavior. However, these specialized polygons appear to add unnecessary complexity, as the same results, such as adjusting start or end points to valid locations, can be achieved through simpler methods. Unity supports storing data in game objects and these additional rules can be simply integrated this way. Therefore, this thesis will adopt select ideas from Sierra’s method, but will not implement multiple polygon types, in favor of a more user-friendly solution. So let us examine one more approach, which will make us understand the method used in our framework.
+
 \subsubsection{Polygons}
 \label{Analysis:Polygon}
-Another approach to this problem is discussed in detail in articles by Mic Uurloon \cite{Uurloon1}\cite{Uurloon2}, where walkable areas and obstacles are defined using polygon shapes directly within the Unity engine. The idea is to have one primary shape that defines the main walkable area, be it a room, a hall, or a town square. Inside that area, there can be places that are not accessible currently or indefinitely (e.g. furniture), let us call them obstacles. We can define the boundaries of the walkable area and the obstacles using polygons, as seen in Figure \ref{fig:WS:Poly}. One such polygon can be used to outline the primary area where the user walks around, while additional polygons can be viewed as obstacles that the player must avoid.
+A way to represent the walkable area is discussed in detail in articles by Mic Uurloon \cite{Uurloon1}\cite{Uurloon2}, where walkable areas and obstacles are defined using polygon shapes directly in the Unity engine. The idea is to have one primary shape that defines the main walkable area, be it a room, a hall, or a town square. Inside that area, there can be places that are not accessible currently or indefinitely (e.g. furniture), let us call them obstacles. We can define the boundaries of the walkable area and the obstacles using polygons, as seen in Figure \ref{fig:WS:Poly}. One such polygon can be used to outline the primary area where the user walks around, while additional polygons can be viewed as obstacles that the player must avoid.
 
 \begin{figure}[H]
 \centering
@@ -89,18 +100,8 @@ Another approach to this problem is discussed in detail in articles by Mic Uurlo
 \label{fig:WS:Poly}
 \end{figure}
 
-The main advantage of this approach is the ability of the user of the framework to modify the shapes on the fly whenever necessary. Next, this system can be implemented directly in Unity and does not require any other software to set it up. Given these benefits, this will be the primary approach explored and implemented in this thesis, while still considering alternative methods for comparison in the following section. 
+The main advantage of this approach is the ability of the user of the framework to modify the shapes on the fly whenever necessary. Next, this system can be implemented directly in Unity and does not require any other software to set it up. Given these benefits, this will be the primary approach explored and implemented in this thesis. 
 
-\subsubsection{Sierra}
-Since Chapter \ref{Intro} focused heavily on the features of classic point-and-click games, it makes sense to now examine how walking systems are implemented by prominent studios. Unfortunately, there is limited publicly available information on this topic, possibly due to the existence of patents or proprietary techniques that are not openly shared. However, we have found one notable example. According to ScummVM, an open-source project that reimplements classic game engines, a prominent game company Sierra behind classics such as \textit{King's Quest} implemented their own patented pathfinding algorithm designed to navigate game characters around obstacles \cite{ScummVM-polygons}. Similarly to the second approach, it uses polygons to represent the area as well as the obstacles. But unlike it, is also uses a complex system of four types of polygons with different rules. 
-\begin{itemize}
-    \item  \textit{Barred access polygons} strictly block entry, meaning if the end point lies inside one, the path ends at the nearest point on the polygon’s boundary. 
-    \item On the other hand, \textit{total access polygons} are ignored if the start or end point is inside them, allowing paths to begin or end there, but otherwise preventing entry. \textit{
-    \item Near-point access polygons} require that the path enters or exits through the closest boundary point (near-point) if the start or end lies within. 
-    \item Finally, \textit{contained access polygons} define strict boundaries within which the entire path must remain; if the end point lies outside, the path stops at the near-point. Since polygons cannot intersect, only one contained access polygon can exist in a scene.
-\end{itemize}
-
-While this method shares similarities with the approach introduced in the previous section, it introduces additional polygon types to support more nuanced navigation behavior. However, these specialized polygons appear to add unnecessary complexity, as the same results, such as adjusting start or end points to valid locations, can be achieved through simpler means. Unity supports storing data in game objects and these additional rules can be simply integrated this way. Therefore, this thesis will adopt select ideas from Sierra’s method, but will not implement multiple polygon types, in favor of a more user-friendly solution. 
 
 \subsection{Pathfinding}
 A crucial part of character movement is the ability to find a path to the goal.
@@ -146,7 +147,7 @@ A naive strategy would be to follow the edge of the obstacle, either to the left
 \end{figure}
 
 \subsubsection{Shortest path}
-In real life, people instinctively aim for the shortest or most efficient route. By comparing the left and right paths in Figure \ref{fig:Path-P}, we can identify the shorter one - likely the more natural and visually appealing choice. But even this can be improved. If we examine the start of the path, our algorithm initially attempts to move straight toward the goal until hitting an obstacle. However, a person would probably try to avoid the obstacle from the beginning, aiming to take the shortest path right away. That’s the key insight: instead of reacting to obstacles as they come, we should aim to find the shortest path from the start, just like the one in Figure \ref{fig:Path-P2}.
+In real life, people instinctively aim for the shortest or most efficient route. By comparing the left and right paths in Figure \ref{fig:Path-P}, we can identify the shorter one - likely the more natural and visually appealing choice. But even this can be improved. If we examine the start of the path, our algorithm initially attempts to move straight toward the goal until hitting an obstacle. However, a person would probably try to avoid the obstacle from the beginning, aiming to take the shortest path right away. That is the key insight: instead of reacting to obstacles as they come, we should aim to find the shortest path from the start, just like the one in Figure \ref{fig:Path-P2}.
  
 \begin{figure}[H]
 \centering

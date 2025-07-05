@@ -2,7 +2,7 @@
 In the first part, this chapter introduces a description of the framework itself with all its features. The second part then provides a description of the two showcase games with the way they are controlled.  
 
 \section{Framework}
-The TaleCraft framework consists of five main systems whose role is to manage and execute the primary features of a point-and-click adventure game. We will go through them and explain the ideal process of creating a game using this framework. The project also includes two scenes showcasing the use of our framework. In this chapter, we will refer to these two scenes by an abbreviation: The scene from our framework showcasing an area from Beneath a Steel Sky will be referred to as \textbf{BaSS}, whereas the one from The Secret of Monkey Island will be called \textbf{TSoMI}.
+The TaleCraft framework consists of five main systems whose role is to manage and execute the primary features of a point-and-click adventure game. We will go through each of them and explain the ideal process of creating a game using this framework. The project also includes two scenes that showcase the use of our framework and are located under \verb|Assets > Examples|. In this chapter, we will refer to these two scenes by an abbreviation. The scene from our framework showcasing an area from \textit{Beneath a Steel Sky} (1994) will be referred to as \textit{BaSS}, whereas the one from \textit{The Secret of Monkey Island} (1990) will be called \textit{TSoMI}.
 
 \subsection{Core}
 To create a scene using the TaleCraft framework, it must include a \verb|GameObject| with the \textbf{Prefab Manager} component. This component provides a centralized and convenient way to reference prefabs across the framework's scripts. The Prefab Manager relies on a \verb|ScriptableObject| called the \textbf{Prefab Library}, which stores a dictionary of prefabs accessible via string labels. A new Prefab Library asset can be created in the \verb|Assets| folder by right-clicking and selecting \verb|Create > Prefab Library|.
@@ -13,7 +13,7 @@ Multiple parts of the framework make use of the Prefab Library to instantiate or
 The walking system is a good starting point right after setting up the the core system. 
 
 \subsubsection{Walkable Map}
-The framework provides its own default implementation of the prefab which contains a \verb|GameObject| with \textbf{Walkable Map} script attached to it as a component and by navigating the menu options \verb|GameObject > Walking System| it can be instantiated in the hierarchy. The prefab also comes with a polygon that describes the walkable area accessible to characters. In Figure \ref{fig:Manual-WM}, we can see Unity inspector for the \textbf{Walkable Map} component together with a possible use of this component in scene BaSS. An important part of the walking system is the possibility to create obstacles for the player. To do that, the user can simply press at the \textit{Build new polygon obstacle} button, which generates a new \verb|GameObject| with the \textbf{Polygon} component script attached to it (see Figure\ref{fig:Manual-Polygon}). To remove this obstacle from the walking system, one can simply press the button \textit{X} next to the desired polygon in the list of obstacle polygons. 
+The framework provides its own default implementation of the prefab which contains a \verb|GameObject| with \textbf{Walkable Map} script attached to it as a component and by navigating the menu options \verb|GameObject > Walking System| it can be instantiated in the hierarchy. The prefab also comes with a polygon that describes the walkable area accessible to characters. In Figure \ref{fig:Manual-WM}, we can see Unity inspector for the \textbf{Walkable Map} component together with a possible use of this component in scene \textit{BaSS}. An important part of the walking system is the possibility to create obstacles for the player. To do that, the user can simply press at the \textit{Build new polygon obstacle} button, which generates a new \verb|GameObject| with the \textbf{Polygon} component script attached to it (see Figure\ref{fig:Manual-Polygon}). To remove this obstacle from the walking system, one can simply press the button \textit{X} next to the desired polygon in the list of obstacle polygons. 
 
 \begin{figure}[H]
 \centering
@@ -46,7 +46,7 @@ Undoubtedly, a developer needs to adjust the position and the number of nodes. W
 \end{figure}
 
 \subsubsection{Character Movement \& Sprite Scaler}
-The last two components of the walking system are \textbf{Character Movement} and \textbf{Sprite Scaler} scripts, whose application in the framework can be clearly seen in Figure \ref{fig:Manual-ChM&SS} for scene TSoMI. 
+The last two components of the walking system are \textbf{Character Movement} and \textbf{Sprite Scaler} scripts, whose application in the framework can be clearly seen in Figure \ref{fig:Manual-ChM&SS} for scene \textit{TSoMI}. 
 
 The \textbf{Character Movement} script is attached to the player \verb|GameObject| or to any other character that requires movement in a walkable area. The script must be provided with a reference to the \textbf{Walkable Map}, and the desired movement speed can be configured. An optional end point may also be specified, primarily for debugging purposes. When defined, the graph in the \textbf{Walkable Map} component can visualize the path between the character's current position and the designated end point without entering play mode. This allows the user to interactively reposition the end point and verify that the polygonal navigation areas are configured correctly.
 
@@ -62,7 +62,7 @@ Finally, the \textbf{Sprite Scaler} component takes care of scaling the sprite o
 The Command system is complex and contains many components, so let us take a closer look at its individual parts.
 
 \subsubsection{Command Manager}
-The framework can instantiate a prefab in the hierarchy by navigating the menu options \verb|GameObject > Command System|. The prefab consists of a \verb|GameObject| with \textbf{Command Manager} script attached to it as a component (see an example of  the script from scene BaSS in Figure \ref{fig:Manual-CM}). It takes the player \verb|GameObject| as a reference to apply action like walking to the appropriate location. The other two following properties \textit{Action Temp} and \textit{Action Sequence} are for debugging purposes as they display the currently hovered over object and the other game object that the player has interacted with.
+The framework can instantiate a prefab in the hierarchy by navigating the menu options \verb|GameObject > Command System|. The prefab consists of a \verb|GameObject| with \textbf{Command Manager} script attached to it as a component (see an example of  the script from scene \textit{BaSS} in Figure \ref{fig:Manual-CM}). It takes the player \verb|GameObject| as a reference to apply action like walking to the appropriate location. The other two following properties \textit{Action Temp} and \textit{Action Sequence} are for debugging purposes as they display the currently hovered over object and the other game object that the player has interacted with.
 
 \begin{figure}[H]
 \centering
@@ -73,7 +73,7 @@ The framework can instantiate a prefab in the hierarchy by navigating the menu o
 
 The next section, \textit{Commands}, is used to define the behavior associated with each command. All available commands are listed in the \textit{Commands List}. New entries can be added using the \textit{Add Command} button, while existing ones can be removed with the \textit{X} button next to each item. Editing commands in this list will automatically update all references across the framework’s inspectors without data loss. If there is a risk of losing data, the scripts provide separate buttons to synchronize the commands.
 
-Above the list, there is a property displaying the currently selected command, primarily for debugging purposes. Additionally, the section includes options for setting the \textit{Default Command} and the \textit{Move Command}. The \textit{Default Command} determines which command will become active once the current action is completed. On the other hand, the \textit{Move Command} specifies the command responsible for detecting and responding to clicks related to character movement. The scene TSoMI can serve as a useful reference for users, as it demonstrates a variety of commands and highlights the potential of this system.
+Above the list, there is a property displaying the currently selected command, primarily for debugging purposes. Additionally, the section includes options for setting the \textit{Default Command} and the \textit{Move Command}. The \textit{Default Command} determines which command will become active once the current action is completed. On the other hand, the \textit{Move Command} specifies the command responsible for detecting and responding to clicks related to character movement. The scene \textit{TSoMI} can serve as a useful reference for users, as it demonstrates a variety of commands and highlights the potential of this system.
 
 Next is the \textit{Set Sentence Structure} option, which lets the developer define the structure that the command needs to follow when the command sentence is to be displayed. For example, Figure \ref{fig:Manual-CM3} shows a possible way to set this \textit{Sentence Structures}. \verb|Talk to| command is only followed by an object (e.g., Talk to customer), whereas \verb|Give| requires the "Object - Connector - Object" sequence (e.g., Give flower to customer).
 
@@ -87,7 +87,7 @@ Next is the \textit{Set Sentence Structure} option, which lets the developer def
 Finally, the \textit{Default Actions} allow the developer to specify what should happen when all possible actions for a given object-command combination are invalid. This is useful for providing feedback to the player when their input is not correct and a different action is required. If the \textit{Move Closer} toggle is enabled, the character will walk up to the object before attempting to interact with it. The \textit{Actions} section below allows the developer to define additional behavior through Unity Events.
 
 \subsubsection{World Object}
-In order to create an interactable object in the scene, the user first needs to create a \verb|ScriptableObject| in the Assets folder by pressing right-click and selecting \verb|Create > Item > World Item|. Here, the user can define the name as well as the description of the item. This asset helps to reference the item throughout the whole project, even in other scenes. Features such as the sprite or what the item does when interacted with needs to be set in the \verb|GameObject| with the component \textbf{World Object} attached to with a possible implementation in Figure \ref{fig:Manual-WO} from the BaSS scene. 
+In order to create an interactable object in the scene, the user first needs to create a \verb|ScriptableObject| in the Assets folder by pressing right-click and selecting \verb|Create > Item > World Item|. Here, the user can define the name as well as the description of the item. This asset helps to reference the item throughout the whole project, even in other scenes. Features such as the sprite or what the item does when interacted with needs to be set in the \verb|GameObject| with the component \textbf{World Object} attached to with a possible implementation in Figure \ref{fig:Manual-WO} from the \textit{BaSS} scene. 
 
 \begin{figure}[H]
 \centering
@@ -120,13 +120,13 @@ The desired behavior can be created in the reorderable \textit{Labeled Actions} 
 
 To ensure that an inventory slot appears correctly in the inventory and has expected behaviors, such as being draggable by the mouse cursor or displaying a tag when hovered over, a prefab must be created. This prefab acts as a reusable template, allowing the system to instantiate inventory slot elements automatically, each with the required components and behaviors already configured. Once the prefab is properly set up, the developer does not need to manually configure each inventory slot instance.
 
-The TaleCraft framework provides a ready-made implementation of such an inventory slot prefab, as demonstrated in the TSoMI and BaSS example scenes. In order for the framework to access and instantiate this prefab, it must be registered in the \textbf{Prefab Library} under the label \textit{InventorySlot}.
+The TaleCraft framework provides a ready-made implementation of such an inventory slot prefab, as demonstrated in the \textit{TSoMI} and \textit{BaSS} example scenes. In order for the framework to access and instantiate this prefab, it must be registered in the \textbf{Prefab Library} under the label \textit{InventorySlot}.
 
 Since inventory slots are part of the user interface (UI), the system for handling input, such as clicking or dragging, differs from that used for \textbf{World Objects}. Moreover, \textbf{World Objects} typically only respond to left or right mouse clicks, whereas inventory interactions may include additional behaviors such as dragging. These behaviors must be defined by the developer, but the TaleCraft framework simplifies the process.
 
 Unity provides the \textbf{Event Trigger} component, which can be attached to a \verb|GameObject| to define responses to various input events, such as cursor entry or exit, clicks, drags, and more. In the TaleCraft framework, inventory slots make use of this system in the provided demonstration scenes. To help manage input more precisely, the framework includes the \textbf{Custom Pointer Handler} component, which distinguishes between left and right mouse button inputs.
 
-Additionally, the framework offers a \textbf{Trigger Setter} component, which defines a set of commonly used methods for inventory interactions. These include features such as dragging items or displaying tags when the mouse hovers over a slot, which streamlines the implementation of standard inventory behaviors. All of this can be examined further in scenes BaSS and TSoMI.
+Additionally, the framework offers a \textbf{Trigger Setter} component, which defines a set of commonly used methods for inventory interactions. These include features such as dragging items or displaying tags when the mouse hovers over a slot, which streamlines the implementation of standard inventory behaviors. All of this can be examined further in scenes \textit{BaSS} and \textit{TSoMI}.
 
 \subsection{Inventory System}
 \label{UD-IS}
@@ -138,14 +138,14 @@ The inventory system provides the necessary functionalities to manage and displa
 \label{fig:Manual-Inventory}
 \end{figure}
 
-Another component that takes care of visualizing the inventory is \textbf{Display Inventory}. There is an option to set between two types of inventory: \textit{Name} or \textit{Icon}. The former displays the inventory items as a label with the word (or their combination), whereas the latter creates an icon depicting the item. Both of these approaches are used in the BaSS and TSoMI scenes.
+Another component that takes care of visualizing the inventory is \textbf{Display Inventory}. There is an option to set between two types of inventory: \textit{Name} or \textit{Icon}. The former displays the inventory items as a label with the word (or their combination), whereas the latter creates an icon depicting the item. Both of these approaches are used in the \textit{BaSS} and \textit{TSoMI} scenes.
 
 Afterwards, the layout settings can be seen. These can adjust the configuration of the inventory slots: the starting location, width, height and more. 
 
-Finally, the \textit{Max Item Count} option sets how many items can be visible at most. It ties directly to the last script in the inventory system called \textbf{Inventory Scroll Button}, which when attached to a \verb|GameObject| lets the user define the behavior of scrolling through the inventory by pressing an arrow. This exact scenario is used in TSoMI scene.
+Finally, the \textit{Max Item Count} option sets how many items can be visible at most. It ties directly to the last script in the inventory system called \textbf{Inventory Scroll Button}, which when attached to a \verb|GameObject| lets the user define the behavior of scrolling through the inventory by pressing an arrow. This exact scenario is used in \textit{TSoMI} scene.
 
 \subsection{Dialogue System}
-The dialogue system provides the necessary tools for creating and managing conversations between characters. Dialogues are represented as dialogue graphs, which can be created in the Assets folder by right-clicking and selecting \verb|Create > Dialogue > Dialogue Graph|. Once opened, the asset displays a dedicated editor window, as shown in Figure \ref{}.
+The dialogue system provides the necessary tools for creating and managing conversations between characters. Dialogues are represented as dialogue graphs, which can be created in the Assets folder by right-clicking and selecting \verb|Create > Dialogue > Dialogue Graph|. Once opened, the asset displays a dedicated editor window, as shown in Figure \ref{fig:Manual-DW}.
 
 \begin{figure}[H]
 \centering
@@ -159,9 +159,7 @@ At the top of the window is a panel that displays the file name along with three
 \subsubsection{Nodes}
 To add elements to the dialogue graph, the user must press the Space key, which opens a search window. This interface allows the creation of either a \textit{Node} or a \textit{Group}. Selecting the \textit{Node} option presents six different node types to choose from. All node types support naming and include the option to generate a corresponding boolean variable called \textit{Visited}. This variable tracks whether the node has been accessed during a conversation, enabling conditional behaviour based on the history of dialogues.
 
-A new Visited variable can be created by clicking the "\textit{+}" button next to its field in the node's configuration. The asset is automatically stored at the following path: \verb|Assets/Variables/Visited/[GraphName]|, where \verb|[GraphName]| corresponds to the name of the dialogue graph. The filename of the Visited variable is either the node’s custom ID (if specified) or its unique GUID. For this reason, it is recommended to assign an ID to the node before creating the Visited variable.
-
-Otherwise the nodes have a very different structure from one another:
+A new Visited variable can be created by clicking the "\textit{+}" button next to its field in the node's configuration. The asset is automatically stored at the following path: \verb|Assets/Variables/Visited/[GraphName]|, where \verb|[GraphName]| corresponds to the name of the dialogue graph. The filename of the Visited variable is either the node’s custom ID (if specified) or its unique GUID. For this reason, it is recommended to assign an ID to the node before creating the Visited variable. Otherwise the nodes have a very different structure from one another. In the rest of this Section, each type of node will be closely examined with Figures \ref{fig:Manual-Nodes1} and \ref{fig:Manual-Nodes2} providing visual guidance.
 
 \begin{itemize}
     \item The \textbf{Start node }is a straightforward element in the dialogue graph. Aside from allowing the assignment of an ID and a corresponding \textit{Visited} variable, it features a single output port. Only one Start node is required per graph, any additional Start nodes present will be ignored. This node functions only as an entry point, indicating where the dialogue begins within the graph.
@@ -189,6 +187,8 @@ The Dialogue node also supports branching through dialogue choices. By clicking 
 \label{fig:Manual-Nodes2}
 \end{figure}
 
+Both the \textit{TSoMI} and \textit{BaSS} scenes use the dialogue system, and it is recommended to examine the dialogue graphs created for these showcase scenes, as they provide practical examples of how the system can be used. 
+
 \subsubsection{Groups}
 If the user chooses to create a new group from the search window via the path \verb|Groups > Base group|, a new box titled \textit{Dialogue Group} will appear in the editor. Nodes can be added to the group by clicking and holding the left mouse button on a node, dragging it into the group area, and then releasing the button. Multiple nodes can be added to a single group, and it is possible to create connections between any nodes, even those outside the group. When a node is part of a group, moving the group box will also move the contained nodes accordingly. To remove a node from the group, the node needs to be dragged outside of the group while holding Shift key. A group can be renamed by double-clicking on its title. 
 
@@ -203,18 +203,18 @@ The \textbf{Dialogue UI Controller} component allows the developer to assign a s
 To demonstrate the capabilities of our framework, we chose to recreate scenes from two classic point-and-click adventure games: \textit{The Secret of Monkey Island} and \textit{Beneath a Steel Sky}. Both titles are iconic representatives of the genre, released during its golden era, and introduced several innovative features that later became genre standards. While \textit{The Secret of Monkey Island} uses a command-based interaction system, \textit{Beneath a Steel Sky} takes a more context-sensitive approach. The two games also differ in their inventory design and other small UI elements, such as interaction tags and descriptive sentences, making them ideal candidates to test and showcase the flexibility of our framework.
 
 Another reason we selected these specific titles is their age and current distribution status: they are no longer sold as new releases. Works in the public domain can be used freely without restrictions, but since video games are still a relatively young medium, only a few very old titles or special cases have entered the public domain.
-Our project is non-commercial and our use of these games falls under fair use for educational purposes, but the boundaries of fair use are not always clearly defined. 
+Our framework is non-commercial and our use of these games falls under fair use for educational purposes, but the boundaries of fair use are not always clearly defined. 
 Newer game developers might object to similar use of their intellectual property. We therefore encourage all readers to support the original games where possible. The sequel to \textit{Beneath a Steel Sky} is available on Steam, and \textit{The Secret of Monkey Island} can be purchased as a modern remake.
 
 \subsection{Instructions}
-\verb|Attachments.zip| includes the \verb|TSoMI-Build| and \verb|BaSS-Build| folders, which in addition to a few application binaries, a dynamically linked library and directories with the game assets contain an executable file. To run the game, simply run the \verb|TaleCraft.exe| binary. Both games will show a \textit{Made with Unity }splash screen followed by the scene itself. To quit the game, one needs to simply press ESC on the keyboard.
+The \verb|Build| folder inside \verb|Attachments.zip| includes the \verb|TSoMI-Build| and \verb|BaSS-Build| directories, which in addition to a few application binaries, a dynamically linked library and directories with the game assets contain an executable file. To run the game, simply run the \verb|TaleCraft.exe| binary. Both games will show a \textit{Made with Unity }splash screen followed by the scene itself. To quit the game, one needs to simply press Esc on the keyboard.
 
 \subsection{Beneath a Steel Sky}
 \textbf{Beneath a Steel Sky} showcase takes place in a starting location of the original game. The style of the following instructions are taken from the original manual for the game \cite{BaSS-Manual}.
 
 \textbf{Clicking} on objects or characters causes the main character, Foster, to interact with them. To \textbf{move} Foster, the player can point the cursor at navigable areas of the screen and click either mouse button. Foster will not walk into walls or inaccessible areas. Certain objects in the game world can be \textbf{examined} or \textbf{interacted} with. These are identified by on-screen tags that appear when the cursor hovers over them. Pressing the \textbf{left mouse button} causes Foster to examine the object, while the \textbf{right mouse button} attempts to pick up or use it. The game selects the most logical action based on context, for example, clicking on a character will typically initiate a conversation. 
 
-When the pointer is moved to the top edge of the screen, a horizontal bar appears, displaying an \textbf{inventory} with all items currently carried by Foster (see Figure \ref{fig:BaSS-manual}). Interaction with these items follows the same logic as with objects in the game world: \textbf{hovering} the cursor over an item reveals its name, pressing the \textbf{left mouse button} displays a short description of the item, while pressing the \textbf{right mouse} button selects it for further interaction. 
+When the pointer is moved to the top edge of the screen, a horizontal bar appears, which represents an \textbf{inventory} (see Figure \ref{fig:BaSS-manual}). It contains items currently carried by Foster and interaction with them follows the same logic as with objects in the game world: \textbf{hovering} the cursor over an item reveals its name, pressing the \textbf{left mouse button} displays a short description of the item, while pressing the \textbf{right mouse} button selects it for further interaction. 
 
 When the cursor hovers over another character, clicking either mouse button initiates a conversation. Dialogue options are presented at the top of the screen and the player can choose a line by clicking on it. 
 
