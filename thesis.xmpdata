@@ -3,5 +3,5 @@
 \Author{Alžbeta Kulichová}
 \Title{TaleCraft — Framework for 2D point-and-click adventure games}
 \Keywords{Unity\sep framework\sep 2D game \sep point-and-click adventure game}
-\Subject{Abstract of thesis}
+\Subject{This thesis implements a C\# framework for 2D point-and-click adventure games built in the Unity engine. While similar tools exist in the Unity Asset store, point-and-click adventure games often rely on custom-built solutions, and there is still value in creating a lightweight, adaptable framework that can serve as both a development aid and a learning resource. It allows game developers to streamline the development of fundamental gameplay systems typical of the genre. At the same time, it offers flexibility and customizable components to accommodate a wide range of artistic styles and narrative structures. The framework provides core mechanics commonly found in point-and-click adventures such as a walking system, dialogue system, inventory system, and more. To showcase how the framework works in practice, a simple prototype game was created using its features. While the framework is not fully complete and does not include every mechanic a finished game might need, it provides a solid foundation and a starting point for future improvements and additional functionality.}
 \Publisher{Charles University}

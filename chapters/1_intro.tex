@@ -8,7 +8,7 @@ One genre that holds a special place in gaming history is point-and-click advent
 However, there is a lack of accessible, beginner-friendly tools dedicated specifically to the point-and-click adventure genre. While there are powerful frameworks available in Unity, such as \textit{Adventure Creator} \cite{AdvCreator}, they often come with a broad set of features that can overwhelm newcomers and a price tag that may deter hobbyists or students. To fill this demand, the goal of this Bachelor thesis is to design and implement an accessible framework tailored to the development of 2D point-and-click adventure games. This framework, called \textit{TaleCraft}, will prioritize functionality and user-friendliness to help beginner to intermediate developers create engaging games without need for advanced programming skills. By offering a streamlined, free and open source alternative to more complex and often paid tools, \textit{TaleCraft} aims to lower the barrier to entry and make the genre more accessible for aspiring creators. It will include only the essential mechanics of the genre, providing core systems: movement, dialogue, control system, and inventory management. Additionally, it will allow developers to customize these elements to fit their vision. By addressing the unique challenges associated with point-and-click adventure game development, this thesis aims to provide a valuable tool for aspiring developers. To develop our framework, we will use the Unity game engine. Microsoft Visual Studio will be used to write scripts in the C\# programming language. 
 
 \section{Point-and-click adventure games}
-A typical point-and-click adventure game emphasizes exploration, puzzle solving, and narrative engagement often involving mystery and exploration. Players interact with in-game environments through context-based controls and a cursor is used to click on objects, locations, or characters within a visual scene to trigger actions or dialogues. 
+A typical point-and-click adventure game emphasizes exploration, puzzle solving, and narrative engagement often involving mystery and exploration. Players interact with in-game environments through context-based controls and a cursor is used to click on objects, locations, or characters in a visual scene to trigger actions or dialogues. 
 
 A very important aspect of this genre is the inventory system, which allows players to collect, examine, and use items to advance the story. Similarly, a dialogue system plays a major role, as conversations with non-player characters (NPCs) often provide essential information, influence story progression, or present choices that shape the outcome of the game. Additionally, character movement is typically controlled by clicking on a location, guiding the protagonist to navigate the world and interact with objects. Another defining feature is the command system, which determines how players interact with the world. Some games use a action panel with verbs such as “\texttt{Look at}”, “\texttt{Pick up}”, or “\texttt{Talk to}”, allowing players to take specific actions, while others rely solely on context-based interactions, where clicking on an object automatically triggers the most appropriate action. 
 
@@ -23,7 +23,7 @@ In recent years, the point-and-click adventure genre has undergone a renaissance
 \label{sec:Common features}
 So far in the previous subsection, the importance of point-and-click adventure games as a game genre has been highlighted. Now, it is necessary to take a look at concrete examples of 2D point-and-click adventure games and specifically their prominent features and characteristics. By doing this, we can find inspiration to design and create the framework. We will look closely at the following features: Commands, Inventory, Character movement, Dialogue, Animations, Sound management, Bonus features.
 
-Understanding these core features is essential for shaping the framework, but not every mechanic found in point-and-click games can be included within the scope of this thesis. Games as a medium are very complex with a lot of mechanics and features, and point-and-click adventure games are no exception. The framework we are creating should enable smooth and simple creation process. However, the scope of such framework that would handle this huge variety of different features is quite large for a bachelor thesis and so we need to select a set of these features. We primarily aim for those that would build a base of our framework and their presence is an integral part of a 2D point-and-click adventure game, even though creating a finished game only using these is not possible. We also want to emphasise that some features will not be implemented in our framework by marking them using the following box:
+Understanding these core features is essential for shaping the framework, but not every mechanic found in point-and-click games can be included in the scope of this thesis. Games as a medium are very complex with a lot of mechanics and features, and point-and-click adventure games are no exception. The framework we are creating should enable smooth and simple creation process. However, the scope of such framework that would handle this huge variety of different features is quite large for a bachelor thesis and so we need to select a set of these features. We primarily aim for those that would build a base of our framework and their presence is an integral part of a 2D point-and-click adventure game, even though creating a finished game only using these is not possible. We also want to emphasise that some features will not be implemented in our framework by marking them using the following box:
 %\todo{Ideally, other features would be added in the future, and so we do not want to approach this project in a way that would restrict its scalability. That is why we are going to implement only a limited number of them. To demonstrate its functionality and ease of use, a prototype game will be developed using the framework. }
 
 \newtcolorbox{notImplemented}{
@@ -58,7 +58,7 @@ For example, in Figure \ref{fig:C-TSoMI}, the command “\texttt{Look at}” is 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.75\linewidth]{img/C-TSoMI.png}
+\includegraphics[width=.8\linewidth]{img/C-TSoMI.png}
 \caption{The Secret of Monkey Island: Using commands to form sentences.}
 \label{fig:C-TSoMI}
 \end{figure}
@@ -104,7 +104,7 @@ To interact with items in the inventory, the game uses the \textit{action panel}
 
 \textit{Fran Bow} is an example of a more modern take on the genre while still maintaining core elements from the golden era of point-and-click adventures.  A significant difference from the previous example is the fact that the inventory is completely hidden and accessible as an independent UI element in the form of a pop-up window (see Figure \ref{fig:I-FranBow}). In the game, the inventory can be opened by clicking on an icon of a purse in the lower left corner of the screen, which then displays a panel with item icons. What is also notable about \textit{Fran Bow} is the fact that its inventory uses a different command system than the rest of the game. In the game world, the player only clicks on objects, while the inventory is controlled by three buttons, shown in Figure \ref{fig:I-FranBow}. 
 
-Although the game uses only three action verbs, which is a very limited number compared to other games with similar systems, these verbs are considerably more versatile. When an item in the inventory is selected and “\texttt{Examine}” is pressed, the main character Fran Bow says something about the item. In addition, there is a “\texttt{Combine}” button which allows the player to choose two items and create a new one in their place within the inventory. Finally, the third button with the “\texttt{Use}” label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (e.g. unlocking a locked box and finding hidden items), or use the item outside of the inventory (e.g. giving an item to another character in the game). At the bottom of the screen, a short sentence is created according to what the player will do.
+Although the game uses only three action verbs, which is a very limited number compared to other games with similar systems, these verbs are considerably more versatile. When an item in the inventory is selected and “\texttt{Examine}” is pressed, the main character Fran Bow says something about the item. In addition, there is a “\texttt{Combine}” button which allows the player to choose two items and create a new one in their place inside the inventory. Finally, the third button with the “\texttt{Use}” label is a bit more versatile. Depending on the item, the player can either inspect the item closer and interact with it (e.g. unlocking a locked box and finding hidden items), or use the item outside of the inventory (e.g. giving an item to another character in the game). At the bottom of the screen, a short sentence is created according to what the player will do.
 
 \begin{figure}[H]
 \centering
@@ -142,14 +142,14 @@ To move the character to another position, the second option involves just click
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.75\linewidth]{img/W-TSoMI.png}
+\includegraphics[width=.8\linewidth]{img/W-TSoMI.png}
 \caption{The Secret of Monkey Island: Walking to a point where the mouse cursor is located.}
 \label{fig:M-TSoMI-W}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.75\linewidth]{img/M-BaSS.png}
+\includegraphics[width=.8\linewidth]{img/M-BaSS.png}
 \caption{Beneath a Steel Sky: Walking to an object (a rung).}
 \label{fig:M-BaSS}
 \end{figure}
@@ -169,16 +169,16 @@ A very notable feature in some games that enhances the feeling of a 3D space is 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.75\linewidth]{img/M-TSoMI0.png}
+\includegraphics[width=.8\linewidth]{img/M-TSoMI0.png}
 \caption{The Secret of Monkey Island: Layered composition of a 2D scene.}
 \label{fig:M-TSoMI0}
 \end{figure}
 
-Another way to create the illusion of a three-dimensional space within a 2D environment is making characters appear smaller as they move into the distance. One of the best examples representing this feature is in the starting area of \textit{The Secret of Monkey Island} where the main protagonist walks along the cliffside and gradually increases in size, as shown in Figure \ref{fig:M-TSoMI}. This effect can help establish a sense of scale and immersion, making the game world feel more dynamic and visually engaging. 
+Another way to create the illusion of a three-dimensional space in a 2D environment is making characters appear smaller as they move into the distance. One of the best examples representing this feature is in the starting area of \textit{The Secret of Monkey Island} where the main protagonist walks along the cliffside and gradually increases in size, as shown in Figure \ref{fig:M-TSoMI}. This effect can help establish a sense of scale and immersion, making the game world feel more dynamic and visually engaging. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.75\linewidth]{img/M-TSoMI.png}
+\includegraphics[width=.8\linewidth]{img/M-TSoMI.png}
 \caption{The Secret of Monkey Island: Perspective simulation.}
 \label{fig:M-TSoMI}
 \end{figure}
@@ -188,7 +188,7 @@ A similar effect was also achieved in \textit{Beneath a Steel Sky} where the mai
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.75\linewidth]{img/M-BaSS00.png}
+\includegraphics[width=.8\linewidth]{img/M-BaSS00.png}
 \caption{Beneath a Steel Sky: Perspective simulation.}
 \label{fig:M-BaSS0}
 \end{figure}
@@ -276,8 +276,8 @@ A video game may contain thousands of objects, but without animation, the world 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.65\linewidth]{img/AN-TSoMI2.png}
-\caption{The Secret of Monkey Island: Sprite sheet of the main character.}
+\includegraphics[width=.75\linewidth]{img/AN-TSoMI2.png}
+\caption{The Secret of Monkey Island: Sprite sheet of the main character. Source \cite{TSoMI-sprites}}
 \label{fig:A-TSoMI}
 \end{figure}
 
