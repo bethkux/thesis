@@ -4,36 +4,36 @@ In this chapter, the goals from Section \ref{intro:goals} will be compared with 
 
 \section{Goal Assessment}
 
-\hspace{0.5 cm} \ref{intro:req:com_pan} \quad \textbf{The interaction can be based on a command panel.} The TaleCraft framework does support command-based interaction, an example being the showcase of \textit{The Secret of Monkey Island}.
+\hspace{0.5 cm} \ref{intro:req:com_pan} \quad \textbf{The interaction can be based on a command panel.} The TaleCraft framework supports command-based interaction, an example being the showcase of \textit{The Secret of Monkey Island}.
 
-\ref{intro:req:mouse} \quad  \textbf{The interaction can be based on context-based commands. } The TaleCraft framework also supports context-based interaction, an example being the showcase of \textit{Beneath a Steel Sky}.
+\ref{intro:req:mouse} \quad  \textbf{The interaction can have context-based commands. } The TaleCraft framework also supports context-based interaction, an example being the showcase of \textit{Beneath a Steel Sky}.
 
-\ref{intro:req:mix} \quad  \textbf{A game designer should be able to choose one of these methods or combine them.} The framework supports implementing one of these methods and allows one to even combine them, all according to the developer's vision.
+\ref{intro:req:mix} \quad  \textbf{A game designer should be able to choose one of these methods or combine them.} The framework supports implementing one of these methods and allows the user to even combine them, all according to the developer's vision.
 
-\ref{intro:req:sentence} \quad  \textbf{A simple sentence describing the actions being taken should be included.} The framework implements this feature as well.
+\ref{intro:req:sentence} \quad  \textbf{A simple sentence describing the actions that are being taken should be included.} The framework implements this feature with the ability to set up a basic structure depending on a specific command.
 
-\ref{intro:req:inv_formats} \quad  \textbf{The system should provide basis for a variety of different inventory formats.} The framework builds a basis for different types of inventories. The two scenes that are included in the project showcase two examples of inventories that have two very different formats. One of them required an additional simple script to enable this feature, so creating unique inventories on top of the framework is possible.
+\ref{intro:req:inv_formats} \quad  \textbf{The system should provide a basis for a variety of different inventory formats.} The framework builds a basis for different types of inventories. The two scenes that are included in the project showcase two examples of inventories that have two very different formats. One of them required an additional simple script to enable this feature, so creating unique inventories on top of the framework is possible and straightforward.
 
-\ref{intro:req:text_icon} \quad  \textbf{Both text-based and icon-based layouts of inventory should be available.} The framework does support this feature. It is showcased in the two scenes included in the project.
+\ref{intro:req:text_icon} \quad  \textbf{Both text-based and icon-based layouts of inventory should be available.} This feature is supported by the framework and is demonstrated in the two included scenes: \textit{The Secret of Monkey Island}, which uses a text-based layout, and \textit{Beneath a Steel Sky}, which uses an icon-based layout. 
 
-\ref{intro:req:tag} \quad  \textbf{There should be an option to display a tag when e.g. hovering over an object.} This feature is present and working, and is even included in one of the showcasing scenes.
+\ref{intro:req:tag} \quad  \textbf{There should be an option to display a tag when e.g. hovering over an object.} This feature is present, functional, and is even included in one of the showcasing scenes (BaSS).
 
-\ref{intro:req:com+mouse_move} \quad  \textbf{Both action-based movement and direct context-based movement should be supported.} TaleCraft supports this feature in its Command System.
+\ref{intro:req:com+mouse_move} \quad  \textbf{Both action-based movement and direct context-based movement should be supported.} This feature is integrated into TaleCraft in its Command system through a simple toggle.
 
-\ref{intro:req:mox_move} \quad  \textbf{There should be an option to define whether clicking on an object triggers only movement or both movement and interaction.} This feature is present in the framework as well.
+\ref{intro:req:mox_move} \quad  \textbf{There should be an option to define whether clicking on an object triggers only movement or both movement and interaction.} This feature is present in the framework as well again through the Command system by assigning desired actions or not.
 
-\ref{intro:req:pathfinding} \quad  \textbf{Pathfinding should be incorporated so that characters can navigate around the map.} TaleCraft fully supports pathfinding.
+\ref{intro:req:pathfinding} \quad  \textbf{Pathfinding should be incorporated so that characters can navigate around the map.} TaleCraft fully supports pathfinding by representing the scenes with graphs and using A* to find the shortest path.
 
-\ref{intro:req:scale} \quad  \textbf{Characters should dynamically scale.} The framework enables the \verb|GameObjects| to change scale automatically based on their position in the scene.
+\ref{intro:req:scale} \quad  \textbf{Characters should dynamically scale.} The framework supports automatic scaling of \verb|GameObjects| based on their position within the scene. It provides multiple scaling modes that users can configure to achieve the desired visual effect.
  
-\ref{intro:req:layers} \quad  \textbf{Characters should adjust their position in front of or behind objects to preserve the 3D effect.} This feature is already possible only using Unity project settings and is also function in the TaleCraft framework.
+\ref{intro:req:layers} \quad  \textbf{Characters should adjust their position in front of or behind objects to preserve the 3D effect.} This feature is already possible only using Unity project settings and also functions in the TaleCraft framework.
 
-\ref{intro:req:multi_dialogue} \quad  \textbf{Dialogue should allow for complicated branching conversations with multiple-choice dialogue options.} The framework can create even complicated dialogue paths with multiple choice options.
+\ref{intro:req:multi_dialogue} \quad  \textbf{Dialogue should allow for complicated branching conversations with multiple-choice dialogue options.} The framework supports the creation of intricate dialogue paths, which feature multiple-choice options. This capability is clearly demonstrated in the rich dialogue graphs used in the included showcase scenes. 
 
-\ref{intro:req:modes}\quad  \textbf{There should be a clear distinction between dialogue mode and gameplay mode.} Using TaleCraft, a developer is able to easily set up what happens when the conversation is initiated or terminated.
+\ref{intro:req:modes}\quad  \textbf{There should be a clear distinction between dialogue mode and gameplay mode.} Using TaleCraft's Dialogue system, a developer is able to easily set up what happens when the conversation is initiated or terminated such as locking mouse cursor during the duration of the conversation.
 
-\ref{intro:req:subs} \quad  \textbf{Subtitles should be included, regardless of audio availability.} The dialogue system fully supports the addition of subtitles during conversations.
+\ref{intro:req:subs} \quad  \textbf{Subtitles should be included, regardless of audio availability.} The Dialogue system fully supports the addition of subtitles during conversations in the dialogue graph nodes.
 
 
 \section{Future Work}
-Although we accomplished what we initially set out to do, the framework is far from complete. In Chapter \ref{Intro}, we chose to leave out several features that should eventually be part of the framework, the most important being animation, sound, and a saving system. In addition to these, there are a few smaller features that would further enhance the framework and improve the overall experience. For example, our framework currently implements pathfinding using Euclidean distance, but some older games use Manhattan distance, which resembles movement on a grid. Next, the Command System currently relies only on simple AND conditions. To make the system more flexible, it would be helpful to support more complex logic using additional operators like OR and brackets. This would allow developers to combine multiple conditions, such as $((p \wedge q) \vee (r \wedge q))$, and create more advanced behavior rules.  Finally, it would also be helpful to include another demo showcasing a more modern 2D point-and-click game that uses different approaches for , such as \textit{Fran Bow}. 
+Although we accomplished what we initially set out to do, the framework is far from complete. In Chapter \ref{Intro}, we chose to leave out several features that should eventually be part of the framework, the most important being animation, sound, and saving system. In addition to these, there are a few smaller features that would further enhance the framework and improve the overall experience. For example, our framework currently implements pathfinding using Euclidean distance, but some older games use Manhattan distance, which resembles movement on a grid. Next, the Command system currently relies only on simple AND conditions. To make the system more flexible, it would be helpful to support more complex logic using additional operators like OR and brackets. This would allow developers to combine multiple conditions, such as $((p \wedge q) \vee (r \wedge q))$, and create more advanced behavior rules.  Finally, it would also be helpful to include another demo that showcases a more modern 2D point-and-click game that uses different approaches for the command system and others, such as \textit{Fran Bow}. 

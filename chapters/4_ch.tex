@@ -41,6 +41,15 @@ The \verb|PrefabLibrary| is a simple asset manager that stores references to nam
 \subsection{InputManager}
 The \verb|InputManager| class listens for click input. When one occurs, it casts a 2D ray from the mouse position into the world. It also checks each hit collider for a \verb|WorldObject| component and calls its \verb|Interact| method, passing the world position and whether the left or right mouse button is pressed. If no \verb|Interactable| is found, it sends a move command to the player.
 
+\subsection{CursorLocker}
+The class \verb|CursorLocker| is a static utility built into a \verb|MonoBehaviour| that controls the lock state, visibility, and position of the mouse cursor in a Unity project using the new Input System (\verb|UnityEngine.InputSystem|). It is designed to be used when the mouse cursor should not be freely visible or movable by the user.
+
+Internally, it maintains two static fields: \verb|mousePos|, which stores the last known position of the cursor before it was locked, and \verb|lockedCursor|, a boolean indicating whether the cursor is currently in a locked state. The public property \verb|LockedCursor| provides controlled access to this state.
+
+When \verb|LockCursor()| is called, it captures the current mouse position, locks the cursor to the center of the screen using \verb|CursorLockMode.Locked|, hides it, and sets the internal state to locked. Conversely, calling \verb|UnlockCursor()| restores the cursor’s lock state to \verb|None|, makes it visible again, and moves it back to the stored position using \verb|Mouse.current.WarpCursorPosition|.
+
+The \verb|CursorVisible(bool)| method simply controls whether the cursor should be shown or hidden, which provides control over its visibility regardless of its lock state. Lastly, the \verb|WarpCursorByOffset| method shifts the cursor by a small offset, which can be useful for subtle repositioning effects.
+ 
 \section{Command System}
 \label{CommandSystem}
 The basis of Command system is built by \verb|CommandManager|, a script whose primary role is to hold commands used in the game. We also need to define objects the player can interact with.  An abstract class appropriately called \verb|Interactable| together with its inherited subclasses \verb|WorldObject| and \verb|InventoryObject| serve that purpose. In order to define suitable actions for each object in the scene, we need to set certain conditions. The classes \verb|Variable| and \verb|Condition| help with that by being able to determine simple logic and comparing variables. There are also two additional scripts that help with setting up the behavior of \verb|InventoryObjects|, namely \verb|TriggerSetter| and \verb|SlotManager|.
@@ -70,7 +79,7 @@ The abstract class \verb|Interactable| serves as the main class for any game obj
 
 The Figure \ref{fig:Interactable} describes the process of evaluating logic when a click is detected. When the player interacts with the object, the class first registers this interaction in the \verb|CommandManager|’s current sequence, linking the involved \verb|Item| (see \ref{Items}) and \verb|Interactable|. It then looks up the command that matches the currently selected command GUID in the \verb|CommandManager|. Before running the command, it checks whether the interaction sequence matches the command’s sentence structure rules (if those are enabled), which makes sure the player has interacted with the required number of objects. If everything checks out, the command execution includes moving the player closer to the target if the custom action demands it. Then, the class triggers the appropriate Unity Events linked to that command action. If no matching custom action is found, it executes the default action defined by the \verb|CommandManager|.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
 \includegraphics[width=0.9\linewidth]{img/Commands3.png}
 \caption{Logic system.}
@@ -157,7 +166,6 @@ The core logic starts by constructing a graph in which nodes are placed at conca
 To determine possible connections between nodes, \verb|PathFinder| uses line-of-sight (LOS) checks. These ensure that no segment intersects any polygon edge and that the midpoint of each connection lies in the walkable region and outside obstacles. Nodes that satisfy the LOS criteria are connected with graph edges. The shortest path is then computed using an A* algorithm in the \verb|AStar| class, which uses a Euclidean heuristic function.  The resulting path consists of a list of \verb|GraphNode| points and their respective distances. For visualization purposes, the class can draw both the full graph and the shortest path using Unity Gizmos.
 
 
-
 \subsection{SpriteScaler}
 In order to simulate depth and give characters the appearance of existing in 3D space (as discussed in Section \ref{analysis:depth:scaling}), the \verb|SpriteScaler| class dynamically adjusts the scale of a \verb|GameObject| based on its position.  The scale is continuously updated during both runtime and edit mode using the \verb|[ExecuteAlways]| attribute. This makes the object's size always match its intended perspective in the scene. Having the correct scale during editing is especially useful when setting up the layout before running the game. The class supports multiple scaling modes including none, X-axis-based, Y-axis-based, and a custom scale blending based on proximity to vertices of a defined polygonal walkable area.
 
@@ -209,6 +217,11 @@ The class supports two display modes: one that shows only the item's icon and on
 \verb|InventoryScrollButton| manages a scroll button in the inventory UI, allowing users to navigate through a list of items. Depending on its configuration, the button shifts the inventory either forward or backward and updates the item display accordingly. During initialization, the component saves the button's default image color for later use in visual feedback. When the component is enabled or disabled, it subscribes or unsubscribes from inventory change events to ensure the button stays visually consistent with the current inventory state.
 
 The \verb|SetColor()| method updates the button appearance based on whether scrolling is currently possible. If the inventory has reached the beginning or end, the button is visually dimmed using a predefined inactive color to indicate that further scrolling in that direction is not available. When clicked, the \verb|Scroll()| method modifies the \verb|ItemIdx| value that defines the starting index of visible items in the inventory. It then iterates through the inventory’s UI elements, updating their visibility and position so that only the currently relevant items are shown.
+
+\subsection{TagManager}
+The \verb|TagManager| class handles the display and positioning of a UI tag that can follow either the mouse cursor or a specific \verb|GameObject|. It supports two modes: \verb|Mouse|, where the tag follows the cursor, and \verb|Object|, where it tracks a \verb|GameObject|’s position. If \verb|ShowTag| is enabled, it initializes the tag in \verb|Start| using a prefab from \verb|PrefabManager|. If no canvas is present, it creates one with basic UI components.
+
+The \verb|Update| method adjusts the tag's position based on the selected mode. In \verb|Mouse| mode, it tracks the cursor or maintains position if the cursor is locked. In \verb|Object| mode, it follows the assigned \verb|GameObject|’s world position. \verb|EnableTag| and \verb|DisableTag| show or hide the tag. \verb|SetPosition| allows setting the tag position manually or via a \verb|GameObject| reference. The tag’s position can be fine-tuned using an optional offset.
 
 
 \section{Dialogue System}
