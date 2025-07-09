@@ -1,6 +1,5 @@
 \chapter{User Documentation}
-In the first part, the \todo{add tutorial}
-The chapter then in the second part provides a description of the two showcase games with the way they are controlled. Finally, the third part then introduces the framework itself with all its features.
+In the first part, the chapter provides a description of the two showcase games with the way they are controlled. The second part will then lead the user of the framework step by step through creating a scene. It serves as an introduction to the way TaleCraft works. Finally, the third part then introduces the framework itself in detail with all its features.
 
 
 \section{Showcase}
@@ -66,7 +65,22 @@ To talk to another character, the player can select Talk to command, move the po
 
 
 \section{Tutorial}
-In this section, we will walk the user through creating a scene in the framework like the showcasing ones described in the section above. TaleCraft provides a template scene located in \verb|Assets > Resources > Template|, which includes the most essential parts of the framework. Figure \ref{fig:Tutorial-template} shows the scene window on the right. On the left, there is the hierarchy of the scene, which consists of the following \verb|GameObjects|:
+In this section, we will walk the user through creating a scene in the framework like the showcasing ones described in the section above. 
+
+\subsection{Project Setup}
+To set up the TaleCraft framework in Unity, the first step is to download and install Unity Hub, following the instructions provided on Unity’s official website at \href{https://unity.com/download}{https://unity.com/download}. Once Unity Hub is installed, the next step is to install the Unity Engine version \textbf{2022.3.61f}, which is required to run the project. With the engine in place, the project can be obtained by cloning the repository from GitHub using the following URL: \href{https://github.com/bethkux/TaleCraft}{https://github.com/bethkux/TaleCraft}. After the repository has been successfully cloned to a local directory, the project can be opened in Unity Hub by selecting \textbf{Add > Add project from disk} and navigating to the corresponding folder. After the project finishes loading, TaleCraft is ready to use.
+
+
+TaleCraft provides a template scene located in \verb|Assets > Resources > Template|, which includes the most essential parts of the framework. To create a new scene using this template, go to \texttt{File > New Scene} and select \textit{TaleCraft - Template} from the option (see Figure \ref{fig:Tutorial-template:new}). 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.9\linewidth]{img/User doc/image_2025-07-09_161736255.png}
+\caption{Template scene: Creating new scene.}
+\label{fig:Tutorial-template:new}
+\end{figure}
+
+Figure \ref{fig:Tutorial-template} shows the state of the project when a new template scene is created. On the right we can see  the scene window and on the left, there is the hierarchy of the scene, which consists of the following \verb|GameObjects|:
 \begin{itemize}
     \item \textbf{PrefabManager} (Section \ref{Manual:Core})
     \item \textbf{CommandManager} (Section \ref{Manual:CM})
@@ -74,7 +88,6 @@ In this section, we will walk the user through creating a scene in the framework
     \item \textbf{EventSystem} (Section \ref{Manual:Core})
     \item \textbf{InputManager} (Section \ref{Manual:Core})
     \item \textbf{SlotManager} (Section \ref{Manual:Core})
-    \item \textbf{EventListener} (Section \ref{Manual:Core}) \todo{change}
     \item \textbf{Canvas}
     \item \textbf{Player} (Sections \ref{Manual:ChM&SS}, \ref{UD-IS})
 \end{itemize}
@@ -86,8 +99,9 @@ In this section, we will walk the user through creating a scene in the framework
 \label{fig:Tutorial-template}
 \end{figure}
 
-\subsection{Create WS}
-The look of the walkable area in this moment is a rectangle. Before modifying the layout of the walkable area, our first step is adding a background. We add one from the folder \verb|Assets > TaleCraft > Examples > Scene Assets >| \verb|Sprites-BaSS > Scene1|. We will use image called \verb|bg.png| by dragging it into the scene. The player might disappear behind the image, but that is okay. All we need to do is adjust the \textit{Order in Layer} to a lower number. Since this is the background and there will be nothing else behind it, we can give it a very low number, such as \textit{-99}. After adjusting the scale and position of the background image, the scene should look as in Figure \ref{fig:Tutorial-template:bg}.
+
+\subsection{Movement}
+The look of the walkable area in this moment is a rectangle. Before modifying the layout of the walkable area, our first step is adding a background. We add one called \verb|bg.png|  from the folder \verb|Assets > TaleCraft > Examples > Scene Assets >| \verb|Sprites-BaSS > Scene1| by dragging it into the scene. The player might disappear behind the image, but that is okay. All we need to do is adjust the \textit{Order in Layer} in the component \textbf{Sprite Renderer} to a lower number. Since this is the background and there will be nothing else behind it, we can give it a very low number, such as \textit{-99}. The image might not fit into the camera view completely, so let us adjust the scale in the \textbf{Sprite Renderer}. After adjusting the scale and position of the background image, the scene should look like Figure \ref{fig:Tutorial-template:bg}.
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\linewidth]{img/User doc/image_2025-07-08_104224540.png}
@@ -95,7 +109,7 @@ The look of the walkable area in this moment is a rectangle. Before modifying th
 \label{fig:Tutorial-template:bg}
 \end{figure}
 
-Now it is time to adjust the walkable area. When clicked on the \verb|GameObject| called \textbf{Main} under \textbf{WalkingSystem} in the hierarchy, handles will appear that make it easy to move the points. After some quick modifications, the scene should look like Figure \ref{fig:Tutorial-template:main}. To make the area more precise, more points to the polygon can be added by clicking on a white circle in the middle of the line. Details about this system can be found in Section \ref{Manual:WM}.
+Now it is time to adjust the walkable area. Click on the \verb|GameObject| called \textbf{Main} under \textbf{WalkingSystem} in the hierarchy and handles will appear that make it easy to move the points. Move the points using the handles until the scene looks like Figure \ref{fig:Tutorial-template:main}. To make the area more precise, more points to the polygon can be added by clicking on a white circle in the middle of the line. Details about this system can be found in Section \ref{Manual:WM}.
 
 \begin{figure}[H]
 \centering
@@ -104,7 +118,7 @@ Now it is time to adjust the walkable area. When clicked on the \verb|GameObject
 \label{fig:Tutorial-template:main}
 \end{figure}
 
-We would like the player to go around the lift in the middle of the room. To do that, we need to create a new obstacle polygon by clicking on button \textit{Build new polygon obstacle} in the inspector of \verb|GameObject| \textbf{WalkingSystem}. The newly generated polygon is too big, so we can modify its layout by selecting the \verb|GameObject| and move the points. We also recommend changing the color of the polygon in the inspector of the \textbf{Obstacle} polygon for visual clarity. The layout of the lift looks like a trapezoid, but with our five points we have one more than it is needed. We could align the fifth point on the line between two vertices of the trapezoid but a better solution is to remove the point. This is done by holding Ctrl key while clicking on a point (details in Section \ref{Manual:Polygon}.) Now the current state of the scene should resemble Figure \ref{fig:Tutorial-template:obstacle}.
+We would like the player to go around the lift in the middle of the room. To do that, we need to create a new obstacle polygon by clicking on button \textit{Build new polygon obstacle} in the inspector of \verb|GameObject| \textbf{WalkingSystem}. The newly generated polygon is too big, so we can modify its layout by selecting the \verb|GameObject| and moving the points. We also recommend changing the color of the polygon in the inspector of the \textbf{Obstacle} polygon for visual clarity. The layout of the lift looks like a trapezoid, but with our five points we have one more than it is needed. We could align the fifth point on the line between two vertices of the trapezoid but a better solution is to remove the point. This is done by holding Ctrl key while clicking on a point (details in Section \ref{Manual:Polygon}.) Now the current state of the scene should resemble Figure \ref{fig:Tutorial-template:obstacle}.
 
 \begin{figure}[H]
 \centering
@@ -113,7 +127,7 @@ We would like the player to go around the lift in the middle of the room. To do 
 \label{fig:Tutorial-template:obstacle}
 \end{figure}
 
-In this moment we are almost done with the walking system in this scene. When we hit play, we can click around, and the player moves in the main polygon and around the obstacle. Its movement is however very slow. To adjust it, we click on \textbf{Player} in hierarchy and change the speed in \textbf{Character Movement} component to \textit{2.5} for example. Now when we run the game, the character moves around more quickly. The user might also want to make the character smaller when going into the distance to the back of the room. To do that, we can select \textit{Y Scaling} in the \textbf{Sprite Scaler} component. We can already see the sprite of the character change size and the precise scale can be adjusted in the inspector. The user can test the character scaling without running the game by simply dragging the character around. Figure \ref{fig:Tutorial-template:Speed&Scaling} shows the current state of the character and the scene. Details about the settings of inspectors with other types of scaling are explained in Section \ref{Manual:ChM&SS}.
+In this moment we are almost done with the walking system in this scene. When we hit play, we can click around, and the player moves in the main polygon and around the obstacle. Its movement is however very slow. To adjust it, we need to click on \textbf{Player} in hierarchy and change the speed in \textbf{Character Movement} component to \textit{2.5}. Now when we run the game, the character moves around more quickly. The user might also want to make the character smaller when going into the distance to the back of the room. To do that, we can select \textit{Y Scaling} in the \textbf{Sprite Scaler} component. We can already see the sprite of the character change size and the precise scale can be adjusted in the inspector. You can test the character scaling without running the game by simply dragging the character around. Figure \ref{fig:Tutorial-template:Speed&Scaling} shows the current state of the character and the scene. Details about the settings of inspectors with other types of scaling are explained in Section \ref{Manual:ChM&SS}.
 
 \begin{figure}[H]
 \centering
@@ -123,7 +137,7 @@ In this moment we are almost done with the walking system in this scene. When we
 \end{figure}
 
 \subsection{Commands}
-When selecting the \textbf{CommandManager} in the hierarchy, one command should already be visible: \textit{Command 1}. It is recommended to rename this to something more descriptive, such as \textit{Default}. If the project uses a context-based control system for character interaction, then this setup is already complete. The result should resemble Figure~\ref{fig:Tutorial-template:CM}. However, for command-based games like \textit{The Secret of Monkey Island}, additional commands need to be added. This can be done by pressing the \textit{Add Command} button. After creating the required commands, it is also necessary to define the \textit{Sentence Structure}, which is used to display a short sentence that describes the current action. The complete process of creating new commands and configuring the sentence structure is described in Section~\ref{Manual:CM}.
+Now that we have the movement of the character set up, we can move onto setting up the control system for the player. When selecting the \textbf{CommandManager} in the hierarchy, one command should already be visible: \textit{Command 1}. It is recommended to rename this to something more descriptive, such as \textit{Default}. If the project uses a context-based control system for character interaction, then this setup is already complete. The result should resemble Figure~\ref{fig:Tutorial-template:CM}. However, for command-based games like \textit{The Secret of Monkey Island}, additional commands need to be added. This can be done by pressing the \textit{Add Command} button. After creating the required commands, it is also necessary to define the \textit{Sentence Structure}, which is used to display a short sentence that describes the current action. The complete process of creating new commands and configuring the sentence structure is described in Section~\ref{Manual:CM}.
 
 \begin{figure}[H]
 \centering
@@ -135,15 +149,15 @@ When selecting the \textbf{CommandManager} in the hierarchy, one command should 
 Command-based games usually ask the player to pick a command while also showing the action being performed in the form of a sentence (for example, “\verb|Talk to customer|”). To set up the visualization of commands, a new \verb|GameObject| can be created under the \textbf{Canvas} in the hierarchy, with the \textbf{Display Commands} component attached to it. Similarly, to show the current action as a sentence, the \textbf{Display Sentence} component can be added to another \verb|GameObject| under the \textbf{Canvas}. More details about this setup are provided in Section~\ref{Manual:Display-C&S}.
 
 \subsection{World Object}
-Now we can move on to creating interactable objects in the scene. Let us start with the large metal robot to the left of the player character. Ideally, this object should not be part of the background, as the background is a static screenshot taken from the original game. Instead, we can place a cutout sprite of the robot on top of the background to achieve the desired visual layering. To do this, locate the sprite named \verb|transporter.png| in the folder \verb|Assets > TaleCraft > Examples > Scene Assets > Sprites-BaSS > Scene1|, and drag it into the scene. To ensure that the character appears correctly behind the robot when walking, we open the \textbf{Sprite Renderer} component on the robot and set the \textit{Sprite Sort Point} to \textit{Pivot}.
+Now we can move on to creating interactable objects in the scene. Let us start with the large metal robot to the left of the player character. Ideally, this object should not be part of the background, as the background is a static screenshot taken from the original game. Instead, we can place a cutout sprite of the robot on top of the background to achieve the desired visual layering. To do this, locate the sprite named \verb|transporter.png| in the folder \texttt{Assets > TaleCraft > Examples > Scene Assets > Sprites-BaSS > Scene1}, and drag it into the scene. To ensure that the character appears correctly behind the robot when walking, we open the \textbf{Sprite Renderer} component on the robot and set the \textit{Sprite Sort Point} to \textit{Pivot}.
 
-Now we can attach the \textbf{World Object} script as a component to the robot. The first thing we need to do is create a \textbf{World Item} \verb|ScriptableObject| in the Assets folder. This object allows us to set a name and description for the interactable, which is useful not just for displaying tags during gameplay, but also for referencing the object in the editor (see Section \ref{Manual:WO} for more details). In our case, we can use the \texttt{Transporter} object that is already defined under \verb|Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Items > World > S1| and drag it into the \textit{Item} field of the component.
+Now we can attach the \textbf{World Object} script as a component to the robot. The first thing we need to do is create a \textbf{World Item} \verb|ScriptableObject| in the Assets folder. This object allows us to set a name and description for the interactable, which is useful not just for displaying tags during gameplay, but also for referencing the object in the editor (see Section \ref{Manual:WO} for more details). In our case, we can use the \texttt{Transporter} object that is already defined under \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Items > World > S1} and drag it into the \textit{Item} field of the component.
 
 Next, we can create actions by adding a new element to the \textit{Labeled Actions} list. We can click the \textit{Edit} button to open a new window where we can define what should happen when the object is interacted with. We will return to this point in Section \ref{Manual:Tutorial:D}, when we set up a dialogue. Again, more details about this feature can be found in Section \ref{Manual:WO}.
 
-To specify the exact spot where the character should walk to when interacting with the robot, we can add a \textit{Go To} point in the list shown in the inspector. This helps ensure that the character reaches the right position before the action is executed. Let us set one with 
+To specify the exact spot where the character should walk to when interacting with the robot, we can add a \textit{Go To} point in the list shown in the inspector. This helps ensure that the character reaches the right position before the action is executed. Let us set one with a vector \texttt{(0, -0.5)}.
 
-At this point, the robot still will not respond to clicks during gameplay. To fix this, we need to add a 2D collider so the object can detect mouse interaction. For this type of object, we recommend using a \textbf{Box Collider 2D}. After completing this setup, the inspector should resemble Figure \ref{fig:Tutorial-template:WO}, and clicking on the robot while the game is running should cause the character to walk to the designated spot and perform the assigned action.
+At this point, the robot will still not respond to clicks during gameplay. To fix this, we need to add a 2D collider so the object can detect mouse interaction. For this type of object, we recommend using a \textbf{Box Collider 2D}. After completing this setup, the inspector should resemble Figure \ref{fig:Tutorial-template:WO}, and clicking on the robot while the game is running should cause the character to walk to the designated spot and perform the assigned action.
 
 \begin{figure}[H]
 \centering
@@ -153,17 +167,41 @@ At this point, the robot still will not respond to clicks during gameplay. To fi
 \end{figure}
 
 \subsection{Inventory Object} 
-Next step is setting up the other type of interactables: Inventory objects. Similar to World Object, an Inventory Object also needs a \verb|ScriptableObject|, in this case Inventory Item. For our tutorial, we will use already created under \verb|Assets > TaleCraft > Examples > BaSS > | \verb|ScriptableObjects > | \verb|Inventory > World > S1| . It contains not only a name and a description box, but also a way to reference a sprite for displaying an icon in the inventory if needed.
+Next step is setting up the other type of interactables: Inventory objects. Similar to \textbf{World Object}, an \textbf{Inventory Object} also needs a \verb|ScriptableObject|, in this case Inventory Item. The asset contains not only a name and a description box, but also a way to reference a sprite for displaying an icon in the inventory if needed. For our tutorial, we will use one from the already created under \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Inventory > World > S1}, but to create and set up a new one follow instructions in \ref{Manual:IO}.
 
 %Setting up an inventory object requires a bit of finetuning, since the behavior of inventory objects can be very varied. Some games enable dragging the object, others require setting up a tag when hovering or displaying a description when pressing with a mouse key. 
 
-InventorySlot is a prefab in the Assets folder and already contains some useful components. In order to keep this prefab as a template, we recommend creating a Prefab Variant by right-clicking on the prefab and selecting the option. What interests us is now setting up the desired Event Types under \textbf{Event Trigger} and assigning the required actions with the help of Custom Pointer Handler and Trigger Setter. These components are examined more in Section \ref{}.
+The \textbf{InventorySlot} is a prefab located in the \texttt{Assets > TaleCraft > Prefabs} folder and already includes several useful components, such as the \textbf{Inventory Object} component. To preserve this prefab as a base template, it is recommended to create a \textit{Prefab Variant} by right-clicking on it and selecting the appropriate option. What we are mainly interested in at this point is setting up the desired \textit{Event Types} under the \textbf{Event Trigger} component and assigning the corresponding actions using the \textbf{Custom Pointer Handler} and \textbf{Trigger Setter} components. These tools help define how the slot responds to input events such as clicks and drags. More information about these components can be found in Section \ref{Manual:IO}.
+
+For the purpose of this tutorial, we will not configure these manually, as we will be using a preconfigured prefab in the next steps.
 
 
 \subsection{Inventory}
-Now let us create an inventory. It consists of two parts: controller and visualizer. The controlling part is done in Inventory Manager, while the visualizing in Display Inventory. 
+Now let us create an inventory. It consists of two main parts: the controller and the visualizer. The controller is handled by the \textbf{Inventory Manager}, while the visualizer is set up through the \textbf{Display Inventory} component.
 
-Inventory Manager is already present in the Player GameObject. Here is where Inventory Items can be assigned to make them appear in the inventory during gameplay. Display Inventory sets up the appearance of 
+The \textbf{Inventory Manager} is already present in the \textbf{Player} \verb|GameObject|. This is where \texttt{Inventory Items} can be assigned so that they appear in the inventory during gameplay. To do this, press the \texttt{+} button in the inspector and assign the item \verb|MetalBar| from \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Items > Inventory} to the new entry.
+
+Next, we set up the visual part of the inventory using the \textbf{Display Inventory} component. We create a new \verb|GameObject| under the \textbf{Canvas} in the hierarchy and attach the component to it. Then, we can assign the Inventory Manager we want to use by dragging the \textbf{Player} \verb|GameObject| from the hierarchy into the corresponding field, since it already contains the Inventory Manager.
+
+The component also requires a reference to the \texttt{Inventory Slot} prefab. For the purpose of this tutorial, we will use a prefab from \texttt{Assets > TaleCraft > Examples > BaSS > Prefabs} called \texttt{InventorySlot-BaSS}, which already has some actions configured. There is one more thing that we need to do. In the hierarchy, we need to create a TagManager GameObject, which will come in handy shortly. We add component Tag Manager to it and set it up according to Figure \ref{fig:Tutorial-template:TM}. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\linewidth]{img/User doc/image_2025-07-09_135233837.png}
+\caption{Template scene: Tag Manager.}
+\label{fig:Tutorial-template:TM}
+\end{figure}
+
+Additionally, we can choose whether the inventory should be text-based or icon-based, configure the layout, and set the maximum number of items allowed.
+
+Once everything is set up and the game is running, we should see an inventory slot displayed on the screen, as shown in Figure \ref{fig:Tutorial-template:Inv}. When we hover over the inventory slot, we get a tag and clicking on the slot with left mouse button displays a description of the item.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{img/User doc/image_2025-07-09_135900005.png}
+\caption{Template scene: Inventory.}
+\label{fig:Tutorial-template:Inv}
+\end{figure}
 
 
 \subsection{Dialogue}
@@ -187,7 +225,7 @@ Now we are ready to run the dialogue. Begin by selecting the \texttt{transporter
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\linewidth]{img/User doc/image_2025-07-09_112421422.png}
+\includegraphics[width=0.75\linewidth]{img/User doc/image_2025-07-09_112421422.png}
 \caption{Template scene: Action window with Dialogue Controller.}
 \label{fig:Tutorial-template:AW+DC}
 \end{figure}
@@ -196,10 +234,13 @@ Now when we close the window and run the game, by clicking on the robot the char
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\linewidth]{img/User doc/manual-fin.png}
+\includegraphics[width=0.85\linewidth]{img/User doc/manual-fin.png}
 \caption{Template scene: Conversation.}
 \label{fig:Tutorial-template:fin}
 \end{figure}
+
+\subsection{Conclusion}
+The newly created scene can be saved 
 
 
 \section{Framework}
@@ -218,7 +259,7 @@ The final script in the Core system is \textbf{Cursor Locker}, which is used on 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\linewidth]{img/User doc/image_2025-07-07_133603895.png}
+\includegraphics[width=0.7\linewidth]{img/User doc/image_2025-07-09_124713377.png}
 \caption{Calling function using Unity Events.}
 \label{fig:Manual-UnityEvents}
 \end{figure}
@@ -269,7 +310,7 @@ The last two components of the walking system are \textbf{Character Movement} an
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\linewidth]{img/User doc/character_movement.png}
+\includegraphics[width=0.9\linewidth]{img/User doc/character_movement.png}
 \caption{Character Movement and Sprite Scaler inspector.}
 \label{fig:Manual-ChM&SS}
 \end{figure}
@@ -289,7 +330,7 @@ The framework can instantiate a prefab in the hierarchy by navigating the menu o
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.7\linewidth]{img/User doc/command_manager.png}
+\includegraphics[width=.6\linewidth]{img/User doc/command_manager.png}
 \caption{Command Manager inspector.}
 \label{fig:Manual-CM}
 \end{figure}
@@ -392,7 +433,7 @@ At the top of the window is a panel that displays the file name along with three
 \subsubsection{Nodes}
 To add elements to the dialogue graph, the user must press the Space key, which opens a search window. This interface allows the creation of either a \textit{Node} or a \textit{Group}. Selecting the \textit{Node} option presents six different node types to choose from. All node types support naming and include the option to generate a corresponding boolean variable called \textit{Visited}. This variable tracks whether the node has been accessed during a conversation, enabling conditional behavior based on the history of dialogues.
 
-A new \textit{Visited} variable can be created by clicking the "\textit{+}" button next to its field in the node's configuration. The asset is automatically stored at the following path: \verb|Assets/Variables/Visited/[GraphName]|, where \verb|[GraphName]| corresponds to the name of the dialogue graph. The filename of the \textit{Visited} variable is either the node’s custom ID (if specified) or its unique GUID. For this reason, it is recommended to assign an ID to the node before creating the \textit{Visited} variable. Otherwise, the nodes have a very different structure from one another. In the rest of this Section, each type of node will be closely examined with Figures \ref{fig:Manual-Nodes1} and \ref{fig:Manual-Nodes2} providing visual guidance.
+A new \textit{Visited} variable can be created by clicking the \textit{+} button next to its field in the node's configuration. The asset is automatically stored at the following path: \verb|Assets/Variables/Visited/[GraphName]|, where \verb|[GraphName]| corresponds to the name of the dialogue graph. The filename of the \textit{Visited} variable is either the node’s custom ID (if specified) or its unique GUID. For this reason, it is recommended to assign an ID to the node before creating the \textit{Visited} variable. Otherwise, the nodes have a very different structure from one another. In the rest of this Section, each type of node will be closely examined with Figures \ref{fig:Manual-Nodes1} and \ref{fig:Manual-Nodes2} providing visual guidance.
 
 \begin{itemize}
     \item The \textbf{Start node }is a straightforward element in the dialogue graph. Aside from allowing the assignment of an ID and a corresponding \textit{Visited} variable, it features a single output port. Only one Start node is required per graph, any additional Start nodes will be ignored. This node functions only as an entry point, indicating where the dialogue begins inside the graph.
