@@ -104,7 +104,7 @@ Now it is time to adjust the walkable area. When clicked on the \verb|GameObject
 \label{fig:Tutorial-template:main}
 \end{figure}
 
-We would like the player to go around the lift in the middle of the room. To do that, we need to create a new obstacle polygon by clicking on button \textit{Build new polygon obstacle} in the inspector of \verb|GameObject| \textbf{WalkingSystem}. The newly generated polygon is too big, so we can modify its layout by selecting the \verb|GameObject| and move the points. We also recommend changing the color of the polygon in the inspector of the \textbf{Obstacle} polygon for visual clarity. The layout of the lift looks like a trapezoid, but with our five points we have one more than it is needed. We could align the fifth point on the line between two vertices of the trapezoid but a better solution is to remove the point. This is done by holding Ctrl key while clicking on a point (details in Section \ref{Manual:Polygon}. Now the current state of the scene should resemble Figure \ref{fig:Tutorial-template:obstacle}.
+We would like the player to go around the lift in the middle of the room. To do that, we need to create a new obstacle polygon by clicking on button \textit{Build new polygon obstacle} in the inspector of \verb|GameObject| \textbf{WalkingSystem}. The newly generated polygon is too big, so we can modify its layout by selecting the \verb|GameObject| and move the points. We also recommend changing the color of the polygon in the inspector of the \textbf{Obstacle} polygon for visual clarity. The layout of the lift looks like a trapezoid, but with our five points we have one more than it is needed. We could align the fifth point on the line between two vertices of the trapezoid but a better solution is to remove the point. This is done by holding Ctrl key while clicking on a point (details in Section \ref{Manual:Polygon}.) Now the current state of the scene should resemble Figure \ref{fig:Tutorial-template:obstacle}.
 
 \begin{figure}[H]
 \centering
@@ -123,7 +123,7 @@ In this moment we are almost done with the walking system in this scene. When we
 \end{figure}
 
 \subsection{Commands}
-When clicking on \textbf{CommandManager} in the hierarchy, we can already see that there is one command present: \textit{Command 1}. We can rename it to a more convenient name, like \textit{Default}. When it comes to the context-based type of controlling the character, then we are already done and the result should resemble Figure \ref{fig:Tutorial-template:CM}. However, for command-based games such as \textit{The Secret of Monkey Island}, at this point we need to add more commands by pressing the \textit{Add Command} button. After that, we need to set up \textit{Sentence Structure} for displaying a short sentence describing the current action. The process of creating new commands and setting up the structure is explained in Section \ref{Manual:CM}. 
+When selecting the \textbf{CommandManager} in the hierarchy, one command should already be visible: \textit{Command 1}. It is recommended to rename this to something more descriptive, such as \textit{Default}. If the project uses a context-based control system for character interaction, then this setup is already complete. The result should resemble Figure~\ref{fig:Tutorial-template:CM}. However, for command-based games like \textit{The Secret of Monkey Island}, additional commands need to be added. This can be done by pressing the \textit{Add Command} button. After creating the required commands, it is also necessary to define the \textit{Sentence Structure}, which is used to display a short sentence that describes the current action. The complete process of creating new commands and configuring the sentence structure is described in Section~\ref{Manual:CM}.
 
 \begin{figure}[H]
 \centering
@@ -135,13 +135,15 @@ When clicking on \textbf{CommandManager} in the hierarchy, we can already see th
 Command-based games usually ask the player to pick a command while also showing the action being performed in the form of a sentence (for example, “\verb|Talk to customer|”). To set up the visualization of commands, a new \verb|GameObject| can be created under the \textbf{Canvas} in the hierarchy, with the \textbf{Display Commands} component attached to it. Similarly, to show the current action as a sentence, the \textbf{Display Sentence} component can be added to another \verb|GameObject| under the \textbf{Canvas}. More details about this setup are provided in Section~\ref{Manual:Display-C&S}.
 
 \subsection{World Object}
-Now we can go onto creating interactable objects in the scene. Let us create the big metal robot to the left of the character. Ideally, the object would not be in the background like it is now. The background is a screenshot of the scene from the original game. If we put a cutout sprite of the robot on top, there will be no problem. So we can now drag the sprite called \verb|transporter.png| from folder \verb|Assets > TaleCraft > Examples > Scene Assets > | \verb|Sprites-BaSS > | \verb|Scene1| into the scene. To make the character appear behind the robot correctly, in the component \textbf{Sprite Renderer} it is necessary to select \textit{Pivot} under \textit{Sprite Sort Point}. 
+Now we can move on to creating interactable objects in the scene. Let us start with the large metal robot to the left of the player character. Ideally, this object should not be part of the background, as the background is a static screenshot taken from the original game. Instead, we can place a cutout sprite of the robot on top of the background to achieve the desired visual layering. To do this, locate the sprite named \verb|transporter.png| in the folder \verb|Assets > TaleCraft > Examples > Scene Assets > Sprites-BaSS > Scene1|, and drag it into the scene. To ensure that the character appears correctly behind the robot when walking, we open the \textbf{Sprite Renderer} component on the robot and set the \textit{Sprite Sort Point} to \textit{Pivot}.
 
-Now, we can attach the \textbf{World Object} script as a component. The first step is to create \textbf{World Item} \verb|ScriptableObject| in the Assets. The developer can set a name or a description of the object. It is important not only for showing tags, but also for easy reference (see Section \ref{Manual:WO}). In our case, we can use \textit{Transporter} already defined from \verb|Assets > TaleCraft > Examples > BaSS > | \verb|ScriptableObjects > | \verb|Items > World > S1| and drag it into the \textit{Item} slot. We can then create actions by adding a new element to the \textit{Labeled Actions} list and edit them by clicking the \textit{Edit} button. When clicked, a new window appears where the user can set up the actions. For more details refer to Section \ref{Manual:WO}.
+Now we can attach the \textbf{World Object} script as a component to the robot. The first thing we need to do is create a \textbf{World Item} \verb|ScriptableObject| in the Assets folder. This object allows us to set a name and description for the interactable, which is useful not just for displaying tags during gameplay, but also for referencing the object in the editor (see Section \ref{Manual:WO} for more details). In our case, we can use the \texttt{Transporter} object that is already defined under \verb|Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Items > World > S1| and drag it into the \textit{Item} field of the component.
 
-To add an exact position where the character should move in order to interact with the robot, the user can add a new \textit{Go To} point to the list in the inspector. Again, more information can be found in Section \ref{Manual:WO}. 
+Next, we can create actions by adding a new element to the \textit{Labeled Actions} list. We can click the \textit{Edit} button to open a new window where we can define what should happen when the object is interacted with. We will return to this point in Section \ref{Manual:Tutorial:D}, when we set up a dialogue. Again, more details about this feature can be found in Section \ref{Manual:WO}.
 
-At this point, clicking on where the robot is when playing the game will not detect the object. One more step is needed - adding a 2D collider. For this object, we recommend using \textbf{Box Collider 2D}. After this step, the inspector should look like Figure \ref{fig:Tutorial-template:WO} and interacting with it when running the game will move the character to the specified position followed by executing the action.
+To specify the exact spot where the character should walk to when interacting with the robot, we can add a \textit{Go To} point in the list shown in the inspector. This helps ensure that the character reaches the right position before the action is executed. Let us set one with 
+
+At this point, the robot still will not respond to clicks during gameplay. To fix this, we need to add a 2D collider so the object can detect mouse interaction. For this type of object, we recommend using a \textbf{Box Collider 2D}. After completing this setup, the inspector should resemble Figure \ref{fig:Tutorial-template:WO}, and clicking on the robot while the game is running should cause the character to walk to the designated spot and perform the assigned action.
 
 \begin{figure}[H]
 \centering
@@ -165,7 +167,39 @@ Inventory Manager is already present in the Player GameObject. Here is where Inv
 
 
 \subsection{Dialogue}
-Finally, we can create a conversation. Our first step is going to be to create assets for the characters that the player is going to engage in a conversation with. This ScriptableObject is called CharacterID and can set a name and an offset. This will be important shortly. Now, we can create an asset representing the dialogue graph. A very detailed description of the exact process of creating a graph with its components explained can be found in Section \ref{} with a possible implementation in Figure \ref{}. Because of this, we will not go very deep into describing the process of creating the graph itself. It is however important to mention the importance of the CharacterID we created earlier. It can be referenced in the dialogue graph in order to assign a specific line to that character. Where we actually tie it together is the Dialogue Controller component. To use it, we create a new GameObject in the hierarchy and assign the component. 
+\label{Manual:Tutorial:D}
+Now we are ready to create a conversation. The first step is to create a \texttt{CharacterID} asset for each character the player will interact with. This \texttt{ScriptableObject} allows us to set a name and an offset, which will become important shortly.
+
+Next, we can create a dialogue graph asset. Since the detailed process of building a graph is covered in Section~\ref{Manual:DS}, we will not describe it in detail here. However, it is important to note how the \texttt{CharacterID} is used in this process. In the dialogue graph, we can reference a \texttt{CharacterID} to assign specific lines of dialogue to a character.To actually link the characters in the scene with the dialogue system, we use the \textbf{Dialogue Controller} component. We can use a prefab from the Assets of our framework by dragging \textbf{DialogueController} from \texttt{Assets > TaleCraft > Prefabs} into the hierarchy under \textbf{Canvas}. In the inspector, there is a list of pairs: one for the \texttt{CharacterID} and one for the corresponding \texttt{GameObject}. This is where the actual connection is made. For example, to set up the player character, we can add a new element by pressing the “+” button, drag the \textbf{Player} \texttt{GameObject} into the field labeled \textit{Character}, and assign the appropriate \texttt{CharacterID} asset to the field labeled \textit{ID}. In this case, the \texttt{CharacterID} for \textbf{Foster} can be found under \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Characters}.
+
+Now, there are two more tools under the list. They are both Unity Events and they execute actions before and after the conversation begins or ends. Let us say that when the player starts a conversation, we do not want them to look through the inventory or interact with other \texttt{GameObjects}. On the other hand, when the conversation ends, we need to give control back to the player. We can achieve that using these two Unity Events. For this tutorial, let us say that we do not want the player to move around. So we will create a new entry in both Unity Events, drag the \textbf{Player} \texttt{GameObject} into the field and select \texttt{CharacterMovement.enabled} function. For the first one, we set it to false and for the second one to true. The inspector should look like in Figure \ref{fig:Tutorial-template:DC}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\linewidth]{img/User doc/image_2025-07-09_104007947.png}
+\caption{Template scene: Dialogue Controller.}
+\label{fig:Tutorial-template:DC}
+\end{figure}
+
+The user may have noticed that the \texttt{DialogueController} \texttt{GameObject} also contains the \textbf{UI Dialogue Controller} component. There is no need to modify this component at the moment, as everything is already configured and ready to use. For more details about this component, please refer to Section~\ref{Manual:DS}.
+
+Now we are ready to run the dialogue. Begin by selecting the \texttt{transporter} \texttt{GameObject} that we set up earlier. Next, we will modify one of the actions in the \textit{Labeled Actions} list by clicking the \textit{Edit} button. A new window will appear, allowing us to set up conditions and previous interactables. We will not focus on those settings now. To learn more about them, refer to Section~\ref{Manual:WO}. Instead, we will concentrate on the section below. In the \textit{Duplicate Actions} area, there should be a single option available: \textit{Move Closer} and a Unity Event. Enable \textit{Move Closer} by checking the corresponding box, and then add a new Unity Event. We want to reference the \texttt{DialogueController} from the scene, so let us drag the \texttt{GameObject} into the empty object field of the Unity Event. Once the reference is set, we choose the function \texttt{DialogueController.StartDialogue}. This function takes one parameter: the Dialogue Graph Data. We will use an existing asset found under \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Graphs > InteractGraphs > S1} named \textbf{Transporter\_I}. After assigning the asset, the window should look like Figure~\ref{fig:Tutorial-template:AW+DC}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\linewidth]{img/User doc/image_2025-07-09_112421422.png}
+\caption{Template scene: Action window with Dialogue Controller.}
+\label{fig:Tutorial-template:AW+DC}
+\end{figure}
+
+Now when we close the window and run the game, by clicking on the robot the character will move closer to it and a sentence will appear above the head of the character, just like in Figure \ref{fig:Tutorial-template:fin}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\linewidth]{img/User doc/manual-fin.png}
+\caption{Template scene: Conversation.}
+\label{fig:Tutorial-template:fin}
+\end{figure}
 
 
 \section{Framework}
