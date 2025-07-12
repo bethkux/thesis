@@ -1,10 +1,12 @@
-\chapwithtoc{Conclusion}
-In this chapter, the goals from Section \ref{intro:goals} will be compared with the actual implementation of our framework.
+\chapter{Conclusion}
+In this chapter, we will compare the requirements and goals outlined from Chapter \ref{Intro} with the actual implementation of our framework and discuss potential directions for future work on the framework.
 
 
 \section{Goal Assessment}
+In Chapter \ref{Intro}, we set out to create a framework based on the requirements listed in \ref{intro:req:com_pan}--\ref{intro:req:subs}. A second goal was to create a demo showcasing the use of our framework in the context of real games. Now, we will revisit these goals and evaluate how successfully they were achieved.
 
-\hspace{0.5 cm} \ref{intro:req:com_pan} \quad \textbf{The interaction can be based on a command panel.} The TaleCraft framework supports command-based interaction, an example being the showcase of \textit{The Secret of Monkey Island}.
+\subsubsection{Requirements}
+\ref{intro:req:com_pan} \quad \textbf{The interaction can be based on a command panel.} The TaleCraft framework supports command-based interaction, an example being the showcase of \textit{The Secret of Monkey Island}.
 
 \ref{intro:req:mouse} \quad  \textbf{The interaction can have context-based commands. } The TaleCraft framework also supports context-based interaction, an example being the showcase of \textit{Beneath a Steel Sky}.
 
@@ -34,6 +36,8 @@ In this chapter, the goals from Section \ref{intro:goals} will be compared with 
 
 \ref{intro:req:subs} \quad  \textbf{Subtitles should be included, regardless of audio availability.} The Dialogue system fully supports the addition of subtitles during conversations in the dialogue graph nodes.
 
+\subsubsection{Verdict}
+Overall, we can conclude that we successfully fulfilled all the requirements we set out to meet, and therefore achieved goal \ref{intro:goals:framework}. In addition, we created two demo scenes that demonstrate the utility of our framework in the context of real games and completed goal \ref{intro:goals:demo}. Therefore, we can confidently say that both goals \ref{intro:goals:framework} and \ref{intro:goals:demo} have been met.
 
 \section{Future Work}
 Although we accomplished what we initially set out to do, the framework is far from complete. In Chapter \ref{Intro}, we chose to leave out several features that should eventually be part of the framework, the most important being animation, sound, and saving system. In addition to these, there are a few smaller features that would further enhance the framework and improve the overall experience. For example, our framework currently implements pathfinding using Euclidean distance, but some older games use Manhattan distance, which resembles movement on a grid. Next, the Command system currently relies only on simple AND conditions. To make the system more flexible, it would be helpful to support more complex logic using additional operators like OR and brackets. This would allow developers to combine multiple conditions, such as $((p \wedge q) \vee (r \wedge q))$, and create more advanced behavior rules.  Finally, it would also be helpful to include another demo that showcases a more modern 2D point-and-click game that uses different approaches for the command system and others, such as \textit{Fran Bow}. 

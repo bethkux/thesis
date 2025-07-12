@@ -10,7 +10,7 @@ Our framework is non-commercial and our use of these games falls under fair use 
 Newer game developers might object to similar use of their intellectual property. We encourage all readers to support the original games where possible. The sequel to \textit{Beneath a Steel Sky} named \textit{Beyond a Steel Sky} is available on Steam \cite{Beyond-a-Steel-Sky}, and \textit{The Secret of Monkey Island} can be purchased on Steam as a modern remake \cite{TSoMI-steam}.
 
 \subsection{Instructions}
-The \verb|Build| folder inside \verb|Attachments.zip| includes the \verb|Build-TSoMI| and \verb|Build-BaSS| directories, which in addition to a few application binaries, a dynamically linked library and directories with the game assets contain an executable file. To run the game, simply run the \verb|TaleCraft.exe| binary in ether of the folders. Both games will show a \textit{Made with Unity }splash screen followed by the scene itself. To quit the game, the player needs to simply press the Esc key on the keyboard.
+The \verb|Build| folder inside \verb|Attachments.zip| includes the \verb|Build-TSoMI| and \verb|Build-BaSS| directories, which in addition to other files contain an executable file. To run the game, simply click on the \verb|TaleCraft.exe| binary in ether of the folders. Both games will display a \textit{Made with Unity }splash screen followed by the scene itself. To quit the game, the player needs to simply press the Esc key on the keyboard.
 
 \subsection{Beneath a Steel Sky}
 \textbf{Beneath a Steel Sky} showcase takes place in a starting location of the original game. The style of the following instructions is adapted from the original manual for the game \cite{BaSS-Manual}.
@@ -68,7 +68,7 @@ To talk to another character, the player can select Talk to command, move the po
 In this section, we will walk the user through creating a scene in the framework like the showcasing ones described in the section above. 
 
 \subsection{Project Setup}
-To set up the TaleCraft framework in Unity, the first step is to download and install Unity Hub, following the instructions provided on Unity’s official website at \href{https://unity.com/download}{https://unity.com/download}. Once Unity Hub is installed, the next step is to install the Unity Engine version \textbf{2022.3.61f}, which is required to run the project. With the engine in place, the project can be obtained by cloning the repository from GitHub using the following URL: \href{https://github.com/bethkux/TaleCraft}{https://github.com/bethkux/TaleCraft}. After the repository has been successfully cloned to a local directory, the project can be opened in Unity Hub by selecting \textbf{Add > Add project from disk} and navigating to the corresponding folder. After the project finishes loading, TaleCraft is ready to use.
+To set up the TaleCraft framework in Unity, the first step is to download and install Unity Hub, following the instructions provided on Unity’s official website at \href{https://unity.com/download}{https://unity.com/download}. Once Unity Hub is installed, the next step is to install Unity Engine version \textbf{2022.3.61f}, which is required to run the project. With the engine in place, the project can be obtained by cloning the repository from GitHub using the following URL: \href{https://github.com/bethkux/TaleCraft}{\textit{https://github.com/bethkux/TaleCraft}}. After the repository has been successfully cloned to a local directory, the project can be opened in Unity Hub by selecting \textbf{Add > Add project from disk} and navigating to the corresponding folder. When the project finishes loading, TaleCraft is ready to use.
 
 Typical point-and-click adventure games often switch between different locations, allowing the player to explore the in-game world. The TaleCraft framework supports this approach by allowing locations to be distributed across multiple scenes. Several systems have been designed with this in mind, including the inventory, which needs to persist between scenes. 
 
@@ -105,7 +105,7 @@ Figure \ref{fig:Tutorial-template} shows the state of the project when a new tem
 
 
 \subsection{Movement}
-The current state of the scene is fairly barebones. However, we can already move the character by clicking inside the yellow rectangle, which marks the walkable area. While it might be tempting to start adjusting this layout right away to fit our vision, our first step will be to add a background.  We add \verb|bg.png|  from the folder \texttt{Assets > TaleCraft > Examples > Scene Assets > Sprites-BaSS > Scene1} by dragging it into the scene. The player might disappear behind the image, but that is okay. All we need to do is adjust the \textit{Order in Layer} in the component \textbf{Sprite Renderer} to a lower number, such as \textit{-99}. Since this is the background and there will be nothing else behind it, we can give it this very low number. The image may not fit into the camera view completely, so let us adjust the scale and position in the \textbf{Sprite Renderer}. Afterwards, the scene should look similar to Figure \ref{fig:Tutorial-template:bg}.
+The current state of the scene is fairly barebones. However, when starting the game, we can already move the character by clicking inside the yellow rectangle, which marks the walkable area. While it might be tempting to start adjusting this layout right away to fit our vision, our first step will be to add a background.  We add \verb|bg.png|  from the folder \texttt{Assets > TaleCraft > Examples > Scene Assets > Sprites-BaSS > Scene1} by dragging it into the scene. The player might disappear behind the image, but that is okay. All we need to do is adjust the \textit{Order in Layer} in the component \textbf{Sprite Renderer} to a lower number, such as \textit{-99}. Since this is the background and there will be nothing else behind it, we can give it this very low number. The image may not fit into the camera view completely, so let us adjust the scale and position in the \textbf{Sprite Renderer}. Afterwards, the scene should look similar to Figure \ref{fig:Tutorial-template:bg}.
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\linewidth]{img/User doc/image_2025-07-08_104224540.png}
@@ -179,11 +179,18 @@ The \textbf{InventorySlot} is a prefab located in the \texttt{Assets > TaleCraft
 \subsection{Inventory}
 Now let us create an inventory. It consists of two main parts: the controller and the visualizer. The controller is handled by the \textbf{Inventory Manager}, while the visualizer is set up through the \textbf{Display Inventory} component.
 
-The \textbf{Inventory Manager} is already present in the \textbf{Player} \verb|GameObject|. This is where \texttt{Inventory Items} can be assigned so that they appear in the inventory during gameplay. To do this, press the \texttt{+} button in the inspector and assign the item \verb|MetalBar| from \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Items > Inventory} to the new entry.
+The \textbf{Inventory Manager} is already present in the \textbf{Player} \verb|GameObject|. This is where \texttt{Inventory Items} can be assigned so that they appear in the inventory during gameplay. To do this, press the \texttt{+} button in the inspector and assign the item \verb|MetalBar| from \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Items > Inventory} to the new entry (see Figure \ref{fig:Tutorial-template:IM}).
 
-We have the backend of our inventory working, so now we set up the visual part of the inventory using the \textbf{Display Inventory} component. We create a new \verb|GameObject| under the \textbf{Canvas} in the hierarchy and attach the component to it. Then, we can assign the Inventory Manager we want to use by dragging the \textbf{Player} \verb|GameObject| from the hierarchy into the corresponding field, since it already contains the Inventory Manager.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{img/User doc/image_2025-07-10_135818202.png}
+\caption{Template scene: Inventory Manager.}
+\label{fig:Tutorial-template:IM}
+\end{figure}
 
-The component also requires a reference to the \texttt{Inventory Slot} prefab. For the purpose of this tutorial, we will use a prefab from \texttt{Assets > TaleCraft > Examples > BaSS > Prefabs} called \texttt{InventorySlot-BaSS}, which already has some actions configured. There is one more thing that we need to do. In the hierarchy, we need to create a TagManager GameObject, which will come in handy shortly. We add component Tag Manager to it and set it up according to Figure \ref{fig:Tutorial-template:TM}. 
+We have the backend of our inventory working, so now we set up the visual part of the inventory using the \textbf{Display Inventory} component. We create a new \verb|GameObject| under the \textbf{Canvas} in the hierarchy and attach the component to it. Then, we can assign the \textbf{Inventory Manager} we want to use by dragging the \textbf{Player} \verb|GameObject| from the hierarchy into the corresponding field, since it already contains the Inventory Manager.
+
+The component also requires a reference to the \texttt{Inventory Slot} prefab. For the purpose of this tutorial, we will use a prefab from \texttt{Assets > TaleCraft > Examples > BaSS > Prefabs} called \texttt{InventorySlot-BaSS}, which already has some actions configured. There is one more thing that we need to do. In the hierarchy, we need to create a \textbf{TagManager} \texttt{GameObject}, which will come in handy shortly. We add component \textbf{Tag Manager} to it and set it up according to Figure \ref{fig:Tutorial-template:TM}. 
 
 \begin{figure}[H]
 \centering
@@ -207,14 +214,14 @@ A key action when working with an inventory is adding or removing items. This pr
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\linewidth]{img/User doc/image_2025-07-09_200842547.png}
+\includegraphics[width=0.7\linewidth]{img/User doc/image_2025-07-10_135422445.png}
 \caption{Template scene: Adding items into the inventory.}
 \label{fig:Tutorial-template:InvAdd}
 \end{figure}
 
 \subsection{Dialogue}
 \label{Manual:Tutorial:D}
-Now we are ready to move onto the final step of creating a scene - setting up a conversation. The first step is to create a \texttt{CharacterID} asset for each character the player will interact with (see Section \ref{Manual:DS}). This \texttt{ScriptableObject} allows us to set a name and an offset, which will become important shortly.
+Now we are ready to move onto the final step of creating a scene -- setting up a conversation. The first step is to create a \texttt{CharacterID} asset for each character the player will interact with, including the player character (see Section \ref{Manual:DS}). This \texttt{ScriptableObject} allows us to set a name and an offset, which will become important shortly.
 
 Next, we need a way to represent a dialogue. For that, we use a dialogue graph asset. Since the detailed process of building a graph is covered in Section~\ref{Manual:DS}, we will not describe it in detail here. However, it is important to note how the \texttt{CharacterID} is used in this process. In the dialogue graph, we can reference a \texttt{CharacterID} to assign specific lines of dialogue to a character. To actually link the characters in the scene with the dialogue system, we use the \textbf{Dialogue Controller} component. We can use a prefab from the Assets of our framework by dragging \textbf{DialogueController} from \texttt{Assets > TaleCraft > Prefabs} into the hierarchy under \textbf{Canvas}. In the inspector, there is a list of pairs: one for the \texttt{CharacterID} and one for the corresponding \texttt{GameObject}. This is where the actual connection is made. For example, to set up the player character, we can add a new element by pressing the + button, drag the \textbf{Player} \texttt{GameObject} into the field labeled \textit{Character} and assign the appropriate \texttt{CharacterID} asset to the field labeled \textit{ID}. In this case, the \texttt{CharacterID} for \textbf{Foster} can be found under \texttt{Assets > TaleCraft > Examples > BaSS > ScriptableObjects > Characters}. The list in the inspector should look like Figure \ref{fig:Tutorial-template:DC}.
 
